@@ -266,8 +266,6 @@ const QUESTIONS=[
 {id:"q100",text:"Kasb tanlashdan oldin kichik sinov yoki amaliyot qilib ko‘rish haqida nima deysiz?",answers:["Kasbni amalda sinab ko‘rish","Mutaxassis bilan suhbat","Kasb vazifalarini o‘rganish","O‘qish talablarini tekshirish","Mehnat bozorini ko‘rish","Faqat kasb nomiga qarash"],category:"career",weight:7}
 ];
 
-{id:"q101",text:"Hozir nechanchi sinfda o‘qiyapsiz?",answers:["8-sinf","9-sinf","10-sinf","11-sinf","Kollej/litsey","Boshqa"],category:"education",weight:5},
-{id:"q102",text:"Yoshingiz haqida aytsangiz, kasb rejangiz qaysi bosqichda?",answers:["13–14 yosh","15 yosh","16 yosh","17 yosh","18 yosh yoki katta","Aniq aytishni istamayman"],category:"age",weight:5},
 const PROFESSIONS=[
 {id:"programmer",name:"Dasturchi",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50},evidence:["interest","logic","problem","technology","independence","motivation"]},
 {id:"engineer",name:"Muhandis",requirements:{logic:85,problem:90,technology:95,practical:90,creativity:65,communication:55},evidence:["interest","problem","technology","practical","technical","design"]},
