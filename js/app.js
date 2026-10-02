@@ -84,7 +84,52 @@ function shuffle(items){
 }
 
 function questionEvidence(q){
+  // Savolning o‘zi dalil bermaydi. Dalil faqat o‘quvchining javobidan olinadi.
   return q.evidence || CATEGORY_EVIDENCE[q.category] || [q.category];
+}
+
+const SIGNAL_RULES={
+  interest:[[/kompyuter|dastur|texnolog/i,"technology"],[/rasm|dizayn|rang|ijod/i,"creativity"],[/odam|suhbat|muloqot/i,"communication"],[/biolog|tibb|sog‘liq|kasal/i,"medicine"],[/mashina|mexanizm|ustaxona|asbob/i,"technical"],[/hisob|raqam|matemat|tahlil/i,"logic"]],
+  subject:[[/matemat|informat|hisob/i,"logic"],[/biolog|kimyo|tibb/i,"medicine"],[/adabiyot|til|tarix|huquq/i,"communication"],[/texnika|fizika/i,"technical"]],
+  problem:[[/tahlil|qismlarga|sabab|dalil|mantiq/i,"problem"],[/yechim|hal qil|yech/i,"problem"],[/yordam so‘ray|boshqalarga topshir/i,"teamwork"]],
+  technology:[[/texnolog|dastur|platform|kompyuter/i,"technology"],[/qiziqmay|foydalanmay/i,"low_technology_interest"]],
+  career:[[/dasturch|program|kod/i,"technology"],[/muhandis|mexan|texnik/i,"technical"],[/dizayn|arxitekt/i,"creativity"],[/o‘qit|ta’lim/i,"communication"],[/shifokor|tibb/i,"medicine"],[/huquq|yurist/i,"communication"],[/iqtisod|moliya/i,"logic"]],
+  practical:[[/qo‘l bilan|yas|tuzat|amaliy|ustaxona/i,"practical"],[/nazariya/i,"low_practical"],
+  independence:[[/mustaqil|o‘zim|o‘zi qaror/i,"independence"],[/boshqalarga topshir|ko‘rsatma kut/i,"dependence"]],
+  persistence:[[/davom|tugat|oxirigacha|urin/i,"persistence"],[/voz kech|keyinga qoldir/i,"low_persistence"]],
+  technical:[[/qurilma|mexanizm|asbob|ichki tuzil|texnik/i,"technical"],[/qiziqmay/i,"low_technical_interest"]],
+  teamwork:[[/jamoa|birga|hamkor/i,"teamwork"],[/yolg‘iz|mustaqil/i,"independence"]],
+  organization:[[/reja|bosqich|jadval|muddat|tartib|tashkil/i,"organization"],[/tasodif|keyinga qoldir/i,"low_organization"]],
+  design:[[/rang|shakl|kompoz|chizma|dizayn|ko‘rinish/i,"design"],[/texnik sxema/i,"technical"]],
+  medicine:[[/tibb|biolog|organizm|kasallik|davol|sog‘liq/i,"medicine"],[/qiziqmay/i,"low_medicine_interest"]],
+  communication:[[/tingla|tushuntir|gaplash|muloqot|nutq|suhbat/i,"communication"],[/qoch|gaplashishni istamay/i,"low_communication"]],
+  environment:[[/kompyuter|ofis/i,"technology"],[/laborator/i,"medicine"],[/ustaxona/i,"technical"],[/maktab|sinf/i,"communication"]],
+  variety:[[/turli|o‘zgar|yangi loyih|har xil/i,"variety"],[/bir xil|takror/i,"low_variety"]],
+  creativity:[[/yangi g‘oya|ijod|yangi variant|chizma/i,"creativity"],[/tayyor|takror/i,"low_creativity"]],
+  error_salary:[[/faqat maosh|faqat daromad|prestij/i,"decision_error"],[/qiziqish|mos|rivojlanish|vazifa/i,"decision_awareness"]],
+  error_peer:[[/do‘st|tanish/i,"peer_influence_check"],[/o‘zim|o‘z qiziqish/i,"decision_awareness"]],
+  error_parent:[[/ota-ona|ota onam/i,"parent_influence_check"],[/o‘zim|moslik|qiziqish/i,"decision_awareness"],
+  selfknowledge:[[/kuchli tomon|qobiliyat|o‘zimni|o‘z qobiliyat/i,"selfknowledge"]],
+  information:[[/rasmiy|manba|solishtir|talab|kundalik|mutaxassis|ma’lumot/i,"information"],[/reklama|tanishim fikri|tekshirmay/i,"low_information"]],
+  motivation:[[/qiziqish|rivojlanish|foyda|barqaror|daromad/i,"motivation"]]
+};
+
+function extractAnswerSignals(q,answer){
+  const text=String(answer||"");
+  const found=new Set();
+  const rules=SIGNAL_RULES[q.category]||[];
+  rules.forEach(([rx,signal])=>{if(rx.test(text)) found.add(signal);});
+  // Composite savollarda javob mazmuni ustun; savolning barcha dalillarini avtomatik qo‘shmaymiz.
+  return [...found];
+}
+
+function recordAnswerEvidence(q,answer){
+  const signals=extractAnswerSignals(q,answer);
+  signals.forEach(s=>state.evidence.add(s));
+  if(["error_salary","error_peer","error_parent"].includes(q.category)){
+    if(signals.includes("decision_error") || signals.includes("peer_influence_check") || signals.includes("parent_influence_check")) state.errors.add(q.category);
+  }
+  return signals;
 }
 
 function stopTimer(){
@@ -357,11 +402,9 @@ function askQuestion(q){
   state.asked.push(q.id);
   state.history.push(q);
 
-  questionEvidence(q).forEach(e=>state.evidence.add(e));
-
-  if(["error_salary","error_peer","error_parent"].includes(q.category)){
-    state.errors.add(q.category);
-  }
+  // Savol tanlangani dalil hisoblanmaydi; dalil virtual o‘quvchining aynan bergan javobidan olinadi.
+  const answer=getStudentAnswer(state.currentStudent,q);
+  const answerSignals=recordAnswerEvidence(q,answer);
 
   $("answers").innerHTML="";
   renderEvidencePanel();
@@ -374,13 +417,12 @@ function askQuestion(q){
 
     const response=document.createElement("div");
     response.className="teen-response";
-    const answer=getStudentAnswer(state.currentStudent,q);
     response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+answer+"”</p>"+(q.category.includes("error")?"<span class='reaction-chip'>Bu savol muhim qaror sababini ochishi mumkin.</span>":"");
     $("answers").appendChild(response);
 
     const clue=document.createElement("div");
     clue.className="evidence-note hidden-diagnostic";
-    clue.innerHTML="🔎 <b>Bu savol tekshirgan dalil:</b> "+questionEvidence(q).map(e=>CATEGORY_LABEL[e]||e).join(", ");
+    clue.innerHTML="🔎 <b>Javobdan olingan dalillar:</b> "+(answerSignals.length?answerSignals.map(e=>CATEGORY_LABEL[e]||e).join(", "):"aniq dalil aniqlanmadi");
     $("answers").appendChild(clue);
 
     const next=document.createElement("button");
@@ -421,21 +463,36 @@ function determineCareerType(student=state.currentStudent){
   return {id,name:CAREER_TYPES[id]?.name||id,score};
 }
 
+const TYPE_SIGNALS={
+  realistic:["technical","practical","technology"],
+  investigative:["logic","problem","information"],
+  artistic:["creativity","design","variety"],
+  social:["communication","teamwork","medicine"],
+  enterprising:["communication","organization","decision_awareness"],
+  conventional:["organization","logic","information"]
+};
+
+function determineCareerType(){
+  const scores=Object.entries(TYPE_SIGNALS).map(([id,signals])=>({id,score:signals.reduce((n,s)=>n+(state.evidence.has(s)?1:0),0)})).sort((a,b)=>b.score-a.score);
+  const top=scores[0]||{id:null,score:0};
+  return {id:top.id,name:CAREER_TYPES[top.id]?.name||"Aniqlanmagan",score:top.score};
+}
+
 function calculateCareerTypeFit(profession){
-  const profile=state.currentStudent.careerTypes||{};
-  const actual=profile[profession.type] ?? 50;
-  return Math.max(0,Math.round(100-Math.abs(actual-85)*1.4));
+  const detected=determineCareerType();
+  if(!detected.id) return 0;
+  return detected.id===profession.type ? 100 : Math.max(0,100-detected.score*15);
 }
 
 function calculateProfessionFit(profession){
-  const profile=state.currentStudent.profile;
-  let fit=0,total=0;
-  Object.entries(profession.requirements).forEach(([key,need])=>{
-    const actual=profile[key] ?? 50;
-    fit+=Math.max(0,100-Math.abs(actual-need));
-    total+=100;
-  });
-  return Math.round((fit/Math.max(1,total))*100);
+  const req=Object.keys(profession.requirements||{});
+  const mapped={
+    logic:"logic",problem:"problem",technology:"technology",independence:"independence",creativity:"creativity",
+    communication:"communication",teamwork:"teamwork",organization:"organization",medicine:"medicine",practical:"practical",design:"design",technical:"technical",interest:"interest",motivation:"motivation"
+  };
+  if(!req.length) return 0;
+  const matched=req.filter(k=>state.evidence.has(mapped[k]||k)).length;
+  return Math.round(matched/req.length*100);
 }
 
 function evaluate(profession){
@@ -450,7 +507,7 @@ function evaluate(profession){
   const evidenceCoverage=Math.round(matched.length/Math.max(1,required.length)*100);
 
   const diagnosticQuality=Math.round(
-    state.history.reduce((sum,q)=>sum+(q.weight||5),0)/
+    state.history.reduce((sum,q)=>sum+(extractAnswerSignals(q,getStudentAnswer(state.currentStudent,q)).length? (q.weight||5):0),0)/
     Math.max(1,state.history.length*10)*100
   );
 
