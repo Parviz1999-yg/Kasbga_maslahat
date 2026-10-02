@@ -6,7 +6,11 @@ const state={
   selectedProfession:null,
   currentStudent:null,
   evidence:new Set(),
+  answerEvidence:new Set(),
   errors:new Set(),
+  mistakes:new Set(),
+  timeoutCount:0,
+  report:null,
   timer:null,
   timeLeft:20
 };
@@ -87,6 +91,55 @@ function questionEvidence(q){
   return q.evidence || CATEGORY_EVIDENCE[q.category] || [q.category];
 }
 
+function getStudentAnswer(student,q){
+  if(student.answers && student.answers[q.id]) return student.answers[q.id];
+  if(student.answerByCategory && student.answerByCategory[q.category]) return student.answerByCategory[q.category];
+  if(q.answer) return q.answer;
+  return "Bu haqda hali aniq o‘ylab ko‘rmaganman.";
+}
+
+function inferAnswerEvidence(q,answer){
+  const t=String(answer||"").toLowerCase();
+  const signals={
+    interest:["yoqtir","qiziq","ma’qul","sevaman"],
+    logic:["mantiq","hisob","raqam","tahlil","qismlarga","sabab-oqibat"],
+    problem:["muammo","yechim","yech","sababini","tekshir"],
+    technology:["texnolog","kompyuter","dastur","qurilma","raqamli"],
+    practical:["amaliy","qo‘l bilan","yasash","tuzat","asbob"],
+    communication:["gaplash","muloqot","tushuntir","tinglash","odamlar"],
+    teamwork:["jamoa","birgalikda","hamkor"],
+    organization:["reja","tartib","jadval","muddat"],
+    creativity:["ijod","g‘oya","ijodiy","yangi usul"],
+    medicine:["tibbiyot","biolog","kasallik","bemor","sog‘liq"],
+    independence:["mustaqil","o‘zim"],
+    persistence:["davom","urin","taslim","oxirigacha"],
+    technical:["mexanizm","texnik","qurilma","ichki tuzil"],
+    design:["dizayn","rang","shakl","kompozits","chizma"],
+    information:["manba","ma’lumot","solishtir","rasmiy"],
+    motivation:["rivoj","foyda","daromad","qiziqish"],
+    decision_error:["faqat maosh","do‘st","ota-on","ota onam"]
+  };
+  const found=new Set(questionEvidence(q));
+  Object.entries(signals).forEach(([key,words])=>{if(words.some(w=>t.includes(w))) found.add(key);});
+  return [...found];
+}
+function speakText(text){
+  if(!("speechSynthesis" in window)) return false;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="uz-UZ"; u.rate=.92; u.pitch=1.02;
+  speechSynthesis.speak(u);
+  return true;
+}
+function registerMistake(q,answer){
+  const t=String(answer||"").toLowerCase();
+  if(q.category==="error_salary" && /faqat|maosh|daromad/.test(t)) state.mistakes.add("salary");
+  if(q.category==="error_peer" && /do‘stim|do'stim|do‘stlarim|do'stlarim/.test(t) && !/lekin|ammo|o‘zim|o'zim/.test(t)) state.mistakes.add("peer");
+  if(q.category==="error_parent" && /ota-onam|ota onam/.test(t) && !/o‘zim|o'zim|tahlil|tekshir/.test(t)) state.mistakes.add("parent");
+  if(q.category==="information" && /tekshirmay|ishonaman|reklama/.test(t)) state.mistakes.add("information");
+  if(q.category==="selfknowledge" && /bilmayman|aniq emas/.test(t)) state.mistakes.add("selfknowledge");
+}
+
 function stopTimer(){
   if(state.timer){clearInterval(state.timer);state.timer=null;}
 }
@@ -144,7 +197,11 @@ function resetState(){
   state.available=[];
   state.selectedProfession=null;
   state.evidence=new Set();
+  state.answerEvidence=new Set();
   state.errors=new Set();
+  state.mistakes=new Set();
+  state.timeoutCount=0;
+  state.report=null;
   stopTimer();
   state.timeLeft=20;
   renderEvidencePanel();
@@ -312,12 +369,8 @@ function askQuestion(q){
   stopTimer();
   state.asked.push(q.id);
   state.history.push(q);
-
   questionEvidence(q).forEach(e=>state.evidence.add(e));
-
-  if(["error_salary","error_peer","error_parent"].includes(q.category)){
-    state.errors.add(q.category);
-  }
+  if(["error_salary","error_peer","error_parent"].includes(q.category)) state.errors.add(q.category);
 
   $("answers").innerHTML="";
   renderEvidencePanel();
@@ -325,34 +378,50 @@ function askQuestion(q){
   $("mood").textContent=state.currentStudent.name+" javob bermoqda…";
 
   setTimeout(()=>{
-    stopAndReact(q);
-    setTeenMood("Javob berdi");
+    const answer=getStudentAnswer(state.currentStudent,q);
+    const inferred=inferAnswerEvidence(q,answer);
+    inferred.forEach(e=>state.answerEvidence.add(e));
+    inferred.forEach(e=>state.evidence.add(e));
+    registerMistake(q,answer);
+
+    const avatar=$("teen-avatar");
+    const reaction=q.category.includes("error")?"surprised":q.category==="selfknowledge"?"thinking":"smile";
+    avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id+" "+reaction;
+    $("mood").textContent="Javob berdi";
 
     const response=document.createElement("div");
     response.className="teen-response";
-    const answer=getStudentAnswer(state.currentStudent,q);
-    response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+answer+"”</p>"+(q.category.includes("error")?"<span class='reaction-chip'>Bu savol muhim qaror sababini ochishi mumkin.</span>":"");
+    response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+answer+"”</p>"+
+      (q.category.includes("error")?"<span class='reaction-chip'>Bu savol qaror sababini tekshiradi.</span>":"");
     $("answers").appendChild(response);
+
+    const actions=document.createElement("div");
+    actions.className="response-actions";
+    const voice=document.createElement("button");
+    voice.className="secondary-btn voice-answer";
+    voice.textContent="🔊 Javobni eshittirish";
+    voice.onclick=()=>speakText(answer);
+    actions.appendChild(voice);
+    $("answers").appendChild(actions);
 
     const clue=document.createElement("div");
     clue.className="evidence-note hidden-diagnostic";
-    clue.innerHTML="🔎 <b>Bu savol tekshirgan dalil:</b> "+questionEvidence(q).map(e=>CATEGORY_LABEL[e]||e).join(", ");
+    clue.innerHTML="🔎 <b>Javobdan aniqlangan:</b> "+[...new Set(inferred)].map(e=>CATEGORY_LABEL[e]||e).join(", ");
     $("answers").appendChild(clue);
 
     const next=document.createElement("button");
     next.className="primary-btn";
     next.style.marginTop="18px";
-    next.textContent=state.step===4 ? "Yakuniy tavsiyaga o‘tish →" : "Keyingi savollarni tanlash →";
+    next.textContent=state.step===4?"Yakuniy tavsiyaga o‘tish →":"Keyingi savollarni tanlash →";
     next.onclick=()=>{
       state.step++;
       if(state.step>=5) showProfessionChoice();
       else renderQuestionChoices();
     };
     $("answers").appendChild(next);
-    setTeenMood("Sizni diqqat bilan tinglayapti");
+    renderEvidencePanel();
   },300);
 }
-
 function showProfessionChoice(){
   stopTimer();
   showScreen("screen-profession");
@@ -388,10 +457,12 @@ function evaluate(profession){
   const missing=required.filter(x=>!state.evidence.has(x));
   const evidenceCoverage=Math.round(matched.length/Math.max(1,required.length)*100);
 
-  const diagnosticQuality=Math.round(
+  const baseQuality=Math.round(
     state.history.reduce((sum,q)=>sum+(q.weight||5),0)/
     Math.max(1,state.history.length*10)*100
   );
+  const answerSignalBonus=Math.min(15,Math.round(state.answerEvidence.size*1.2));
+  const diagnosticQuality=Math.min(100,baseQuality+answerSignalBonus);
 
   const errorCheck=state.errors.size>0 ? 100 : 0;
   const supported=Math.round(
@@ -412,10 +483,8 @@ function evaluate(profession){
     mood=state.currentStudent.name+" hali ikkilanmoqda";
   }
 
-  renderResult({
-    professionFit,evidenceCoverage,diagnosticQuality,supported,
-    matched,missing,errorCheck
-  });
+  state.report={professionFit,evidenceCoverage,diagnosticQuality,supported,matched,missing,errorCheck};
+  renderResult({professionFit,evidenceCoverage,diagnosticQuality,supported,matched,missing,errorCheck});
 
   $("result-avatar").textContent=reaction;
   $("mood").textContent=mood;
@@ -441,11 +510,19 @@ function renderResult(r){
   $("score-grid").innerHTML=[
     ["Kasb mosligi",r.professionFit+"%"],
     ["Savollar sifati",r.diagnosticQuality+"%"],
-    ["Dalil qamrovi",r.evidenceCoverage+"%"]
+    ["Dalil qamrovi",r.evidenceCoverage+"%"],
+    ["Tavsiya asosi",r.supported+"%"]
   ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
 
   const useful=state.history.filter(q=>questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
   const weak=state.history.filter(q=>!questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
+  const reportBox=$("diagnostic-report");
+  if(reportBox){
+    reportBox.innerHTML="<div class='report-row'><span>Tekshirilgan dalillar</span><b>"+state.answerEvidence.size+"</b></div>"+
+      "<div class='report-row'><span>Foydali savollar</span><b>"+useful.length+"</b></div>"+
+      "<div class='report-row'><span>Zaif savollar</span><b>"+weak.length+"</b></div>"+
+      "<div class='report-row'><span>Tipik xatolar</span><b>"+state.mistakes.size+"</b></div>";
+  }
 
   $("useful-questions").innerHTML=useful.length
     ?useful.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+"</li>").join("")
@@ -467,6 +544,9 @@ function renderResult(r){
     lesson="Metodik jihatdan muhim qoida: kasb tavsiyasi faqat 'yoqadi' degan javobga emas, qobiliyat, ish uslubi, kasb talablari, o‘zini anglash va qaror sabablariga oid dalillarga tayanishi kerak.";
   }
 
+  const mistakeText={salary:"Kasbni faqat daromadga qarab baholash",peer:"Do‘stlar fikrini asosiy mezon qilish",parent:"Ota-ona xohishini asosiy mezon qilish",information:"Kasb haqidagi ma’lumotni tekshirmaslik",selfknowledge:"O‘z imkoniyatlarini yetarlicha anglamasdan xulosa qilish"};
+  const mistakes=$("mistake-list");
+  if(mistakes) mistakes.innerHTML=state.mistakes.size?[...state.mistakes].map(x=>"<li>⚠️ "+mistakeText[x]+"</li>").join(""):"<li>Bu suhbatda aniq tipik xato signali aniqlanmadi.</li>";
   $("methodology").textContent=lesson;
 }
 
