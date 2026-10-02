@@ -128,7 +128,11 @@ function setGaze(x=0,y=0){
 function setTeenMood(text){
   $("mood").textContent=text;
   const avatar=$("teen-avatar");
-  avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id;
+  let face="smile";
+  if(text.includes("javob bermoqda") || text.includes("kutmoqda")) face="thinking";
+  if(text.includes("tinglayapti")) face="smile";
+  if(text.includes("Sizni kutyapti")) face="thinking";
+  avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id+" "+face;
 }
 
 function startGame(){
