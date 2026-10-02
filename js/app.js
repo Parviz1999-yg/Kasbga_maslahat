@@ -362,10 +362,16 @@ function showProfessionChoice(){
   shuffle(PROFESSIONS).forEach(p=>{
     const b=document.createElement("button");
     b.className="profession-btn";
-    b.innerHTML="<b>"+p.name+"</b><br><small>Yig‘ilgan dalillar asosida tavsiya qilish</small>";
+    b.innerHTML="<b>"+p.name+"</b><br><small>"+(CAREER_TYPES[p.type]?.name||"Kasb tipi")+" — dalillar asosida tekshirish</small>";
     b.onclick=()=>evaluate(p);
     $("profession-list").appendChild(b);
   });
+}
+
+function calculateCareerTypeFit(profession){
+  const profile=state.currentStudent.careerTypes||{};
+  const actual=profile[profession.type] ?? 50;
+  return Math.max(0,Math.round(100-Math.abs(actual-85)*1.4));
 }
 
 function calculateProfessionFit(profession){
@@ -383,6 +389,7 @@ function evaluate(profession){
   state.selectedProfession=profession;
 
   const professionFit=calculateProfessionFit(profession);
+  const careerTypeFit=calculateCareerTypeFit(profession);
   const required=profession.evidence||[];
   const matched=required.filter(x=>state.evidence.has(x));
   const missing=required.filter(x=>!state.evidence.has(x));
@@ -395,8 +402,9 @@ function evaluate(profession){
 
   const errorCheck=state.errors.size>0 ? 100 : 0;
   const supported=Math.round(
-    professionFit*0.35+
-    evidenceCoverage*0.40+
+    professionFit*0.30+
+    careerTypeFit*0.15+
+    evidenceCoverage*0.30+
     diagnosticQuality*0.15+
     errorCheck*0.10
   );
@@ -413,7 +421,7 @@ function evaluate(profession){
   }
 
   renderResult({
-    professionFit,evidenceCoverage,diagnosticQuality,supported,
+    professionFit,careerTypeFit,evidenceCoverage,diagnosticQuality,supported,
     matched,missing,errorCheck
   });
 
@@ -440,6 +448,7 @@ function renderResult(r){
 
   $("score-grid").innerHTML=[
     ["Kasb mosligi",r.professionFit+"%"],
+    ["Kasb tipi",r.careerTypeFit+"%"],
     ["Savollar sifati",r.diagnosticQuality+"%"],
     ["Dalil qamrovi",r.evidenceCoverage+"%"]
   ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
