@@ -14,18 +14,26 @@
         <h1>Kasbga maslahat</h1>
         <p class="subtitle">Kasb tanlashda yo‘l qo‘yiladigan tipik xatoliklarni aniqlash bo‘yicha pedagogik simulyator.</p>
         <div class="case-card">
-          <div class="avatar avatar-start">👨‍🎓</div>
+          <div class="avatar avatar-start css-person person-azizbek"><i></i></div>
           <div>
-            <h2>Azizbek, 15 yosh</h2>
-            <p>9-sinf o‘quvchisi. Siz esa uning kasb tanlashiga yordam beruvchi maslahatchisiz.</p>
+            <h2>Virtual o‘quvchilar bilan ishlash</h2>
+            <p>Har bir o‘quvchining yashirin qobiliyatlari, qiziqishlari va kasb tanlashdagi qarorlari turlicha.</p>
           </div>
+        </div>
+        <div class="student-selection">
+          <div class="section-heading">
+            <span class="eyebrow">MASLAHAT OLUVCHINI TANLANG</span>
+            <h2>Qaysi o‘quvchi bilan ishlaysiz?</h2>
+            <p>O‘quvchini tanlang. Keyin u bilan 5 savollik diagnostik suhbat o‘tkazasiz.</p>
+          </div>
+          <div id="student-list" class="student-list"></div>
         </div>
         <div class="rules">
           <div><b>5 ta savol</b><span>berishingiz mumkin</span></div>
           <div><b>Yashirin profil</b><span>javoblar ortida mavjud</span></div>
           <div><b>Yakuniy tavsiya</b><span>dalillar bilan asoslanadi</span></div>
         </div>
-        <button id="start-btn" class="primary-btn">Maslahatni boshlash →</button>
+        <button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button>
       </div>
     </section>
 
@@ -43,9 +51,9 @@
 
       <div class="game-layout">
         <aside class="teen-panel">
-          <div id="teen-avatar" class="avatar teen-avatar">👨‍🎓</div>
-          <h2>Azizbek</h2>
-          <p>15 yosh · 9-sinf</p>
+          <div id="teen-avatar" class="avatar teen-avatar css-person person-azizbek"><i></i></div>
+          <h2 id="teen-name">Azizbek</h2>
+          <p id="teen-meta">15 yosh · 9-sinf</p>
           <div id="mood" class="mood">Suhbatga tayyor</div>
         </aside>
 
@@ -62,7 +70,7 @@
 
     <section id="screen-profession" class="screen">
       <div class="result-card">
-        <div class="avatar avatar-start">🧑‍💼</div>
+        <div id="profession-avatar" class="avatar avatar-start css-person person-azizbek"><i></i></div>
         <span class="eyebrow">5-SAVOLDAN SO‘NG</span>
         <h1>Endi kasbni tavsiya qiling</h1>
         <p>Yig‘ilgan dalillarga tayangan holda Azizbekka mos deb hisoblagan kasbni tanlang.</p>
