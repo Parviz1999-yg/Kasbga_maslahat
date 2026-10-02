@@ -172,6 +172,67 @@ const getStudentAnswer=(student,q)=>{
   return student.answers?.[q.id] || student.answerByCategory?.[q.category] || "Bu haqda hali aniq o‘ylab ko‘rmaganman.";
 };
 
+
+// ── Individga bog‘langan dialog javoblari ─────────────────────────────
+// Har bir o‘quvchi uchun savol ID → javob → dalil seti.
+// Bu blok keyinchalik yangi savollarni ham shu usulda qo‘shishga imkon beradi.
+function makeAnswerSignals(student){
+  const s={};
+  const map=student.id==="azizbek"?{
+    q3:["problem","logic"],q4:["technology","interest"],q9:["technical","technology"],
+    q10:["practical","problem"],q11:["logic","technology"],q12:["problem","technical"],
+    q15:["organization","independence"],q17:["technical"],q21:["variety"],q22:["persistence"],
+    q28:["information","selfknowledge"],q92:["logic","problem","technology"],
+    q101:["problem","logic","technology","independence"],q105:["technical","problem","logic","practical"],
+    q108:["information","selfknowledge","motivation","interest"]
+  }:student.id==="madina"?{
+    q1:["creativity","design"],q4:["technology","creativity"],q16:["design","technical"],
+    q23:["creativity"],q35:["creativity","communication"],q43:["communication","teamwork"],
+    q45:["design","creativity"],q46:["communication","teamwork"],q54:["organization"],
+    q55:["creativity","variety"],q62:["selfknowledge"],q63:["information"],
+    q65:["communication"],q72:["creativity","design"],q86:["information"],
+    q89:["motivation","creativity"],q98:["information","selfknowledge"],
+    q100:["creativity","communication"],q102:["creativity","design","practical","persistence"],
+    q103:["communication","teamwork","organization","problem"],q104:["selfknowledge","information","motivation"]
+  }:student.id==="javohir"?{
+    q2:["logic"],q3:["problem","logic"],q11:["logic"],q13:["motivation"],
+    q15:["organization"],q28:["information","selfknowledge"],q32:["organization","logic"],
+    q38:["logic"],q39:["information"],q47:["motivation"],q57:["organization"],
+    q60:["information"],q66:["problem","logic"],q70:["interest"],q78:["communication"],
+    q88:["information"],q94:["logic","organization"],q95:["motivation","information"],
+    q97:["logic","organization","problem","information"],q101:["problem","logic","technology","independence"],
+    q104:["selfknowledge","information","motivation"],q107:["logic","organization","problem","information"],
+    q108:["information","selfknowledge","motivation","interest"]
+  }:student.id==="sevinch"?{
+    q2:["medicine"],q12:["problem"],q18:["medicine"],q36:["communication"],
+    q37:["teamwork"],q45:["communication"],q56:["medicine","communication"],q64:["organization"],
+    q65:["communication"],q71:["medicine"],q72:["variety"],q81:["teamwork"],
+    q83:["medicine"],q90:["selfknowledge"],q91:["information"],q95:["motivation"],
+    q97:["problem","information"],q100:["medicine","communication"],q103:["communication","teamwork","organization","problem"],
+    q104:["selfknowledge","information","motivation"],q106:["medicine","communication","problem","organization"],
+    q108:["information","selfknowledge","motivation","interest"]
+  }:student.id==="diyor"?{
+    q6:["practical"],q9:["technical"],q10:["practical","problem"],q16:["design","technical"],
+    q17:["technical"],q41:["technology"],q42:["practical"],q49:["problem"],q51:["persistence"],
+    q52:["technical"],q61:["organization"],q68:["independence"],q69:["practical"],
+    q87:["technical"],q92:["logic","problem","technology"],q93:["practical"],q94:["technical","organization"],
+    q99:["technical","practical"],q101:["problem","logic","technology","independence"],
+    q102:["creativity","design","practical","persistence"],q105:["technical","problem","logic","practical"],
+    q108:["information","selfknowledge","motivation","interest"]
+  }:{
+    q12:["communication"],q14:["teamwork"],q19:["communication"],q25:["communication"],
+    q26:["parent_influence_check","decision_awareness"],q32:["organization"],q36:["communication"],
+    q37:["teamwork"],q44:["communication"],q45:["communication"],q58:["organization"],
+    q59:["creativity","communication"],q65:["communication"],q72:["variety"],q75:["organization"],
+    q79:["communication"],q84:["selfknowledge"],q85:["information"],q97:["organization","information"],
+    q98:["information","selfknowledge"],q103:["communication","teamwork","organization","problem"],
+    q104:["selfknowledge","information","motivation"],q106:["communication","organization","motivation"],
+    q108:["information","selfknowledge","motivation","interest"]
+  };
+  student.answerSignals=map;
+}
+STUDENTS.forEach(makeAnswerSignals);
+
 const QUESTIONS=[
 {id:"q1",text:"Bo‘sh vaqtingizda nimalar bilan shug‘ullanishni ko‘proq yoqtirasiz?",answers:["Sport va faol harakat","Texnika va kompyuterlar","Odamlar bilan suhbat","Rasm, musiqa yoki ijod"],category:"interest",weight:8},
 {id:"q2",text:"Maktabda qaysi fan sizga ko‘proq qiziq?",answers:["Matematika","Biologiya","Tarix","Adabiyot"],category:"subject",weight:8},
