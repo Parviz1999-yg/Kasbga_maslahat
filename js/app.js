@@ -408,6 +408,15 @@ function showProfessionChoice(){
   });
 }
 
+function determineCareerType(student=state.currentStudent){
+  const profile=student?.careerTypes||{};
+  const entries=Object.entries(profile);
+  if(!entries.length) return {id:null,name:"Aniqlanmagan",score:0};
+  entries.sort((a,b)=>b[1]-a[1]);
+  const [id,score]=entries[0];
+  return {id,name:CAREER_TYPES[id]?.name||id,score};
+}
+
 function calculateCareerTypeFit(profession){
   const profile=state.currentStudent.careerTypes||{};
   const actual=profile[profession.type] ?? 50;
@@ -430,6 +439,7 @@ function evaluate(profession){
 
   const professionFit=calculateProfessionFit(profession);
   const careerTypeFit=calculateCareerTypeFit(profession);
+  const detectedType=determineCareerType();
   const required=profession.evidence||[];
   const matched=required.filter(x=>state.evidence.has(x));
   const missing=required.filter(x=>!state.evidence.has(x));
@@ -462,7 +472,7 @@ function evaluate(profession){
 
   renderResult({
     professionFit,careerTypeFit,evidenceCoverage,diagnosticQuality,supported,
-    matched,missing,errorCheck
+    matched,missing,errorCheck,detectedType
   });
 
   $("result-avatar").textContent=reaction;
@@ -487,8 +497,9 @@ function renderResult(r){
     " kasbini "+state.currentStudent.name+"ga tavsiya qildingiz. Natija faqat kasb mosligiga emas, balki 5 ta savolda qanday dalil yig‘ilganiga ham bog‘liq.";
 
   $("score-grid").innerHTML=[
+    ["Aniqlangan kasb tipi",r.detectedType.name],
+    ["Tip mosligi",r.careerTypeFit+"%"],
     ["Kasb mosligi",r.professionFit+"%"],
-    ["Kasb tipi",r.careerTypeFit+"%"],
     ["Savollar sifati",r.diagnosticQuality+"%"],
     ["Dalil qamrovi",r.evidenceCoverage+"%"]
   ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
