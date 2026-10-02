@@ -65,9 +65,22 @@ body:before{
 .css-person i:after{content:"";position:absolute;left:38%;bottom:19%;width:24%;height:8%;border-bottom:2px solid #7b443b;border-radius:50%}
 .css-person:after{content:"";position:absolute;z-index:3;width:52%;height:31%;left:24%;top:10%;border-radius:55% 55% 35% 35%;background:var(--hair);box-shadow:inset 0 4px 8px rgba(255,255,255,.08)}
 .person-azizbek{--skin:#c98968;--hair:#171b22;--shirt:#287d91}
-.person-madina{--skin:#d99b7b;--hair:#34231f;--shirt:#9a5a86}.person-madina:after,.person-sevinch:after,.person-zuhra:after{z-index:1;width:72%;height:62%;left:14%;top:3%;border-radius:50% 50% 38% 38%;box-shadow:inset 0 4px 8px rgba(255,255,255,.08),0 20px 0 var(--hair)}
-.person-javohir{--skin:#b97858;--hair:#20252b;--shirt:#426d9b}
+.person-madina{--skin:#d99b7b;--hair:#34231f;--shirt:#9a5a86}
 .person-sevinch{--skin:#e0aa8d;--hair:#4a2c26;--shirt:#6a8f63}
+.person-zuhra{--skin:#d9a17f;--hair:#38221f;--shirt:#6076a8}
+/* Qizlar uchun uzunroq va tabiiyroq soch silueti */
+.person-madina:after,.person-sevinch:after,.person-zuhra:after{
+  z-index:1;width:76%;height:72%;left:12%;top:1%;
+  border-radius:52% 52% 42% 42%;
+  box-shadow:inset 0 5px 9px rgba(255,255,255,.08),0 28px 0 var(--hair),-9px 25px 0 var(--hair),9px 25px 0 var(--hair);
+}
+.person-madina i:after,.person-sevinch i:after,.person-zuhra i:after{
+  z-index:6;
+}
+.person-madina:before,.person-sevinch:before,.person-zuhra:before{
+  z-index:0;
+}
+.person-madina{--skin:#b97858;--hair:#20252b;--shirt:#426d9b}
 .person-diyor{--skin:#c98968;--hair:#25211d;--shirt:#a36b3e}
 .person-zuhra{--skin:#d9a17f;--hair:#38221f;--shirt:#6076a8}
 .case-card h2{margin:0 0 7px}.case-card p{margin:0;color:#abc0c5;line-height:1.5}
@@ -168,13 +181,13 @@ body:before{
   left:9%;
   top:29%;
   width:82%;
-  height:23%;
-  border-radius:45%;
+  height:27%;
+  border-radius:50%;
   background:
-    radial-gradient(ellipse at 27% 50%,#fff 0 36%,#e9eef2 37% 49%,transparent 51%),
-    radial-gradient(ellipse at 73% 50%,#fff 0 36%,#e9eef2 37% 49%,transparent 51%),
-    radial-gradient(circle at calc(27% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 17%,#5b6670 18% 25%,#111 26% 29%,transparent 30%),
-    radial-gradient(circle at calc(73% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 17%,#5b6670 18% 25%,#111 26% 29%,transparent 30%);
+    radial-gradient(circle at 27% 50%,#fff 0 43%,#e9eef2 44% 51%,transparent 53%),
+    radial-gradient(circle at 73% 50%,#fff 0 43%,#e9eef2 44% 51%,transparent 53%),
+    radial-gradient(circle at calc(27% + var(--gaze-x)) calc(50% + var(--gaze-y)),#15191d 0 18%,#59636c 19% 27%,#111 28% 32%,transparent 33%),
+    radial-gradient(circle at calc(73% + var(--gaze-x)) calc(50% + var(--gaze-y)),#15191d 0 18%,#59636c 19% 27%,#111 28% 32%,transparent 33%);
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.45));
   transform-origin:center;
   animation:realBlink 5.2s ease-in-out infinite;
