@@ -165,19 +165,30 @@ body:before{
   content:"";
   position:absolute;
   z-index:4;
-  left:16%;
-  top:32%;
-  width:68%;
-  height:17%;
-  border-radius:50%;
+  left:9%;
+  top:29%;
+  width:82%;
+  height:23%;
+  border-radius:45%;
   background:
-    radial-gradient(circle at calc(28% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 18%,#6f777b 19% 24%,transparent 25%),
-    radial-gradient(circle at calc(72% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 18%,#6f777b 19% 24%,transparent 25%),
-    radial-gradient(ellipse at 28% 50%,#fff 0 38%,transparent 40%),
-    radial-gradient(ellipse at 72% 50%,#fff 0 38%,transparent 40%);
+    radial-gradient(ellipse at 27% 50%,#fff 0 36%,#e9eef2 37% 49%,transparent 51%),
+    radial-gradient(ellipse at 73% 50%,#fff 0 36%,#e9eef2 37% 49%,transparent 51%),
+    radial-gradient(circle at calc(27% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 17%,#5b6670 18% 25%,#111 26% 29%,transparent 30%),
+    radial-gradient(circle at calc(73% + var(--gaze-x)) calc(50% + var(--gaze-y)),#111 0 17%,#5b6670 18% 25%,#111 26% 29%,transparent 30%);
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.45));
   transform-origin:center;
   animation:realBlink 5.2s ease-in-out infinite;
+}
+/* yuqori kiprik chizig'i */
+.css-person i:before{
+  box-shadow:
+    0 -4px 0 -1px rgba(45,25,22,.9),
+    0 -5px 5px rgba(30,18,18,.45);
+}
+.person-madina i:before,.person-sevinch i:before,.person-zuhra i:before{
+  box-shadow:
+    0 -4px 0 -1px rgba(45,25,22,.95),
+    0 -6px 6px rgba(30,18,18,.5);
 }
 .css-person i:after{
   content:"";
@@ -191,12 +202,8 @@ body:before{
   border-radius:0 0 50% 50%;
   transition:.25s;
 }
-/* kiprik */
 .css-person i{
-  box-shadow:inset 3px -4px 7px rgba(90,40,20,.16), inset 0 0 0 1px rgba(70,35,25,.04);
-}
-.person-madina i:before,.person-sevinch i:before,.person-zuhra i:before{
-  box-shadow:0 -3px 0 -1px rgba(35,20,20,.75);
+  box-shadow:inset 3px -4px 7px rgba(90,40,20,.16),inset 0 0 0 1px rgba(70,35,25,.04);
 }
 .css-person.thinking i:after{
   width:18%;height:16%;left:41%;bottom:17%;
@@ -220,9 +227,7 @@ body:before{
     linear-gradient(#55332d,#55332d) 100% 50%/34% 2px no-repeat;
   animation:none;
 }
-.css-person.speaking i:after{
-  animation:mouthTalk .22s ease-in-out infinite alternate;
-}
+.css-person.speaking i:after{animation:mouthTalk .22s ease-in-out infinite alternate}
 @keyframes realBlink{
   0%,43%,47%,100%{transform:scaleY(1)}
   44%,46%{transform:scaleY(.08)}
@@ -231,7 +236,6 @@ body:before{
   from{height:7%;border-radius:50%}
   to{height:17%;border-radius:45%}
 }
-
 
 /* Jonli simulyator: dalillar va vaqt */
 .evidence-panel{margin-top:14px;text-align:left;background:rgba(4,12,25,.68);border:1px solid rgba(105,199,255,.13);border-radius:14px;padding:13px}
