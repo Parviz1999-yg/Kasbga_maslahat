@@ -10,7 +10,9 @@ const state={
   timer:null,
   timeLeft:20,
   dialogueGraph:{nodes:[],edges:[]},
-  missed:[]
+  missed:[],
+  dimensionScores:{personType:{},workType:{},domain:{},subject:{}},
+  questionPurposes:[]
 };
 
 const $=id=>document.getElementById(id);
@@ -125,12 +127,76 @@ function extractAnswerSignals(q,answer){
   return [...found];
 }
 
+
+function bumpDimension(bucket,key,amount=1){
+  if(!key) return;
+  bucket[key]=(bucket[key]||0)+amount;
+}
+
+const DIMENSION_RULES=[
+  {bucket:"personType",key:"people",rx:/odam|jamoa|muloqot|suhbat|tingla|tushuntir|o‘qit|yordam|bemor|mijoz|maslahat/i},
+  {bucket:"personType",key:"nature",rx:/tabiat|biolog|hayvon|o‘simlik|ekolog|agronom|chorva|laborator/i},
+  {bucket:"personType",key:"technology",rx:/texnika|qurilma|mexanizm|mashina|motor|ustaxona|asbob|elektr|tuzat/i},
+  {bucket:"personType",key:"signs",rx:/raqam|hisob|ma’lumot|jadval|formula|kod|dastur|kompyuter|matemat|tahlil|hujjat/i},
+  {bucket:"personType",key:"artistic",rx:/rasm|dizayn|rang|ijod|g‘oya|chizma|kompoz|badiiy|media/i},
+  {bucket:"workType",key:"practical",rx:/qo‘l bilan|yas|tuzat|amaliy|sinab|asbob|ustaxona|qurib|bajarib/i},
+  {bucket:"workType",key:"mental",rx:/tahlil|hisob|raqam|ma’lumot|mantiq|reja|dalil|solishtir|o‘rgan|tekshir/i},
+  {bucket:"workType",key:"creative",rx:/ijod|yangi g‘oya|yangi variant|dizayn|rasm|chizma|yarat/i},
+  {bucket:"workType",key:"social",rx:/odam|muloqot|tingla|tushuntir|yordam|jamoa|maslahat|o‘qit/i},
+  {bucket:"workType",key:"organizational",rx:/reja|tashkil|jadval|muddat|boshqar|taqsim|muvofiq/i},
+  {bucket:"domain",key:"education",rx:/o‘qit|ta’lim|maktab|sinf|pedagog|dars/i},
+  {bucket:"domain",key:"health",rx:/tibb|shifokor|bemor|sog‘liq|kasallik|davol|klinika|organizm/i},
+  {bucket:"domain",key:"it",rx:/kompyuter|dastur|kod|platform|informat|texnolog/i},
+  {bucket:"domain",key:"engineering",rx:/muhandis|mexan|texnika|qurilma|konstruksi|texnolog/i},
+  {bucket:"domain",key:"transport",rx:/mashina|haydov|avtomobil|transport/i},
+  {bucket:"domain",key:"agriculture",rx:/tabiat|o‘simlik|hayvon|chorva|agronom|ekolog/i},
+  {bucket:"domain",key:"law",rx:/huquq|yurist|qonun|advokat|sud/i},
+  {bucket:"domain",key:"business",rx:/biznes|savdo|menejer|mijoz|tashkil|boshqar/i},
+  {bucket:"domain",key:"finance",rx:/moliya|hisob-kitob|iqtisod|daromad|raqam/i},
+  {bucket:"domain",key:"construction",rx:/qurilish|arxitekt|konstruksi|chizma/i},
+  {bucket:"domain",key:"media",rx:/media|dizayn|rasm|ijod|jurnal|kontent/i},
+  {bucket:"domain",key:"language",rx:/til|adabiyot|matn|tarjimon|nutq|yoz/i},
+  {bucket:"domain",key:"service",rx:/xizmat|mijoz|turizm|mehmon|sartarosh|resepshen/i},
+  {bucket:"subject",key:"math",rx:/matemat|hisob|raqam/i},
+  {bucket:"subject",key:"informatics",rx:/informat|kompyuter|dastur|kod/i},
+  {bucket:"subject",key:"physics",rx:/fizika|mexan|energi|qurilma/i},
+  {bucket:"subject",key:"chemistry",rx:/kimyo|modda|laborator/i},
+  {bucket:"subject",key:"biology",rx:/biolog|organizm|hayvon|o‘simlik/i},
+  {bucket:"subject",key:"language",rx:/ona tili|adabiyot|til|matn|nutq/i},
+  {bucket:"subject",key:"history",rx:/tarix|jamiyat|huquq/i},
+  {bucket:"subject",key:"art",rx:/san’at|rasm|dizayn|rang|kompoz/i}
+];
+
+function deriveCareerDimensions(q,answer){
+  const text=String(answer||"");
+  const result={personType:[],workType:[],domain:[],subject:[]};
+  DIMENSION_RULES.forEach(rule=>{
+    if(rule.rx.test(text)){
+      bumpDimension(state.dimensionScores[rule.bucket],rule.key,1);
+      result[rule.bucket].push(rule.key);
+    }
+  });
+  // Savol kategoriyasi ham faqat yo‘nalishning diagnostik maqsadini belgilaydi;
+  // tayyor profilni qo‘shmaydi.
+  if(q.category==="subject") state.questionPurposes.push("fan");
+  if(q.category==="error_salary"||q.category==="error_peer"||q.category==="error_parent") state.questionPurposes.push("chalg‘ituvchi");
+  if(["interest","problem","technology","technical","communication","practical","creativity","design"].includes(q.category)) state.questionPurposes.push("kasbiy moslik");
+  return result;
+}
+
+function getTopDimension(bucket){
+  const entries=Object.entries(state.dimensionScores[bucket]||{}).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length || entries[0][1]<1) return null;
+  return {id:entries[0][0],score:entries[0][1]};
+}
+
 function recordAnswerEvidence(q,answer){
   // Agar o‘quvchining aynan shu savolga individual dalil xaritasi bo‘lsa,
   // regexdan ko‘ra shu xarita ustun turadi. Bu real suhbatdagi javob mazmunini
   // yashirin profil emas, aynan javob bilan bog‘laydi.
   const mapped=state.currentStudent?.answerSignals?.[q.id];
   const signals=Array.isArray(mapped) ? [...mapped] : extractAnswerSignals(q,answer);
+  const dimensions=deriveCareerDimensions(q,answer);
   signals.forEach(s=>state.evidence.add(s));
   if(["error_salary","error_peer","error_parent"].includes(q.category)){
     if(signals.includes("decision_error") || signals.includes("peer_influence_check") || signals.includes("parent_influence_check")) state.errors.add(q.category);
@@ -242,6 +308,8 @@ function resetState(){
   state.errors=new Set();
   state.dialogueGraph={nodes:[],edges:[]};
   state.missed=[];
+  state.dimensionScores={personType:{},workType:{},domain:{},subject:{}};
+  state.questionPurposes=[];
   stopTimer();
   state.timeLeft=20;
   renderEvidencePanel();
@@ -508,34 +576,65 @@ function showProfessionChoice(){
   });
 }
 
-function determineCareerType(student=state.currentStudent){
-  const profile=student?.careerTypes||{};
-  const entries=Object.entries(profile);
-  if(!entries.length) return {id:null,name:"Aniqlanmagan",score:0};
-  entries.sort((a,b)=>b[1]-a[1]);
-  const [id,score]=entries[0];
-  return {id,name:CAREER_TYPES[id]?.name||id,score};
-}
-
-const TYPE_SIGNALS={
-  realistic:["technical","practical","technology"],
-  investigative:["logic","problem","information"],
-  artistic:["creativity","design","variety"],
-  social:["communication","teamwork","medicine"],
-  enterprising:["communication","organization","decision_awareness"],
-  conventional:["organization","logic","information"]
-};
-
 function determineCareerType(){
-  const scores=Object.entries(TYPE_SIGNALS).map(([id,signals])=>({id,score:signals.reduce((n,s)=>n+(state.evidence.has(s)?1:0),0)})).sort((a,b)=>b.score-a.score);
-  const top=scores[0]||{id:null,score:0};
-  return {id:top.id,name:CAREER_TYPES[top.id]?.name||"Aniqlanmagan",score:top.score};
+  const top=getTopDimension("personType");
+  return {id:top?.id||null,name:top?CAREER_CLASSIFICATION.personTypes[top.id].name:"Aniqlanmagan",score:top?.score||0};
 }
 
 function calculateCareerTypeFit(profession){
+  const info=PROFESSION_CLASSIFICATION[profession.id];
   const detected=determineCareerType();
-  if(!detected.id) return 0;
-  return detected.id===profession.type ? 100 : Math.max(0,100-detected.score*15);
+  if(!info || !detected.id) return 0;
+  if(info.personTypes.includes(detected.id)) return 100;
+  return 25;
+}
+
+function determineWorkType(){
+  const top=getTopDimension("workType");
+  return {id:top?.id||null,name:top?CAREER_CLASSIFICATION.workTypes[top.id].name:"Aniqlanmagan",score:top?.score||0};
+}
+
+function calculateClassificationFit(profession){
+  const info=PROFESSION_CLASSIFICATION[profession.id];
+  if(!info) return 0;
+  const type=determineCareerType().id;
+  const work=determineWorkType().id;
+  let score=0;
+  if(type && info.personTypes.includes(type)) score+=50;
+  if(work && info.workTypes.includes(work)) score+=30;
+  const domains=Object.entries(state.dimensionScores.domain||{}).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+  if(domains.some(d=>info.domains.includes(d))) score+=20;
+  return score;
+}
+
+function scoreCareerGroup(group){
+  const topType=getTopDimension("personType")?.id;
+  const topWork=getTopDimension("workType")?.id;
+  const topDomains=Object.entries(state.dimensionScores.domain||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
+  const topSubjects=Object.entries(state.dimensionScores.subject||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
+  let score=0;
+  if(topType && group.personTypes.includes(topType)) score+=35;
+  if(topWork && group.workTypes.includes(topWork)) score+=25;
+  score+=topDomains.filter(x=>group.domains.includes(x)).length*15;
+  const subjectBonus=group.subjects?topSubjects.filter(x=>group.subjects.includes(x)).length*10:0;
+  return Math.min(100,score+subjectBonus);
+}
+
+function calculateSystemRecommendation(){
+  const groups=CAREER_GROUPS.map(group=>({group,score:scoreCareerGroup(group)}))
+    .sort((a,b)=>b.score-a.score);
+  const candidates=PROFESSIONS.map(p=>{
+    const req=Object.keys(p.requirements||{});
+    const matched=p.evidence.filter(e=>state.evidence.has(e));
+    const missing=p.evidence.filter(e=>!state.evidence.has(e));
+    const supportingRecords=state.history.filter(rec=>(rec.signals||[]).some(s=>p.evidence.includes(s)));
+    const classificationFit=calculateClassificationFit(p);
+    const evidenceScore=p.evidence.length?matched.length/p.evidence.length*100:0;
+    const supportScore=Math.min(100,supportingRecords.length/3*100);
+    const score=Math.round(evidenceScore*.45+classificationFit*.35+supportScore*.20);
+    return {profession:p,score,matched,missing,supportingRecords,classificationFit,evidenceScore};
+  }).sort((a,b)=>b.score-a.score);
+  return {groups,candidates};
 }
 
 function calculateProfessionFit(profession){
@@ -602,12 +701,13 @@ function evaluate(profession){
     Math.max(1,state.history.length*10)*100
   );
 
-  const errorCheck=state.errors.size>0 ? 100 : 0;
+  const errorCheck=state.errors.size>0 ? 0 : 100;
+  const classificationFit=calculateClassificationFit(profession);
   const supported=Math.round(
-    professionFit*0.30+
-    careerTypeFit*0.15+
-    evidenceCoverage*0.30+
-    diagnosticQuality*0.15+
+    professionFit*0.25+
+    classificationFit*0.35+
+    evidenceCoverage*0.20+
+    diagnosticQuality*0.10+
     errorCheck*0.10
   );
 
@@ -623,12 +723,40 @@ function evaluate(profession){
   }
 
   renderResult({
-    professionFit,careerTypeFit,evidenceCoverage,diagnosticQuality,supported,
-    matched,missing,errorCheck,detectedType,systemRecommendation
+    professionFit,careerTypeFit,classificationFit,evidenceCoverage,diagnosticQuality,supported,
+    matched,missing,errorCheck,detectedType,workType:determineWorkType(),systemRecommendation
   });
 
   $("result-avatar").textContent=reaction;
   $("mood").textContent=mood;
+}
+
+
+function renderCareerGroupCards(sr){
+  const el=$("career-groups-panel");
+  if(!el || !sr) return;
+  const cards=sr.groups.slice(0,3).map(item=>{
+    const g=item.group;
+    const professions=g.professions.map(name=>"<span>"+name+"</span>").join("");
+    return "<button class='career-group-card' type='button' data-group='"+g.id+"'>"+
+      "<div class='career-group-icon'>"+g.icon+"</div>"+
+      "<div class='career-group-body'><h3>"+g.title+"</h3><p>"+g.desc+"</p><div class='career-mini-list'>"+professions+"</div></div>"+
+      "<b class='career-group-score'>"+item.score+"%</b></button>";
+  }).join("");
+  el.innerHTML="<div class='career-groups-title'><span class='eyebrow'>KASBLAR TO‘PLAMI</span><h2>Suhbatdan kelib chiqqan kasbiy yo‘nalishlar</h2><p>Har bir kartani bosib, shu yo‘nalishga kiruvchi kasblarni ko‘rishingiz mumkin.</p></div>"+cards;
+  el.querySelectorAll(".career-group-card").forEach(card=>{
+    card.addEventListener("click",()=>{
+      const group=CAREER_GROUPS.find(g=>g.id===card.dataset.group);
+      if(!group) return;
+      const body=card.querySelector(".career-group-body");
+      const old=body.querySelector(".career-expanded");
+      if(old){old.remove();return;}
+      const div=document.createElement("div");
+      div.className="career-expanded";
+      div.innerHTML="<b>Shu yo‘nalishdagi kasblar</b><div>"+group.professions.map(x=>"<span>"+x+"</span>").join("")+"</div>";
+      body.appendChild(div);
+    });
+  });
 }
 
 function renderResult(r){
@@ -671,8 +799,8 @@ function renderResult(r){
 
   $("score-grid").innerHTML=[
     ["Aniqlangan kasb tipi",r.detectedType.name],
-    ["Tip mosligi",r.careerTypeFit+"%"],
-    ["Kasb mosligi",r.professionFit+"%"],
+    ["Mehnat turi",r.workType.name],
+    ["Kasbiy tasnif mosligi",r.classificationFit+"%"],
     ["Savollar sifati",r.diagnosticQuality+"%"],
     ["Dalil qamrovi",r.evidenceCoverage+"%"]
   ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
@@ -681,12 +809,12 @@ function renderResult(r){
   const weak=state.history.filter(rec=>!(rec.signals||[]).some(e=>state.selectedProfession.evidence?.includes(e)));
 
   $("useful-questions").innerHTML=useful.length
-    ?useful.map(rec=>"<li><b>"+rec.q.id.toUpperCase()+"</b> — "+rec.q.text+"<br><small>Javob: "+rec.answer+"</small></li>").join("")
+    ?useful.map(rec=>"<li>"+rec.q.text+"<br><small>Javob: "+rec.answer+"</small></li>").join("")
     :"<li>Tanlangan kasbga bevosita dalil bergan savol kam.</li>";
 
   $("weak-points").innerHTML=r.missing.length
     ?"<li><b>Yetishmagan dalillar:</b> "+r.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")+"</li>"
-     +(weak.length?weak.map(rec=>"<li><b>"+rec.q.id.toUpperCase()+"</b> — "+rec.q.text+" (javobdan tanlangan kasb uchun yetarli dalil chiqmagan)</li>").join(""):"")
+     +(weak.length?weak.map(rec=>"<li>"+rec.q.text+" (javobdan tanlangan kasb uchun yetarli dalil chiqmagan)</li>").join(""):"")
     :"<li>Tanlangan kasb uchun asosiy dalillar yig‘ildi.</li>";
 
   let lesson;
