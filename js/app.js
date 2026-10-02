@@ -475,6 +475,7 @@ $("restart-btn").addEventListener("click",()=>{
   stopTimer();
   showScreen("screen-start");
   renderStudents();
+});
 
 document.addEventListener("pointermove",e=>{
   const x=(e.clientX/window.innerWidth-.5)*4;
@@ -486,6 +487,5 @@ document.addEventListener("pointerdown",e=>{
   const y=(e.clientY/window.innerHeight-.5)*4;
   setGaze(x,y);
   setTimeout(()=>setGaze(0,0),900);
-});
 });
 renderStudents();
