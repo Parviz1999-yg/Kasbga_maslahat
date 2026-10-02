@@ -65,7 +65,7 @@ body:before{
 .css-person i:after{content:"";position:absolute;left:38%;bottom:19%;width:24%;height:8%;border-bottom:2px solid #7b443b;border-radius:50%}
 .css-person:after{content:"";position:absolute;z-index:3;width:52%;height:31%;left:24%;top:10%;border-radius:55% 55% 35% 35%;background:var(--hair);box-shadow:inset 0 4px 8px rgba(255,255,255,.08)}
 .person-azizbek{--skin:#c98968;--hair:#171b22;--shirt:#287d91}
-.person-madina{--skin:#d99b7b;--hair:#34231f;--shirt:#9a5a86}.person-madina:after,.person-sevinch:after,.person-zuhra:after{width:68%;height:57%;left:16%;top:5%;border-radius:50% 50% 38% 38%;box-shadow:inset 0 4px 8px rgba(255,255,255,.08),0 18px 0 var(--hair)}
+.person-madina{--skin:#d99b7b;--hair:#34231f;--shirt:#9a5a86}.person-madina:after,.person-sevinch:after,.person-zuhra:after{z-index:1;width:72%;height:62%;left:14%;top:3%;border-radius:50% 50% 38% 38%;box-shadow:inset 0 4px 8px rgba(255,255,255,.08),0 20px 0 var(--hair)}
 .person-javohir{--skin:#b97858;--hair:#20252b;--shirt:#426d9b}
 .person-sevinch{--skin:#e0aa8d;--hair:#4a2c26;--shirt:#6a8f63}
 .person-diyor{--skin:#c98968;--hair:#25211d;--shirt:#a36b3e}
