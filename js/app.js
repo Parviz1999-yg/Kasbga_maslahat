@@ -8,7 +8,9 @@ const state={
   evidence:new Set(),
   errors:new Set(),
   timer:null,
-  timeLeft:20
+  timeLeft:20,
+  dialogueGraph:{nodes:[],edges:[]},
+  missed:[]
 };
 
 const $=id=>document.getElementById(id);
@@ -151,6 +153,45 @@ function renderEvidencePanel(){
   }).join('');
 }
 
+
+function addDialogueGraphRecord(q,answer,signals,answered=true){
+  const index=state.history.length;
+  const qId="qnode-"+index;
+  const aId="anode-"+index;
+  state.dialogueGraph.nodes.push({id:qId,type:"question",label:"S"+(index+1)+" · "+q.text});
+  state.dialogueGraph.nodes.push({id:aId,type:"answer",label:answer});
+  state.dialogueGraph.edges.push({from:qId,to:aId,type:answered?"answer":"missed"});
+  signals.forEach((signal,j)=>{
+    const eId="enode-"+index+"-"+j;
+    state.dialogueGraph.nodes.push({id:eId,type:"evidence",label:CATEGORY_LABEL[signal]||signal});
+    state.dialogueGraph.edges.push({from:aId,to:eId,type:"evidence"});
+  });
+}
+
+function renderDialogueGraph(){
+  const el=$("dialogue-graph");
+  if(!el) return;
+  const records=state.history;
+  if(!records.length){el.innerHTML="<p class='graph-empty'>Suhbat grafigi bo‘sh.</p>";return;}
+  const width=920,rowH=105,height=Math.max(300,records.length*rowH+35);
+  const esc=s=>String(s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+  let lines="",nodes="";
+  records.forEach((rec,i)=>{
+    const y=35+i*rowH,qx=30,ax=335,ex=690;
+    const qText=esc(rec.q.text).slice(0,54)+(rec.q.text.length>54?"…":"");
+    const aText=esc(rec.answer||"Javob berilmadi").slice(0,48)+(String(rec.answer||"").length>48?"…":"");
+    lines+=`<line x1="${qx+255}" y1="${y+30}" x2="${ax}" y2="${y+30}" class="graph-line ${rec.answered===false?"missed":""}"/>`;
+    (rec.signals||[]).slice(0,3).forEach((s,j)=>{
+      const ey=y-15+j*30;
+      lines+=`<line x1="${ax+315}" y1="${y+30}" x2="${ex}" y2="${ey+15}" class="graph-line evidence"/>`;
+      nodes+=`<g class="graph-node evidence-node"><rect x="${ex}" y="${ey}" width="200" height="30" rx="10"/><text x="${ex+100}" y="${ey+20}" text-anchor="middle">${esc(CATEGORY_LABEL[s]||s)}</text></g>`;
+    });
+    nodes+=`<g class="graph-node question-node"><rect x="${qx}" y="${y}" width="255" height="60" rx="14"/><text x="${qx+14}" y="${y+24}">S${i+1}</text><text x="${qx+40}" y="${y+24}">${qText}</text><text x="${qx+14}" y="${y+46}" class="graph-sub">${rec.q.category}</text></g>`;
+    nodes+=`<g class="graph-node answer-node"><rect x="${ax}" y="${y}" width="315" height="60" rx="14"/><text x="${ax+14}" y="${y+22}">${rec.answered===false?"Javobsiz":"Javob"}</text><text x="${ax+14}" y="${y+44}" class="graph-answer">${aText}</text></g>`;
+  });
+  el.innerHTML=`<div class="graph-head"><b>Savol → javob → dalil</b><span>Obsidian uslubidagi suhbat xaritasi</span></div><div class="dialogue-graph-scroll"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Savol javob dalil grafigi">${lines}${nodes}</svg></div>`;
+}
+
 function startTimer(){
   stopTimer(); state.timeLeft=20;
   const timerEl=$("timer"), card=document.querySelector(".question-card");
@@ -169,6 +210,11 @@ function startTimer(){
       stopTimer();
       const mood=$("mood");
       if(mood) mood.textContent="Vaqt tugadi — bu savol o‘tkazib yuborildi";
+      state.missed.push({step:state.step+1});
+      const timeoutQ=state.available[0]||{id:"timeout",text:"Savol",category:"unknown",weight:0};
+      const timeoutRecord={q:timeoutQ,answer:"Javob berilmadi",signals:[],answered:false};
+      state.history.push(timeoutRecord);
+      addDialogueGraphRecord(timeoutQ,"Javob berilmadi",[],false);
       state.step++;
       setTimeout(()=>state.step>=5?showProfessionChoice():renderQuestionChoices(),700);
     }
@@ -190,6 +236,8 @@ function resetState(){
   state.selectedProfession=null;
   state.evidence=new Set();
   state.errors=new Set();
+  state.dialogueGraph={nodes:[],edges:[]};
+  state.missed=[];
   stopTimer();
   state.timeLeft=20;
   renderEvidencePanel();
@@ -317,7 +365,7 @@ function candidateScore(q){
 
   // Bir xil kategoriya ketma-ket takrorlanmasin.
   const last=state.history[state.history.length-1];
-  if(last && last.category===q.category) score-=30;
+  if(last && last.q && last.q.category===q.category) score-=30;
 
   // Oldingi savol bilan bog‘liq mantiqiy davomiylik.
   if(last){
@@ -327,7 +375,7 @@ function candidateScore(q){
       ["teamwork","organization"],["selfknowledge","information"],
       ["information","motivation"],["career","motivation"]
     ];
-    if(pair.some(([a,b])=>(a===last.category&&b===q.category)||(b===last.category&&a===q.category))){
+    if(pair.some(([a,b])=>(a===last.q.category&&b===q.category)||(b===last.q.category&&a===q.category))){
       score+=12;
     }
   }
@@ -400,11 +448,13 @@ function renderQuestionChoices(){
 function askQuestion(q){
   stopTimer();
   state.asked.push(q.id);
-  state.history.push(q);
 
-  // Savol tanlangani dalil hisoblanmaydi; dalil virtual o‘quvchining aynan bergan javobidan olinadi.
+  // Savol, aynan shu savolga berilgan javob va undan chiqqan dalil bitta dialog yozuviga bog‘lanadi.
   const answer=getStudentAnswer(state.currentStudent,q);
   const answerSignals=recordAnswerEvidence(q,answer);
+  const record={q,answer,signals:answerSignals,answered:true};
+  state.history.push(record);
+  addDialogueGraphRecord(q,answer,answerSignals,true);
 
   $("answers").innerHTML="";
   renderEvidencePanel();
@@ -507,7 +557,7 @@ function evaluate(profession){
   const evidenceCoverage=Math.round(matched.length/Math.max(1,required.length)*100);
 
   const diagnosticQuality=Math.round(
-    state.history.reduce((sum,q)=>sum+(extractAnswerSignals(q,getStudentAnswer(state.currentStudent,q)).length? (q.weight||5):0),0)/
+    state.history.reduce((sum,rec)=>sum+((rec.signals||[]).length ? (rec.q.weight||5) : 0),0)/
     Math.max(1,state.history.length*10)*100
   );
 
@@ -565,16 +615,16 @@ function renderResult(r){
     ["Dalil qamrovi",r.evidenceCoverage+"%"]
   ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
 
-  const useful=state.history.filter(q=>questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
-  const weak=state.history.filter(q=>!questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
+  const useful=state.history.filter(rec=>(rec.signals||[]).some(e=>state.selectedProfession.evidence?.includes(e)));
+  const weak=state.history.filter(rec=>!(rec.signals||[]).some(e=>state.selectedProfession.evidence?.includes(e)));
 
   $("useful-questions").innerHTML=useful.length
-    ?useful.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+"</li>").join("")
+    ?useful.map(rec=>"<li><b>"+rec.q.id.toUpperCase()+"</b> — "+rec.q.text+"<br><small>Javob: "+rec.answer+"</small></li>").join("")
     :"<li>Tanlangan kasbga bevosita dalil bergan savol kam.</li>";
 
   $("weak-points").innerHTML=r.missing.length
     ?"<li><b>Yetishmagan dalillar:</b> "+r.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")+"</li>"
-     +(weak.length?weak.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+" (tanlangan kasb uchun qiymati past)</li>").join(""):"")
+     +(weak.length?weak.map(rec=>"<li><b>"+rec.q.id.toUpperCase()+"</b> — "+rec.q.text+" (javobdan tanlangan kasb uchun yetarli dalil chiqmagan)</li>").join(""):"")
     :"<li>Tanlangan kasb uchun asosiy dalillar yig‘ildi.</li>";
 
   let lesson;
@@ -589,6 +639,7 @@ function renderResult(r){
   }
 
   $("methodology").textContent=lesson;
+  renderDialogueGraph();
 }
 
 $("start-btn").addEventListener("click",startGame);
