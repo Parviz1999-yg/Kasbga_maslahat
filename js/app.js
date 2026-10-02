@@ -126,7 +126,11 @@ function extractAnswerSignals(q,answer){
 }
 
 function recordAnswerEvidence(q,answer){
-  const signals=extractAnswerSignals(q,answer);
+  // Agar o‘quvchining aynan shu savolga individual dalil xaritasi bo‘lsa,
+  // regexdan ko‘ra shu xarita ustun turadi. Bu real suhbatdagi javob mazmunini
+  // yashirin profil emas, aynan javob bilan bog‘laydi.
+  const mapped=state.currentStudent?.answerSignals?.[q.id];
+  const signals=Array.isArray(mapped) ? [...mapped] : extractAnswerSignals(q,answer);
   signals.forEach(s=>state.evidence.add(s));
   if(["error_salary","error_peer","error_parent"].includes(q.category)){
     if(signals.includes("decision_error") || signals.includes("peer_influence_check") || signals.includes("parent_influence_check")) state.errors.add(q.category);
@@ -545,9 +549,46 @@ function calculateProfessionFit(profession){
   return Math.round(matched/req.length*100);
 }
 
+function calculateSystemRecommendation(){
+  const negativeSignals=[...state.evidence].filter(x=>x.startsWith("low_")||x==="dependence");
+  const candidates=PROFESSIONS.map(p=>{
+    const req=Object.keys(p.requirements||{});
+    const matched=p.evidence.filter(e=>state.evidence.has(e));
+    const missing=p.evidence.filter(e=>!state.evidence.has(e));
+    const supportingRecords=state.history.filter(rec=>(rec.signals||[]).some(s=>p.evidence.includes(s)));
+    const contradictory=negativeSignals.filter(s=>{
+      const base=s.replace(/^low_/,"");
+      return p.evidence.includes(base) || Object.keys(p.requirements||{}).includes(base);
+    });
+    const evidenceScore=p.evidence.length ? matched.length/p.evidence.length*100 : 0;
+    const requirementScore=req.length
+      ? req.reduce((sum,k)=>{
+          const positive=state.evidence.has(k);
+          const negative=state.evidence.has("low_"+k)||state.evidence.has("dependence")&&k==="independence";
+          return sum+(positive?1:0)-(negative?.6:0);
+        },0)/req.length*100
+      : 0;
+    const type=CAREER_TYPES[p.type];
+    const detected=determineCareerType();
+    const typeScore=detected.id===p.type ? 100 : Math.max(0,100-Math.abs((detected.score||0)-2)*10);
+    const supportScore=Math.min(100,supportingRecords.length/3*100);
+    const contradictionPenalty=Math.min(30,contradictory.length*10);
+    const score=Math.max(0,Math.round(
+      evidenceScore*0.45+
+      requirementScore*0.30+
+      typeScore*0.15+
+      supportScore*0.10-
+      contradictionPenalty
+    ));
+    return {profession:p,score,matched,missing,supportingRecords,contradictory,type};
+  }).sort((a,b)=>b.score-a.score);
+  return candidates[0]||null;
+}
+
 function evaluate(profession){
   state.selectedProfession=profession;
 
+  const systemRecommendation=calculateSystemRecommendation();
   const professionFit=calculateProfessionFit(profession);
   const careerTypeFit=calculateCareerTypeFit(profession);
   const detectedType=determineCareerType();
@@ -583,7 +624,7 @@ function evaluate(profession){
 
   renderResult({
     professionFit,careerTypeFit,evidenceCoverage,diagnosticQuality,supported,
-    matched,missing,errorCheck,detectedType
+    matched,missing,errorCheck,detectedType,systemRecommendation
   });
 
   $("result-avatar").textContent=reaction;
@@ -605,7 +646,26 @@ function renderResult(r){
 
   $("result-summary").textContent=
     "Siz "+state.selectedProfession.name+
-    " kasbini "+state.currentStudent.name+"ga tavsiya qildingiz. Natija faqat kasb mosligiga emas, balki 5 ta savolda qanday dalil yig‘ilganiga ham bog‘liq.";
+    " kasbini "+state.currentStudent.name+"ga tavsiya qildingiz. Quyida sizning qaroringiz bilan birga saytning mustaqil dalil-tavsiyasi ham ko‘rsatiladi.";
+
+  const sr=r.systemRecommendation;
+  const srEl=$("system-recommendation");
+  if(srEl && sr){
+    const supportQuestions=sr.supportingRecords.slice(0,3).map(rec=>rec.q.id.toUpperCase()).join(", ")||"aniq savol topilmadi";
+    const matchedText=sr.matched.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"hali yetarli dalil yo‘q";
+    const missingText=sr.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"asosiy dalillar qamrab olingan";
+    const contradictionText=sr.contradictory.map(x=>CATEGORY_LABEL[x]||x.replace(/^low_/,'')).join(", ");
+    srEl.innerHTML=
+      "<div class='system-rec-head'><span>🤖</span><div><b>Saytning mustaqil tavsiyasi</b><strong>"+sr.profession.name+"</strong></div><em>"+sr.score+"/100 dalil mosligi</em></div>"+
+      "<p class='system-rec-type'>Kasb tipi: <b>"+(CAREER_TYPES[sr.profession.type]?.name||sr.profession.type)+"</b></p>"+
+      "<div class='system-rec-grid'>"+
+        "<div><b>Asosiy dalillar</b><span>"+matchedText+"</span></div>"+
+        "<div><b>Javob bergan savollar</b><span>"+supportQuestions+"</span></div>"+
+        "<div><b>Hali tekshirilmagan</b><span>"+missingText+"</span></div>"+
+        (contradictionText?"<div><b>Qarama-qarshi signal</b><span>"+contradictionText+"</span></div>":"")+
+      "</div>"+
+      "<p class='system-rec-note'>Tavsiya yashirin profil yoki oldindan berilgan kasbga emas, shu suhbatda o‘quvchining javoblaridan yig‘ilgan dalillarga tayangan.</p>";
+  }
 
   $("score-grid").innerHTML=[
     ["Aniqlangan kasb tipi",r.detectedType.name],
