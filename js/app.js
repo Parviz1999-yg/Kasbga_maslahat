@@ -153,24 +153,64 @@ function resetState(){
 function renderStudents(){
   const list=$("student-list");
   if(!list) return;
-  list.innerHTML="";
-  STUDENTS.forEach(student=>{
+
+  list.replaceChildren();
+
+  const students=Array.isArray(STUDENTS)?STUDENTS:[];
+  if(!students.length){
+    list.innerHTML='<div class="student-empty">O‘quvchilar ro‘yxati yuklanmadi.</div>';
+    return;
+  }
+
+  const fragment=document.createDocumentFragment();
+
+  students.forEach(student=>{
     const card=document.createElement("button");
+    card.type="button";
     card.className="student-card";
-    card.innerHTML=
-      '<div class="avatar student-avatar css-person person-'+student.id+'"><i></i></div>'+
-      '<div class="student-info"><strong>'+student.name+'</strong><span>Maslahat kutmoqda</span></div>'+
-      '<span class="student-check">✓</span>';
-    card.onclick=()=>{
+    card.dataset.studentId=student.id;
+    card.setAttribute("aria-label",student.name+" bilan maslahatni boshlash");
+
+    const avatar=document.createElement("div");
+    avatar.className="avatar student-avatar css-person person-"+student.id;
+    avatar.setAttribute("aria-hidden","true");
+    avatar.appendChild(document.createElement("i"));
+
+    const info=document.createElement("div");
+    info.className="student-info";
+
+    const name=document.createElement("strong");
+    name.textContent=student.name;
+
+    const status=document.createElement("span");
+    status.textContent="Maslahat kutmoqda";
+
+    info.append(name,status);
+
+    const check=document.createElement("span");
+    check.className="student-check";
+    check.textContent="✓";
+    check.setAttribute("aria-hidden","true");
+
+    card.append(avatar,info,check);
+
+    card.addEventListener("click",()=>{
       document.querySelectorAll(".student-card").forEach(x=>x.classList.remove("selected"));
       card.classList.add("selected");
       state.currentStudent=student;
-      $("start-btn").disabled=false;
-      $("start-btn").textContent=student.name+" bilan maslahatni boshlash →";
-      $("start-btn").classList.add("ready");
-    };
-    list.appendChild(card);
+
+      const startBtn=$("start-btn");
+      if(startBtn){
+        startBtn.disabled=false;
+        startBtn.textContent=student.name+" bilan maslahatni boshlash →";
+        startBtn.classList.add("ready");
+      }
+    });
+
+    fragment.appendChild(card);
   });
+
+  list.appendChild(fragment);
 }
 
 function setGaze(x=0,y=0){
