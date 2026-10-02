@@ -1,5 +1,165 @@
 const TEEN={id:"azizbek",name:"Azizbek",age:15,grade:"9-sinf",profile:{logic:85,problem:88,technology:90,practical:75,creativity:65,communication:55,teamwork:60,medicine:30,organization:70,independence:80,design:70},answers:{q1:"Texnika va kompyuterlar",q2:"Matematika",q3:"Muammoni bosqichma-bosqich tahlil qilaman",q4:"Yangi texnologiyalarni sinab ko‘rish",q5:"Kompyuterda dastur yoki loyiha yaratish",q6:"Amaliy ishni ham yoqtiraman",q7:"Mustaqil ishlash qulayroq",q8:"Qiyin bo‘lsa ham qiziq bo‘lsa davom etaman",q9:"Qurilma qanday ishlashini bilishga qiziqaman",q10:"Biror narsani tuzatib ko‘raman",q11:"Matematika va informatika",q12:"Texnik masalalarni yechish",q13:"Yangi narsani o‘rganish",q14:"Ba’zan o‘zim, ba’zan jamoa bilan",q15:"Reja tuzib ishlayman",q16:"Chizma va texnik loyihalarga qiziqaman",q17:"Mexanizm va qurilmalar qiziq",q18:"Hayvonlar va tabiatga qiziqishim o‘rtacha",q19:"Odamlar bilan ko‘p gaplashish talab qilinmaydigan ish",q20:"Kompyuter yoki laboratoriya kabi muhit",q21:"Bir xil ish tez zeriktiradi",q22:"Mashaqqatli vazifani tugatishga harakat qilaman",q23:"Yangi g‘oya o‘ylab topishni yoqtiraman",q24:"Faqat yuqori maoshga qarab tanlamayman",q25:"Do‘stlarimning fikri qarorimni to‘liq belgilamaydi",q26:"Ota-onamning fikrini eshitaman, lekin o‘zim ham tahlil qilaman",q27:"O‘zimning kuchli tomonlarimni aniqlashga harakat qilaman",q28:"Kasb haqida ma’lumot va talablarni tekshiraman",q29:"Texnologiya bilan ishlash",q30:"Qiziqishim va qobiliyatimga mos kasb"}};
 
+
+/* Virtual students: each has a different hidden profile and decision context. */
+const STUDENTS=[
+  TEEN,
+  {
+    id:"madina",name:"Madina",age:15,grade:"9-sinf",
+    style:"Ijodkor, dizayn va muloqotga qiziqadi.",
+    profile:{logic:65,problem:60,technology:70,practical:55,creativity:94,communication:86,teamwork:82,medicine:35,organization:72,independence:68,design:92},
+    answerByCategory:{
+      interest:"Rasm chizish, dizayn va yangi g‘oyalar bilan ishlashni yoqtiraman.",
+      subject:"Adabiyot va san’atga oid fanlar ko‘proq qiziq.",
+      problem:"Avval turli yechimlarni o‘ylab, eng ijodiy variantni tanlayman.",
+      technology:"Yangi dastur va dizayn vositalarini sinab ko‘rishga qiziqaman.",
+      career:"Dizayn va ijod bilan bog‘liq loyiha yaratishni xohlayman.",
+      practical:"Qo‘l bilan nimadir yaratish yoqadi, lekin ijodiy tomoni bo‘lsa yanada yaxshi.",
+      independence:"G‘oyamni mustaqil ishlab chiqish menga qulay.",
+      persistence:"Yoqtirgan loyiham bo‘lsa, qiyin bo‘lsa ham davom ettiraman.",
+      technical:"Texnikaning ishlashidan ko‘ra, undan qanday ijodiy foydalanish qiziq.",
+      teamwork:"Jamoada fikr almashish va g‘oyalarni birlashtirishni yoqtiraman.",
+      organization:"Vazifani rejalashtiraman, lekin jarayonda yangi g‘oyalar qo‘shaman.",
+      design:"Rang, shakl va kompozitsiyaga e’tibor beraman.",
+      medicine:"Biologiya qiziq, ammo tibbiyot asosiy qiziqishim emas.",
+      communication:"Odamlar bilan fikr almashish menga yoqadi.",
+      environment:"Ijodiy studiya yoki zamonaviy kompyuterli muhit qulay.",
+      variety:"Bir xil ish tez zeriktiradi, yangi loyihalar yoqadi.",
+      creativity:"Yangi g‘oya topish men uchun juda qiziq.",
+      error_salary:"Kasbni faqat maoshiga qarab tanlash to‘g‘ri emas deb o‘ylayman.",
+      error_peer:"Do‘stlarimning fikrini eshitaman, lekin tanlovimni o‘zim qilaman.",
+      error_parent:"Ota-onamning maslahatini eshitaman, ammo o‘z qiziqishimni ham hisobga olaman.",
+      selfknowledge:"Ijodkorligim va muloqotdagi kuchli tomonlarimni bilaman.",
+      information:"Kasb talablari va ish namunalarini ko‘rib chiqaman.",
+      motivation:"Men uchun qiziqish, ijod va o‘z fikrimni ifodalash muhim."
+    }
+  },
+  {
+    id:"javohir",name:"Javohir",age:16,grade:"10-sinf",
+    style:"Matematika, tahlil va biznes jarayonlariga qiziqadi.",
+    profile:{logic:94,problem:88,technology:72,practical:48,creativity:68,communication:70,teamwork:66,medicine:25,organization:92,independence:78,design:50},
+    answerByCategory:{
+      interest:"Hisob-kitob, tahlil va murakkab masalalarni yechishni yoqtiraman.",
+      subject:"Matematika va iqtisodga yaqin mavzular menga qiziq.",
+      problem:"Muammoni qismlarga ajratib, raqamlar va faktlar asosida yechaman.",
+      technology:"Texnologiya foydali, ayniqsa ma’lumotlarni tahlil qilishda.",
+      career:"Iqtisod, moliya yoki tahlil bilan bog‘liq ishni tasavvur qilaman.",
+      practical:"Ko‘proq aqliy va tahliliy ishlarni afzal ko‘raman.",
+      independence:"Mustaqil hisoblab, keyin natijani boshqalar bilan muhokama qilish qulay.",
+      persistence:"Masala qiyin bo‘lsa, yechim topmaguncha urinaman.",
+      technical:"Qurilmaning texnik tomoniga qiziqishim o‘rtacha.",
+      teamwork:"Jamoada vazifalarni taqsimlab ishlash mumkin.",
+      organization:"Reja, jadval va muddatlarga amal qilishni yaxshi ko‘raman.",
+      design:"Chizma emas, jadval va grafiklar menga ko‘proq qiziq.",
+      medicine:"Tibbiyotga qiziqishim kuchli emas.",
+      communication:"Kerakli natijani tushuntirish uchun odamlar bilan gaplashaman.",
+      environment:"Ofis, kompyuter va ma’lumotlar bilan ishlash muhiti qulay.",
+      variety:"Tahliliy vazifalar turlicha bo‘lsa yaxshi.",
+      creativity:"Yechim topishda yangi usul o‘ylab ko‘rishni yoqtiraman.",
+      error_salary:"Maosh muhim, lekin kasbning menga mosligini ham tekshiraman.",
+      error_peer:"Do‘stlarimning tanlovi mening qarorimni belgilamaydi.",
+      error_parent:"Ota-onam maslahat beradi, lekin qarorni dalillar bilan o‘zim qilaman.",
+      selfknowledge:"Tahlil va tartibga moyilligim kuchli ekanini bilaman.",
+      information:"Kasbning vazifalari, daromadi va talablarini solishtiraman.",
+      motivation:"Men uchun rivojlanish, natija va barqarorlik muhim."
+    }
+  },
+  {
+    id:"sevinch",name:"Sevinch",age:16,grade:"10-sinf",
+    style:"Biologiya, tibbiyot va odamlarga yordam berishga qiziqadi.",
+    profile:{logic:74,problem:78,technology:50,practical:70,creativity:62,communication:88,teamwork:90,medicine:95,organization:84,independence:55,design:40},
+    answerByCategory:{
+      interest:"Biologiya va odamlarga yordam berish bilan bog‘liq ishlar yoqadi.",
+      subject:"Biologiya va kimyo fanlariga qiziqaman.",
+      problem:"Muammoni tushunib, odamga xavfsiz yordam berish yo‘lini izlayman.",
+      technology:"Tibbiy texnologiyalar qiziq, lekin inson bilan ishlash muhimroq.",
+      career:"Tibbiyot va sog‘liqni saqlash sohasini tasavvur qilaman.",
+      practical:"Amaliy mashg‘ulotlarda faol bo‘lishni yoqtiraman.",
+      independence:"Ba’zi vazifalarni mustaqil, murakkablarini jamoa bilan bajaraman.",
+      persistence:"Odamga yordam berish kerak bo‘lsa, qiyinchilikka qaramay davom etaman.",
+      technical:"Tibbiy asboblarning ishlashini o‘rganishga qiziqaman.",
+      teamwork:"Jamoa bilan ishlash men uchun juda muhim.",
+      organization:"Vazifalarni tartib bilan bajarishga harakat qilaman.",
+      design:"Dizaynga qiziqishim ikkinchi darajada.",
+      medicine:"Tibbiyotga qiziqishim juda yuqori.",
+      communication:"Odamni tinglash va tushuntirishni yaxshi ko‘raman.",
+      environment:"Klinika, laboratoriya yoki tibbiy muhit menga mos.",
+      variety:"Turli bemorlar va vaziyatlar ishni qiziqarli qiladi.",
+      creativity:"Muammoning yangi yechimini topishga harakat qilaman.",
+      error_salary:"Faqat maosh uchun kasb tanlamayman.",
+      error_peer:"Do‘stlarimning kasbi emas, o‘z qiziqishim muhim.",
+      error_parent:"Ota-onamning maslahatini qadrlayman, lekin o‘z qobiliyatimni ham tekshiraman.",
+      selfknowledge:"Odamlar bilan ishlash va sabrli bo‘lish kuchli tomonlarim.",
+      information:"Kasb talablari, o‘qish muddati va mas’uliyatini tekshiraman.",
+      motivation:"Odamlarga foyda keltirish mening asosiy motivim."
+    }
+  },
+  {
+    id:"diyor",name:"Diyor",age:15,grade:"9-sinf",
+    style:"Mexanika, amaliy ish va texnikaga qiziqadi.",
+    profile:{logic:82,problem:84,technology:86,practical:94,creativity:70,communication:52,teamwork:62,medicine:20,organization:74,independence:76,design:72},
+    answerByCategory:{
+      interest:"Mashina, mexanizm va amaliy ishlar bilan shug‘ullanish yoqadi.",
+      subject:"Fizika va matematika menga qiziq.",
+      problem:"Muammoni ko‘rib, sababini topib amalda tekshiraman.",
+      technology:"Yangi texnika va asboblarni o‘rganishga qiziqaman.",
+      career:"Muhandislik, mexanika yoki texnologiya sohasini tasavvur qilaman.",
+      practical:"Qo‘l bilan ishlash va biror narsa yasash menga juda yoqadi.",
+      independence:"Vazifani o‘zim bajarib ko‘rishni afzal ko‘raman.",
+      persistence:"Buzilgan yoki qiyin narsani tuzatmaguncha urinaman.",
+      technical:"Mexanizm va qurilmalarning ichki tuzilishi qiziq.",
+      teamwork:"Kerak bo‘lsa jamoa bilan ham ishlayman.",
+      organization:"Asboblar va ish bosqichlarini oldindan tayyorlayman.",
+      design:"Texnik chizma va konstruksiyalarga qiziqaman.",
+      medicine:"Tibbiyotga qiziqishim kam.",
+      communication:"Ko‘p gapirishdan ko‘ra amaliy ish menga qulay.",
+      environment:"Ustaxona, laboratoriya yoki texnik muhit yoqadi.",
+      variety:"Turli loyihalar bilan ishlashni yoqtiraman.",
+      creativity:"Yangi qurilma yoki yechim o‘ylab topish yoqadi.",
+      error_salary:"Maosh muhim, lekin kasbning o‘zimga mosligini ham tekshiraman.",
+      error_peer:"Do‘stim tanlagan kasbni faqat u tanlagani uchun olmayman.",
+      error_parent:"Ota-onamning fikrini eshitaman, lekin amaliy qobiliyatimni hisobga olaman.",
+      selfknowledge:"Amaliy va texnik ishlar kuchli tomonim ekanini bilaman.",
+      information:"Kasb uchun qanday bilim va amaliy ko‘nikma kerakligini tekshiraman.",
+      motivation:"Biror narsani yaratish va ishlayotganini ko‘rish meni qiziqtiradi."
+    }
+  },
+  {
+    id:"zuhra",name:"Zuhra",age:15,grade:"9-sinf",
+    style:"Til, muloqot va tashkilotchilikka moyil.",
+    profile:{logic:72,problem:70,technology:55,practical:42,creativity:78,communication:96,teamwork:92,medicine:35,organization:94,independence:62,design:60},
+    answerByCategory:{
+      interest:"O‘qish, suhbatlashish, tadbirlar va odamlar bilan ishlashni yoqtiraman.",
+      subject:"Ona tili, adabiyot va tarix qiziq.",
+      problem:"Avval tomonlarni tinglab, keyin muammoni tartib bilan hal qilaman.",
+      technology:"Texnologiyadan muloqot va tashkilotchilikni yengillashtirish uchun foydalanaman.",
+      career:"O‘qituvchilik, huquq yoki tashkilotchilikka yaqin kasblarni tasavvur qilaman.",
+      practical:"Amaliy ish bo‘lsa ham, odamlar bilan bog‘liq bo‘lishini xohlayman.",
+      independence:"Mustaqil fikr bildiraman, lekin jamoa bilan maslahatlashishni yaxshi ko‘raman.",
+      persistence:"Odamlar ishonib topshirgan vazifani oxirigacha bajaraman.",
+      technical:"Texnik qurilmalar unchalik qiziqtirmaydi.",
+      teamwork:"Jamoa bilan ishlash men uchun juda qulay.",
+      organization:"Reja va tadbirlarni tashkil qilishni yaxshi ko‘raman.",
+      design:"Taqdimot va tadbir bezagiga qiziqaman.",
+      medicine:"Tibbiyotga qiziqishim o‘rtacha.",
+      communication:"Odamlar bilan muloqot qilish kuchli tomonim.",
+      environment:"Maktab, ofis yoki odamlar ko‘p bo‘lgan muhit qulay.",
+      variety:"Turli odamlar va vazifalar bo‘lsa, ish qiziqarli bo‘ladi.",
+      creativity:"Nutq, tadbir yoki loyiha uchun yangi g‘oyalar topaman.",
+      error_salary:"Kasbni faqat daromadiga qarab tanlashni istamayman.",
+      error_peer:"Do‘stlarim maslahat berishi mumkin, lekin tanlovimni o‘zim qilaman.",
+      error_parent:"Ota-onamning fikrini hurmat qilaman, o‘z qiziqishimni ham asoslayman.",
+      selfknowledge:"Muloqot va tashkilotchilik kuchli tomonlarim.",
+      information:"Kasbning vazifalari va talablarini oldindan o‘rganaman.",
+      motivation:"Odamlar bilan ishlash va foydali bo‘lish meni rag‘batlantiradi."
+    }
+  }
+];
+
+const getStudentAnswer=(student,q)=>{
+  return student.answers?.[q.id] || student.answerByCategory?.[q.category] || "Bu haqda hali aniq o‘ylab ko‘rmaganman.";
+};
+
 const QUESTIONS=[
 {id:"q1",text:"Bo‘sh vaqtingizda nimalar bilan shug‘ullanishni ko‘proq yoqtirasiz?",answers:["Sport va faol harakat","Texnika va kompyuterlar","Odamlar bilan suhbat","Rasm, musiqa yoki ijod"],category:"interest",weight:8},
 {id:"q2",text:"Maktabda qaysi fan sizga ko‘proq qiziq?",answers:["Matematika","Biologiya","Tarix","Adabiyot"],category:"subject",weight:8},
