@@ -37,6 +37,15 @@ const CATEGORY_EVIDENCE={
   motivation:["motivation"]
 };
 
+const STUDENT_INTROS={
+  azizbek:"Salom ustoz. Men kasb tanlashda biroz qiynalyapman. Texnika va kompyuterlar menga qiziq, lekin kelajakda aynan qaysi kasb menga mosligini aniq bilmayman.",
+  madina:"Salom ustoz. Men kasb tanlashda qiynalyapman. Sababi qiziqishim juda keng qamrovli: dizayn, ijod, odamlar bilan muloqot va texnologiyalar menga yoqadi.",
+  javohir:"Salom ustoz. Men kelajakdagi kasbim haqida o‘ylayapman. Matematika, tahlil va iqtisodga qiziqaman, lekin qaysi yo‘nalishda o‘zimni sinashni bilmayapman.",
+  sevinch:"Salom ustoz. Men odamlarga yordam berishni va biologiyani yaxshi ko‘raman. Tibbiyotga qiziqaman, lekin bu soha menga haqiqatan mos kelishini aniqlashga yordam bering.",
+  diyor:"Salom ustoz. Men texnika va mexanizmlarga qiziqaman. Biror narsani qo‘lim bilan yasash yoki tuzatish menga yoqadi, ammo qaysi kasb yo‘nalishini tanlashni bilmayapman.",
+  zuhra:"Salom ustoz. Men odamlar bilan ishlashni, gaplashishni va tadbirlarni tashkil qilishni yaxshi ko‘raman. Kelajak kasbimni tanlashda o‘zimga mos yo‘nalishni aniqlamoqchiman."
+};
+
 const CATEGORY_LABEL={
   interest:"qiziqish",
   subject:"qobiliyat/fan",
@@ -95,7 +104,7 @@ function renderStudents(){
     card.className="student-card";
     card.innerHTML=
       '<div class="avatar student-avatar css-person person-'+student.id+'"><i></i></div>'+
-      '<div class="student-info"><strong>'+student.name+'</strong><span>'+student.age+' yosh · '+student.grade+'</span><small>'+student.style+'</small></div>'+
+      '<div class="student-info"><strong>'+student.name+'</strong><span>Maslahat kutmoqda</span></div>'+
       '<span class="student-check">✓</span>';
     card.onclick=()=>{
       document.querySelectorAll(".student-card").forEach(x=>x.classList.remove("selected"));
@@ -120,9 +129,9 @@ function startGame(){
   resetState();
   $("teen-name").textContent=state.currentStudent.name;
   $("teen-meta").textContent=state.currentStudent.age+" yosh · "+state.currentStudent.grade;
-  setTeenMood("Suhbatga tayyor");
+  setTeenMood("Sizni kutyapti…");
   showScreen("screen-game");
-  renderQuestionChoices();
+  renderStudentGreeting();
 }
 
 /*
@@ -188,6 +197,25 @@ function chooseAvailableQuestions(){
   return shuffle(result);
 }
 
+function renderStudentGreeting(){
+  $("question-counter").textContent="Suhbat";
+  $("progress-bar").style.width="0%";
+  const label=document.querySelector(".question-label");
+  if(label) label.textContent="O‘QUVCHI MUROJAATI";
+  $("question-text").textContent=state.currentStudent.name+" sizga murojaat qildi";
+  $("answers").innerHTML="";
+  const bubble=document.createElement("div");
+  bubble.className="student-speech";
+  bubble.innerHTML="<div class='speech-avatar'>"+state.currentStudent.name+"</div><p>“"+STUDENT_INTROS[state.currentStudent.id]+"</p>";
+  $("answers").appendChild(bubble);
+  const btn=document.createElement("button");
+  btn.className="primary-btn conversation-start";
+  btn.textContent="Tingladim, savol berishni boshlayman →";
+  btn.onclick=()=>{ setTeenMood("Savolingizni kutyapti"); renderQuestionChoices(); };
+  $("answers").appendChild(btn);
+  setTeenMood("Sizni kutyapti…");
+}
+
 function renderQuestionChoices(){
   state.available=chooseAvailableQuestions();
 
@@ -226,7 +254,7 @@ function askQuestion(q){
   $("mood").textContent=state.currentStudent.name+" javob bermoqda…";
 
   setTimeout(()=>{
-    setTeenMood("Javob berildi");
+    setTeenMood("Javob berdi");
 
     const response=document.createElement("div");
     response.className="teen-response";
@@ -234,7 +262,7 @@ function askQuestion(q){
     $("answers").appendChild(response);
 
     const clue=document.createElement("div");
-    clue.className="evidence-note";
+    clue.className="evidence-note hidden-diagnostic";
     clue.innerHTML="🔎 <b>Bu savol tekshirgan dalil:</b> "+questionEvidence(q).map(e=>CATEGORY_LABEL[e]||e).join(", ");
     $("answers").appendChild(clue);
 
@@ -248,7 +276,7 @@ function askQuestion(q){
       else renderQuestionChoices();
     };
     $("answers").appendChild(next);
-    setTeenMood("Dalil olindi");
+    setTeenMood("Sizni diqqat bilan tinglayapti");
   },300);
 }
 
