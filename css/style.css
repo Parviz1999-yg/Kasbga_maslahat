@@ -1,10 +1,10 @@
 *{box-sizing:border-box}
 :root{
-  --bg:#061319;
-  --panel:rgba(16,37,45,.82);
-  --panel2:rgba(9,28,34,.88);
-  --line:rgba(96,214,232,.24);
-  --cyan:#63d8e8;
+  --bg:#050b18;
+  --panel:rgba(14,23,42,.86);
+  --panel2:rgba(8,15,30,.92);
+  --line:rgba(94,176,255,.25);
+  --cyan:#69c7ff;
   --text:#eaf6f8;
   --muted:#a9c3c9;
 }
@@ -14,10 +14,10 @@ body{
   color:var(--text);
   min-height:100vh;
   background:
-    radial-gradient(circle at 15% 15%,rgba(55,196,220,.18),transparent 28%),
-    radial-gradient(circle at 85% 20%,rgba(74,130,255,.12),transparent 30%),
-    radial-gradient(circle at 50% 100%,rgba(42,211,170,.10),transparent 35%),
-    linear-gradient(135deg,#061319 0%,#0a2028 48%,#061319 100%);
+    radial-gradient(circle at 12% 12%,rgba(60,150,255,.18),transparent 28%),
+    radial-gradient(circle at 88% 18%,rgba(100,120,255,.14),transparent 30%),
+    radial-gradient(circle at 50% 100%,rgba(30,90,180,.12),transparent 36%),
+    linear-gradient(135deg,#040914 0%,#0a1428 48%,#050a18 100%);
   background-attachment:fixed;
 }
 body:before{
@@ -26,15 +26,15 @@ body:before{
   inset:0;
   pointer-events:none;
   background:
-    linear-gradient(115deg,transparent 20%,rgba(255,255,255,.035) 35%,transparent 48%),
-    radial-gradient(circle at 50% 0%,rgba(255,255,255,.06),transparent 32%);
+    linear-gradient(115deg,transparent 18%,rgba(130,200,255,.045) 35%,transparent 48%),
+    radial-gradient(circle at 50% 0%,rgba(120,180,255,.07),transparent 32%);
   mix-blend-mode:screen;
 }
 .app-shell{width:100%;min-height:100vh}
 .screen{display:none;min-height:100vh;padding:32px}
 .screen.active{display:flex;align-items:center;justify-content:center}
 .hero-card,.result-card,.question-card,.teen-panel{
-  background:linear-gradient(145deg,rgba(20,48,58,.88),rgba(7,25,32,.9));
+  background:linear-gradient(145deg,rgba(17,29,52,.9),rgba(6,13,27,.94));
   border:1px solid var(--line);
   box-shadow:0 25px 80px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.055);
   backdrop-filter:blur(14px);
@@ -43,7 +43,7 @@ body:before{
 .badge,.eyebrow{font-size:12px;letter-spacing:.16em;color:var(--cyan);font-weight:800}
 .hero-card h1,.result-card h1{font-size:clamp(38px,6vw,68px);margin:12px 0}
 .subtitle{font-size:19px;line-height:1.6;color:#c0d4d9;max-width:760px}
-.case-card{display:flex;gap:20px;align-items:center;background:rgba(4,20,26,.68);border:1px solid rgba(99,216,232,.12);border-radius:20px;padding:22px;margin:28px 0}
+.case-card{display:flex;gap:20px;align-items:center;background:rgba(5,12,26,.72);border:1px solid rgba(99,216,232,.12);border-radius:20px;padding:22px;margin:28px 0}
 .avatar{
   display:grid;
   place-items:center;
@@ -81,18 +81,18 @@ body:before{
 .student-check{position:absolute;right:10px;top:9px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:rgba(99,216,232,.12);color:transparent;font-size:12px}
 .student-card.selected .student-check{background:var(--cyan);color:#062027}
 .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px 0}
-.rules div{padding:17px;background:rgba(7,25,32,.7);border:1px solid rgba(99,216,232,.1);border-radius:16px}
+.rules div{padding:17px;background:rgba(7,15,30,.78);border:1px solid rgba(99,216,232,.1);border-radius:16px}
 .rules b,.rules span{display:block}.rules span{color:#91abb2;font-size:14px;margin-top:5px}
-.primary-btn{border:0;background:linear-gradient(135deg,#72e4f2,#4fc8db);color:#062027;font-weight:800;font-size:16px;padding:15px 24px;border-radius:14px;cursor:pointer;box-shadow:0 8px 24px rgba(75,210,230,.18)}
+.primary-btn{border:0;background:linear-gradient(135deg,#8bd8ff,#4caeff);color:#062027;font-weight:800;font-size:16px;padding:15px 24px;border-radius:14px;cursor:pointer;box-shadow:0 8px 24px rgba(65,160,255,.22)}
 .primary-btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
 .game-header{
   position:absolute;top:0;left:0;right:0;padding:22px 32px;display:flex;justify-content:space-between;align-items:center;
   border-bottom:1px solid rgba(99,216,232,.14);
-  background:rgba(5,20,26,.76);
+  background:rgba(4,10,22,.82);
   backdrop-filter:blur(16px);
 }
 .game-header h1{margin:5px 0 0;font-size:24px}
-.progress-wrap{width:220px;text-align:right}.progress{height:8px;background:#19333b;border-radius:99px;margin-top:7px;overflow:hidden}.progress div{height:100%;width:20%;background:linear-gradient(90deg,#4fc8db,#8cebf5);transition:width .35s;box-shadow:0 0 12px rgba(99,216,232,.55)}
+.progress-wrap{width:220px;text-align:right}.progress{height:8px;background:#17243d;border-radius:99px;margin-top:7px;overflow:hidden}.progress div{height:100%;width:20%;background:linear-gradient(90deg,#4fc8db,#8cebf5);transition:width .35s;box-shadow:0 0 12px rgba(99,216,232,.55)}
 .game-layout{width:min(1050px,100%);display:grid;grid-template-columns:245px 1fr;gap:24px;margin-top:65px}
 .teen-panel{border-radius:24px;padding:25px;text-align:center;height:max-content}
 .teen-avatar{
@@ -108,7 +108,7 @@ body:before{
 .question-label{font-size:11px;letter-spacing:.16em;color:#62d6e8;font-weight:800}
 .question-card h2{font-size:clamp(24px,4vw,38px);line-height:1.25;margin:12px 0 28px}
 .answers{display:grid;gap:12px}
-.answer-btn{background:rgba(7,25,32,.78);color:#eaf6f8;border:1px solid #28505b;border-radius:15px;padding:17px 19px;text-align:left;font-size:16px;cursor:pointer;transition:.18s}
+.answer-btn{background:rgba(6,14,29,.82);color:#eaf6f8;border:1px solid #28505b;border-radius:15px;padding:17px 19px;text-align:left;font-size:16px;cursor:pointer;transition:.18s}
 .answer-btn:hover{border-color:#63d8e8;background:rgba(17,55,65,.9);transform:translateX(3px);box-shadow:0 5px 20px rgba(70,210,230,.1)}
 .evidence-note{margin-top:12px;color:#91adb5;font-size:13px}
 .profession-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:25px 0}
