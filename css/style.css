@@ -381,3 +381,15 @@ body:before{
 .teen-response span{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#69c7ff;font-weight:800}
 .teen-response p{font-size:20px;line-height:1.6;margin:7px 0 0}
 .reaction-chip{display:inline-block;margin-top:9px;padding:5px 9px;border-radius:99px;background:rgba(105,199,255,.1);color:#a8e9f2;font-size:11px}
+
+/* Interaktiv javob va yakuniy hisobot */
+.response-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.secondary-btn{border:1px solid rgba(99,216,232,.28);background:rgba(20,54,63,.72);color:#d9f7fb;padding:10px 14px;border-radius:12px;cursor:pointer;font:inherit}
+.secondary-btn:hover{transform:translateY(-1px);border-color:rgba(99,216,232,.55)}
+.diagnostic-report,.mistakes-card{margin-top:18px;padding:18px;border:1px solid rgba(99,216,232,.14);border-radius:18px;background:rgba(8,25,31,.48)}
+.diagnostic-report h3,.mistakes-card h3{margin:0 0 12px}
+.report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.report-row{padding:12px;border-radius:13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}
+.report-row span{display:block;font-size:.78rem;opacity:.7;margin-bottom:5px}.report-row b{font-size:1.25rem}
+.mistakes-card ul{margin:0;padding-left:20px}.mistakes-card li{margin:7px 0}
+@media(max-width:760px){.report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
