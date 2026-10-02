@@ -38,12 +38,12 @@ const CATEGORY_EVIDENCE={
 };
 
 const STUDENT_INTROS={
-  azizbek:"Salom ustoz. Men kasb tanlashda biroz qiynalyapman. Texnika va kompyuterlar menga qiziq, lekin kelajakda aynan qaysi kasb menga mosligini aniq bilmayman.",
-  madina:"Salom ustoz. Men kasb tanlashda qiynalyapman. Sababi qiziqishim juda keng qamrovli: dizayn, ijod, odamlar bilan muloqot va texnologiyalar menga yoqadi.",
-  javohir:"Salom ustoz. Men kelajakdagi kasbim haqida o‘ylayapman. Matematika, tahlil va iqtisodga qiziqaman, lekin qaysi yo‘nalishda o‘zimni sinashni bilmayapman.",
-  sevinch:"Salom ustoz. Men odamlarga yordam berishni va biologiyani yaxshi ko‘raman. Tibbiyotga qiziqaman, lekin bu soha menga haqiqatan mos kelishini aniqlashga yordam bering.",
-  diyor:"Salom ustoz. Men texnika va mexanizmlarga qiziqaman. Biror narsani qo‘lim bilan yasash yoki tuzatish menga yoqadi, ammo qaysi kasb yo‘nalishini tanlashni bilmayapman.",
-  zuhra:"Salom ustoz. Men odamlar bilan ishlashni, gaplashishni va tadbirlarni tashkil qilishni yaxshi ko‘raman. Kelajak kasbimni tanlashda o‘zimga mos yo‘nalishni aniqlamoqchiman."
+  azizbek:"Salom ustoz. Men kasb tanlashda qiynalyapman. O‘zimga mos yo‘nalishni topishda yordam kerak.",
+  madina:"Salom ustoz. Men kelajakdagi kasbimni tanlashda ikkilanib qolyapman. O‘zim uchun to‘g‘ri yo‘nalishni aniqlashda maslahat kerak.",
+  javohir:"Assalomu alaykum, ustoz. Kasb tanlash masalasida aniq qarorga kela olmayapman. Menga to‘g‘ri savollar berib, yo‘nalishimni aniqlashga yordam bering.",
+  sevinch:"Salom ustoz. Kelajakdagi kasbim haqida ko‘p o‘ylayapman, lekin qaysi yo‘l menga mosligini bilmayapman. Maslahat berishingizni xohlayman.",
+  diyor:"Salom ustoz. Kasb tanlashda biroz adashyapman. O‘zimga mos ish yo‘nalishini topish uchun siz bilan gaplashmoqchiman.",
+  zuhra:"Assalomu alaykum, ustoz. Kelajak kasbimni tanlash va qaror qilishda yordam kerak. Menga savollar berib, o‘zimni yaxshiroq anglashimga yordam bering."
 };
 
 const CATEGORY_LABEL={
@@ -118,7 +118,7 @@ function renderStudents(){
   });
 }
 
-function setTeenMood(text){
+function setGaze(x=0,y=0){\n  document.querySelectorAll(".css-person").forEach(el=>{\n    el.style.setProperty("--gaze-x",Math.max(-2,Math.min(2,x))+"px");\n    el.style.setProperty("--gaze-y",Math.max(-1.5,Math.min(1.5,y))+"px");\n  });\n}\n\nfunction setTeenMood(text){
   $("mood").textContent=text;
   const avatar=$("teen-avatar");
   avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id;
@@ -128,7 +128,7 @@ function startGame(){
   if(!state.currentStudent) return;
   resetState();
   $("teen-name").textContent=state.currentStudent.name;
-  $("teen-meta").textContent=state.currentStudent.age+" yosh · "+state.currentStudent.grade;
+  $("teen-meta").textContent="Suhbatdagi o‘quvchi";
   setTeenMood("Sizni kutyapti…");
   showScreen("screen-game");
   renderStudentGreeting();
@@ -399,6 +399,6 @@ function renderResult(r){
 $("start-btn").addEventListener("click",startGame);
 $("restart-btn").addEventListener("click",()=>{
   showScreen("screen-start");
-  renderStudents();
+  renderStudents();\n\ndocument.addEventListener("pointermove",e=>{\n  const x=(e.clientX/window.innerWidth-.5)*4;\n  const y=(e.clientY/window.innerHeight-.5)*3;\n  setGaze(x,y);\n});\ndocument.addEventListener("pointerdown",e=>{\n  const x=(e.clientX/window.innerWidth-.5)*5;\n  const y=(e.clientY/window.innerHeight-.5)*4;\n  setGaze(x,y);\n  setTimeout(()=>setGaze(0,0),900);\n});
 });
 renderStudents();
