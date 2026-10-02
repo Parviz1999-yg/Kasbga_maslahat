@@ -130,3 +130,31 @@ body:before{
   .teen-panel .teen-avatar{width:72px;height:72px;font-size:40px;margin:0}.teen-panel h2{margin:0}.teen-panel p{display:none}.mood{margin:0 0 0 auto}
   .question-card{padding:23px}
 }
+
+/* Jonli suhbat effektlari */
+.student-card{overflow:hidden;isolation:isolate}
+.student-card:before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(105,199,255,.12),transparent 28%);animation:cardSweep 5s linear infinite;z-index:-1}
+.student-card:hover .student-avatar,.student-card.selected .student-avatar{animation:personFloat 1.8s ease-in-out infinite}
+.student-avatar{transition:transform .3s,box-shadow .3s}
+.css-person i{animation:breath 3.2s ease-in-out infinite}
+.css-person:after{animation:hairFloat 4s ease-in-out infinite}
+.teen-avatar{animation:personFloat 3.2s ease-in-out infinite}
+.teen-avatar:before{animation:bodyBreath 3.2s ease-in-out infinite}
+.mood{animation:moodPulse 2.4s ease-in-out infinite}
+.student-speech{position:relative;background:linear-gradient(145deg,rgba(18,38,69,.95),rgba(7,15,31,.96));border:1px solid rgba(105,199,255,.3);border-radius:22px;padding:24px 26px;margin:8px 0 18px;box-shadow:0 18px 50px rgba(0,0,0,.3),0 0 35px rgba(80,160,255,.08);animation:speechIn .55s cubic-bezier(.2,.8,.2,1)}
+.student-speech:before{content:"";position:absolute;left:28px;top:-9px;width:18px;height:18px;background:#122645;border-left:1px solid rgba(105,199,255,.3);border-top:1px solid rgba(105,199,255,.3);transform:rotate(45deg)}
+.student-speech p{font-size:clamp(18px,2.2vw,24px);line-height:1.65;margin:8px 0 0;color:#eef8ff}
+.speech-avatar{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#69c7ff;font-weight:800}
+.conversation-start{margin-top:4px}
+.hidden-diagnostic{display:none}
+.answer-btn{animation:answerIn .35s both}
+.answer-btn:nth-child(2){animation-delay:.04s}.answer-btn:nth-child(3){animation-delay:.08s}.answer-btn:nth-child(4){animation-delay:.12s}.answer-btn:nth-child(5){animation-delay:.16s}.answer-btn:nth-child(6){animation-delay:.20s}
+@keyframes speechIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes answerIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes personFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes breath{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(1px) scale(1.015)}}
+@keyframes bodyBreath{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+@keyframes hairFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-1px) rotate(.6deg)}}
+@keyframes moodPulse{0%,100%{box-shadow:0 0 0 rgba(105,199,255,0)}50%{box-shadow:0 0 22px rgba(105,199,255,.12)}}
+@keyframes cardSweep{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
