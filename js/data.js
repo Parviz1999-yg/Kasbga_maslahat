@@ -359,3 +359,94 @@ const PROFESSIONS=[
 {id:"architect",name:"Arxitektor",type:"artistic",requirements:{creativity:85,logic:80,design:90,practical:65},evidence:["design","creativity","technical","practical","interest"]},
 {id:"technologist",name:"Texnolog",type:"realistic",requirements:{technology:85,practical:85,logic:80,organization:75},evidence:["technology","practical","technical","problem","organization"]}
 ];
+
+/* =========================================================
+   KASBIY TASNIF MODELI v2
+   Maqsad: talaba-maslahatchi suhbatini 5 tip + mehnat turi
+   + kasb sohasi/guruhi + fan qiziqishi bo‘yicha baholash.
+   5 tip pedagogik kasb tasnifidagi mehnat predmeti asosida:
+   odam-odam, odam-tabiat, odam-texnika, odam-belgilar tizimi,
+   odam-badiiy obraz.
+   ========================================================= */
+const CAREER_CLASSIFICATION={
+  personTypes:{
+    people:{name:"Odam–odam",desc:"asosiy mehnat predmeti — odamlar va ular bilan o‘zaro faoliyat"},
+    nature:{name:"Odam–tabiat",desc:"asosiy mehnat predmeti — jonli tabiat, o‘simlik, hayvonot va tabiiy jarayonlar"},
+    technology:{name:"Odam–texnika",desc:"asosiy mehnat predmeti — mashina, mexanizm, qurilma, texnik tizim"},
+    signs:{name:"Odam–belgilar tizimi",desc:"asosiy mehnat predmeti — raqam, matn, kod, jadval, formula va axborot"},
+    artistic:{name:"Odam–badiiy obraz",desc:"asosiy mehnat predmeti — badiiy obraz, shakl, rang, ijodiy ifoda"}
+  },
+  workTypes:{
+    practical:{name:"Amaliy",desc:"qo‘l bilan bajarish, yasash, tuzatish, sozlash va natijani amalda ko‘rish"},
+    mental:{name:"Aqliy-tahliliy",desc:"tahlil, hisoblash, rejalash, muammo va ma’lumotlar bilan ishlash"},
+    creative:{name:"Ijodiy",desc:"yangi g‘oya, obraz, dizayn yoki yangi usul yaratish"},
+    social:{name:"Ijtimoiy-kommunikativ",desc:"odamlar bilan muloqot, yordam, tushuntirish va hamkorlik"},
+    organizational:{name:"Tashkilotchilik",desc:"rejalash, boshqarish, muvofiqlashtirish va qaror qabul qilish"}
+  },
+  domains:{
+    education:"Ta’lim va tarbiya",
+    health:"Tibbiyot va sog‘liqni saqlash",
+    it:"Axborot texnologiyalari",
+    engineering:"Muhandislik va texnika",
+    transport:"Transport",
+    agriculture:"Qishloq xo‘jaligi va tabiat",
+    law:"Huquq va davlat xizmati",
+    business:"Biznes, savdo va boshqaruv",
+    finance:"Moliya va hisob-kitob",
+    construction:"Qurilish va arxitektura",
+    media:"Media, san’at va dizayn",
+    language:"Til, matn va axborot",
+    service:"Xizmat ko‘rsatish va turizm"
+  },
+  subjects:{
+    math:"Matematika",
+    informatics:"Informatika",
+    physics:"Fizika",
+    chemistry:"Kimyo",
+    biology:"Biologiya",
+    language:"Til va adabiyot",
+    history:"Tarix va jamiyat",
+    art:"San’at va dizayn"
+  }
+};
+
+/* Yakuniy kartalar: bitta kasb emas, o‘zaro aloqador kasblar oilasi. */
+const CAREER_GROUPS=[
+  {id:"social",title:"Ijtimoiy kasblar",icon:"👥",desc:"Odamlar bilan ishlash, o‘qitish, yordam berish va muloqotga tayangan yo‘nalishlar.",
+    personTypes:["people"],workTypes:["social","organizational"],domains:["education","health","service","law"],
+    professions:["O‘qituvchi","Psixolog","Shifokor","Menejer","HR mutaxassisi","Ijtimoiy ish xodimi"]},
+  {id:"technical",title:"Texnik-amaliy kasblar",icon:"⚙️",desc:"Texnika, qurilma, mexanizm va amaliy natija bilan ishlashga yaqin yo‘nalishlar.",
+    personTypes:["technology"],workTypes:["practical","mental"],domains:["engineering","transport","construction","it"],
+    professions:["Muhandis","Mexanik","Texnolog","Avtomobil diagnostikasi mutaxassisi","Elektrik","Transport mutaxassisi"]},
+  {id:"analytical",title:"Aqliy-tahliliy kasblar",icon:"🧠",desc:"Raqam, ma’lumot, mantiq, tahlil va tizimli fikrlashga tayangan yo‘nalishlar.",
+    personTypes:["signs"],workTypes:["mental","organizational"],domains:["it","finance","business","law"],
+    professions:["Dasturchi","Analitik","Iqtisodchi","Hisobchi","Data-analitik","Moliyaviy mutaxassis"]},
+  {id:"nature",title:"Tabiat va biologiya kasblari",icon:"🌿",desc:"Tirik tabiat, biologik jarayonlar va tabiiy resurslar bilan ishlashga yaqin yo‘nalishlar.",
+    personTypes:["nature"],workTypes:["practical","mental"],domains:["agriculture","health"],
+    professions:["Agronom","Veterinar","Biolog","Zootexnik","Ekolog","Laboratoriya mutaxassisi"]},
+  {id:"creative",title:"Ijodiy-badiiy kasblar",icon:"🎨",desc:"Obraz, rang, shakl, dizayn, ijod va yangi g‘oya yaratishga tayangan yo‘nalishlar.",
+    personTypes:["artistic"],workTypes:["creative","practical"],domains:["media","construction","education"],
+    professions:["Dizayner","Arxitektor","Grafik dizayner","Illyustrator","Media mutaxassisi","Dekorator"]},
+  {id:"management",title:"Tashkilotchilik va boshqaruv",icon:"📊",desc:"Odamlar, jarayonlar va resurslarni rejalash, boshqarish va muvofiqlashtirishga yaqin kasblar.",
+    personTypes:["people","signs"],workTypes:["organizational","mental","social"],domains:["business","education","law","finance"],
+    professions:["Menejer","Loyiha koordinatori","HR mutaxassisi","Biznes administrator","Savdo menejeri","Tashkilotchi"]},
+  {id:"language",title:"Til va axborot bilan ishlash",icon:"📚",desc:"Matn, til, hujjat, axborot va tushuntirish bilan ishlashga yo‘naltirilgan kasblar.",
+    personTypes:["signs","people"],workTypes:["mental","social","creative"],domains:["language","education","law","media"],
+    professions:["Tarjimon","Muharrir","O‘qituvchi","Kotib-referent","Jurnalist","Kontent mutaxassisi"]},
+  {id:"service",title:"Xizmat va mijozlar bilan ishlash",icon:"🤝",desc:"Mijoz ehtiyojini tushunish, xizmat ko‘rsatish, maslahat va amaliy muloqotga tayangan kasblar.",
+    personTypes:["people"],workTypes:["social","practical","organizational"],domains:["service","business","transport"],
+    professions:["Administrator","Turizm mutaxassisi","Sotuv menejeri","Resepshen xodimi","Sartarosh","Xizmat ko‘rsatish mutaxassisi"]}
+];
+
+const PROFESSION_CLASSIFICATION={
+  programmer:{personTypes:["signs"],workTypes:["mental"],domains:["it"],subjects:["informatics","math"]},
+  engineer:{personTypes:["technology"],workTypes:["mental","practical"],domains:["engineering"],subjects:["physics","math"]},
+  designer:{personTypes:["artistic"],workTypes:["creative"],domains:["media","construction"],subjects:["art","informatics"]},
+  teacher:{personTypes:["people"],workTypes:["social","mental"],domains:["education"],subjects:["language","math","informatics","biology"]},
+  doctor:{personTypes:["people"],workTypes:["mental","social"],domains:["health"],subjects:["biology","chemistry"]},
+  lawyer:{personTypes:["people","signs"],workTypes:["mental","social","organizational"],domains:["law"],subjects:["language","history"]},
+  economist:{personTypes:["signs"],workTypes:["mental","organizational"],domains:["finance","business"],subjects:["math"]},
+  psychologist:{personTypes:["people"],workTypes:["social","mental"],domains:["health","education"],subjects:["language","biology"]},
+  architect:{personTypes:["artistic","technology"],workTypes:["creative","mental"],domains:["construction"],subjects:["art","math","physics"]},
+  technologist:{personTypes:["technology"],workTypes:["practical","mental"],domains:["engineering"],subjects:["physics","chemistry","math"]}
+};
