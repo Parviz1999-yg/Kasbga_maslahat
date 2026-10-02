@@ -174,7 +174,9 @@ function renderStudents(){
     const avatar=document.createElement("div");
     avatar.className="avatar student-avatar css-person person-"+student.id;
     avatar.setAttribute("aria-hidden","true");
-    avatar.appendChild(document.createElement("i"));
+    avatar.append(document.createElement("i"),Object.assign(document.createElement("span"),{className:"eye left"}),Object.assign(document.createElement("span"),{className:"eye right"}));
+    avatar.querySelector(".left").appendChild(Object.assign(document.createElement("b"),{className:"pupil"}));
+    avatar.querySelector(".right").appendChild(Object.assign(document.createElement("b"),{className:"pupil"}));
 
     const info=document.createElement("div");
     info.className="student-info";
