@@ -261,8 +261,10 @@ function candidateScore(q){
   let score=q.weight||5;
   const evidence=questionEvidence(q);
 
-  // Yangi dalil beradigan savol doim ustun.
-  score += evidence.some(e=>!state.evidence.has(e)) ? 35 : 0;
+  // Bir savol bir nechta yangi dalil bersa, uning diagnostik qiymati yuqori.
+  const newEvidenceCount=evidence.filter(e=>!state.evidence.has(e)).length;
+  score += newEvidenceCount*12;
+  score += evidence.length>=4 ? 8 : 0;
 
   // Hali so‘ralmagan xatolik/self-knowledge savollari metodik maqsad uchun muhim.
   if(["error_salary","error_peer","error_parent","selfknowledge","information"].includes(q.category)
