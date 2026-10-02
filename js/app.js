@@ -323,10 +323,10 @@ function evaluate(profession){
 
   if(evidenceCoverage>=70 && professionFit>=75 && supported>=75){
     reaction="🎉";
-    mood="Azizbek tavsiyadan mamnun";
+    mood=state.currentStudent.name+" tavsiyadan mamnun";
   }else if(evidenceCoverage>=40 && professionFit>=60){
     reaction="😮‍💨";
-    mood="Azizbek hali ikkilanmoqda";
+    mood=state.currentStudent.name+" hali ikkilanmoqda";
   }
 
   renderResult({
