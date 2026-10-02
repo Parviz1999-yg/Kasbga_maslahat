@@ -1,4 +1,5 @@
-const TEEN={id:"azizbek",name:"Azizbek",age:15,grade:"9-sinf",profile:{logic:85,problem:88,technology:90,practical:75,creativity:65,communication:55,teamwork:60,medicine:30,organization:70,independence:80,design:70},answers:{q1:"Texnika va kompyuterlar",q2:"Matematika",q3:"Muammoni bosqichma-bosqich tahlil qilaman",q4:"Yangi texnologiyalarni sinab ko‘rish",q5:"Kompyuterda dastur yoki loyiha yaratish",q6:"Amaliy ishni ham yoqtiraman",q7:"Mustaqil ishlash qulayroq",q8:"Qiyin bo‘lsa ham qiziq bo‘lsa davom etaman",q9:"Qurilma qanday ishlashini bilishga qiziqaman",q10:"Biror narsani tuzatib ko‘raman",q11:"Matematika va informatika",q12:"Texnik masalalarni yechish",q13:"Yangi narsani o‘rganish",q14:"Ba’zan o‘zim, ba’zan jamoa bilan",q15:"Reja tuzib ishlayman",q16:"Chizma va texnik loyihalarga qiziqaman",q17:"Mexanizm va qurilmalar qiziq",q18:"Hayvonlar va tabiatga qiziqishim o‘rtacha",q19:"Odamlar bilan ko‘p gaplashish talab qilinmaydigan ish",q20:"Kompyuter yoki laboratoriya kabi muhit",q21:"Bir xil ish tez zeriktiradi",q22:"Mashaqqatli vazifani tugatishga harakat qilaman",q23:"Yangi g‘oya o‘ylab topishni yoqtiraman",q24:"Faqat yuqori maoshga qarab tanlamayman",q25:"Do‘stlarimning fikri qarorimni to‘liq belgilamaydi",q26:"Ota-onamning fikrini eshitaman, lekin o‘zim ham tahlil qilaman",q27:"O‘zimning kuchli tomonlarimni aniqlashga harakat qilaman",q28:"Kasb haqida ma’lumot va talablarni tekshiraman",q29:"Texnologiya bilan ishlash",q30:"Qiziqishim va qobiliyatimga mos kasb"}};
+const TEEN={id:"azizbek",name:"Azizbek",age:15,grade:"9-sinf",profile:{logic:85,problem:88,technology:90,practical:75,creativity:65,communication:55,teamwork:60,medicine:30,organization:70,independence:80,design:70},
+  careerTypes:{realistic:70,investigative:82,artistic:55,social:48,enterprising:52,conventional:65},answers:{q1:"Texnika va kompyuterlar",q2:"Matematika",q3:"Muammoni bosqichma-bosqich tahlil qilaman",q4:"Yangi texnologiyalarni sinab ko‘rish",q5:"Kompyuterda dastur yoki loyiha yaratish",q6:"Amaliy ishni ham yoqtiraman",q7:"Mustaqil ishlash qulayroq",q8:"Qiyin bo‘lsa ham qiziq bo‘lsa davom etaman",q9:"Qurilma qanday ishlashini bilishga qiziqaman",q10:"Biror narsani tuzatib ko‘raman",q11:"Matematika va informatika",q12:"Texnik masalalarni yechish",q13:"Yangi narsani o‘rganish",q14:"Ba’zan o‘zim, ba’zan jamoa bilan",q15:"Reja tuzib ishlayman",q16:"Chizma va texnik loyihalarga qiziqaman",q17:"Mexanizm va qurilmalar qiziq",q18:"Hayvonlar va tabiatga qiziqishim o‘rtacha",q19:"Odamlar bilan ko‘p gaplashish talab qilinmaydigan ish",q20:"Kompyuter yoki laboratoriya kabi muhit",q21:"Bir xil ish tez zeriktiradi",q22:"Mashaqqatli vazifani tugatishga harakat qilaman",q23:"Yangi g‘oya o‘ylab topishni yoqtiraman",q24:"Faqat yuqori maoshga qarab tanlamayman",q25:"Do‘stlarimning fikri qarorimni to‘liq belgilamaydi",q26:"Ota-onamning fikrini eshitaman, lekin o‘zim ham tahlil qilaman",q27:"O‘zimning kuchli tomonlarimni aniqlashga harakat qilaman",q28:"Kasb haqida ma’lumot va talablarni tekshiraman",q29:"Texnologiya bilan ishlash",q30:"Qiziqishim va qobiliyatimga mos kasb"}};
 
 
 /* Virtual students: each has a different hidden profile and decision context. */
@@ -7,7 +8,7 @@ const STUDENTS=[
   {
     id:"madina",name:"Madina",age:15,grade:"9-sinf",
     style:"Ijodkor, dizayn va muloqotga qiziqadi.",
-    profile:{logic:65,problem:60,technology:70,practical:55,creativity:94,communication:86,teamwork:82,medicine:35,organization:72,independence:68,design:92},
+    profile:{logic:65,problem:60,technology:70,practical:55,creativity:94,communication:86,teamwork:82,medicine:35,organization:72,independence:68,design:92},careerTypes:{realistic:55,investigative:60,artistic:96,social:82,enterprising:58,conventional:52},
     answerByCategory:{
       interest:"Rasm chizish, dizayn va yangi g‘oyalar bilan ishlashni yoqtiraman.",
       subject:"Adabiyot va san’atga oid fanlar ko‘proq qiziq.",
@@ -37,7 +38,7 @@ const STUDENTS=[
   {
     id:"javohir",name:"Javohir",age:16,grade:"10-sinf",
     style:"Matematika, tahlil va biznes jarayonlariga qiziqadi.",
-    profile:{logic:94,problem:88,technology:72,practical:48,creativity:68,communication:70,teamwork:66,medicine:25,organization:92,independence:78,design:50},
+    profile:{logic:94,problem:88,technology:72,practical:48,creativity:68,communication:70,teamwork:66,medicine:25,organization:92,independence:78,design:50},careerTypes:{realistic:42,investigative:92,artistic:50,social:55,enterprising:72,conventional:94},
     answerByCategory:{
       interest:"Hisob-kitob, tahlil va murakkab masalalarni yechishni yoqtiraman.",
       subject:"Matematika va iqtisodga yaqin mavzular menga qiziq.",
@@ -67,7 +68,7 @@ const STUDENTS=[
   {
     id:"sevinch",name:"Sevinch",age:16,grade:"10-sinf",
     style:"Biologiya, tibbiyot va odamlarga yordam berishga qiziqadi.",
-    profile:{logic:74,problem:78,technology:50,practical:70,creativity:62,communication:88,teamwork:90,medicine:95,organization:84,independence:55,design:40},
+    profile:{logic:74,problem:78,technology:50,practical:70,creativity:62,communication:88,teamwork:90,medicine:95,organization:84,independence:55,design:40},careerTypes:{realistic:58,investigative:62,artistic:45,social:96,enterprising:55,conventional:70},
     answerByCategory:{
       interest:"Biologiya va odamlarga yordam berish bilan bog‘liq ishlar yoqadi.",
       subject:"Biologiya va kimyo fanlariga qiziqaman.",
@@ -97,7 +98,7 @@ const STUDENTS=[
   {
     id:"diyor",name:"Diyor",age:15,grade:"9-sinf",
     style:"Mexanika, amaliy ish va texnikaga qiziqadi.",
-    profile:{logic:82,problem:84,technology:86,practical:94,creativity:70,communication:52,teamwork:62,medicine:20,organization:74,independence:76,design:72},
+    profile:{logic:82,problem:84,technology:86,practical:94,creativity:70,communication:52,teamwork:62,medicine:20,organization:74,independence:76,design:72},careerTypes:{realistic:96,investigative:76,artistic:55,social:42,enterprising:50,conventional:68},
     answerByCategory:{
       interest:"Mashina, mexanizm va amaliy ishlar bilan shug‘ullanish yoqadi.",
       subject:"Fizika va matematika menga qiziq.",
@@ -127,7 +128,7 @@ const STUDENTS=[
   {
     id:"zuhra",name:"Zuhra",age:15,grade:"9-sinf",
     style:"Til, muloqot va tashkilotchilikka moyil.",
-    profile:{logic:72,problem:70,technology:55,practical:42,creativity:78,communication:96,teamwork:92,medicine:35,organization:94,independence:62,design:60},
+    profile:{logic:72,problem:70,technology:55,practical:42,creativity:78,communication:96,teamwork:92,medicine:35,organization:94,independence:62,design:60},careerTypes:{realistic:35,investigative:58,artistic:70,social:96,enterprising:78,conventional:88},
     answerByCategory:{
       interest:"O‘qish, suhbatlashish, tadbirlar va odamlar bilan ishlashni yoqtiraman.",
       subject:"Ona tili, adabiyot va tarix qiziq.",
@@ -157,6 +158,15 @@ const STUDENTS=[
 ];
 
 const STUDENT_QUESTION_POOLS={"azizbek":["q3","q4","q9","q10","q11","q12","q15","q17","q21","q22","q28","q31","q41","q42","q49","q51","q52","q61","q67","q92"],"madina":["q1","q4","q16","q23","q35","q43","q45","q46","q54","q55","q62","q63","q65","q72","q86","q89","q98","q100"],"javohir":["q2","q3","q11","q13","q15","q28","q32","q38","q39","q47","q57","q60","q66","q70","q78","q88","q94","q95","q97"],"sevinch":["q2","q12","q18","q36","q37","q45","q56","q64","q65","q71","q72","q81","q83","q90","q91","q95","q97","q100"],"diyor":["q6","q9","q10","q16","q17","q41","q42","q49","q51","q52","q61","q68","q69","q87","q92","q93","q94","q99"],"zuhra":["q12","q14","q19","q25","q26","q32","q36","q37","q44","q45","q58","q59","q65","q72","q75","q79","q84","q85","q97","q98"]};
+
+const CAREER_TYPES={
+  realistic:{name:"Amaliy-texnik",desc:"asbob, texnika, qurilma va amaliy faoliyat"},
+  investigative:{name:"Tadqiqot-tahlil",desc:"mantiq, tahlil, muammo va ma’lumot"},
+  artistic:{name:"Ijodiy-badiiy",desc:"ijod, dizayn, tasavvur va ifoda"},
+  social:{name:"Ijtimoiy",desc:"odamlar bilan ishlash, yordam va ta’lim"},
+  enterprising:{name:"Tashkilotchilik",desc:"tashabbus, boshqaruv, ishontirish va qaror"},
+  conventional:{name:"Tartib-tashkil",desc:"reja, ma’lumot, aniqlik va tizim"}
+};
 
 const getStudentAnswer=(student,q)=>{
   return student.answers?.[q.id] || student.answerByCategory?.[q.category] || "Bu haqda hali aniq o‘ylab ko‘rmaganman.";
@@ -267,14 +277,14 @@ const QUESTIONS=[
 ];
 
 const PROFESSIONS=[
-{id:"programmer",name:"Dasturchi",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50},evidence:["interest","logic","problem","technology","independence","motivation"]},
-{id:"engineer",name:"Muhandis",requirements:{logic:85,problem:90,technology:95,practical:90,creativity:65,communication:55},evidence:["interest","problem","technology","practical","technical","design"]},
-{id:"designer",name:"Dizayner",requirements:{creativity:90,technology:65,practical:50,communication:60},evidence:["interest","creativity","technology","design","practical"]},
-{id:"teacher",name:"O‘qituvchi",requirements:{communication:90,teamwork:85,organization:80,logic:65,creativity:70},evidence:["communication","teamwork","organization","creativity","logic"]},
-{id:"doctor",name:"Shifokor",requirements:{medicine:90,communication:80,problem:80,organization:75},evidence:["medicine","communication","problem","organization","interest"]},
-{id:"lawyer",name:"Huquqshunos",requirements:{logic:80,communication:85,organization:80,problem:80},evidence:["problem","communication","organization","logic","motivation"]},
-{id:"economist",name:"Iqtisodchi",requirements:{logic:85,organization:85,problem:75,communication:65},evidence:["logic","problem","organization","motivation","communication"]},
-{id:"psychologist",name:"Psixolog",requirements:{communication:95,teamwork:80,creativity:65,problem:75},evidence:["communication","teamwork","problem","creativity","interest"]},
-{id:"architect",name:"Arxitektor",requirements:{creativity:85,logic:80,design:90,practical:65},evidence:["design","creativity","technical","practical","interest"]},
-{id:"technologist",name:"Texnolog",requirements:{technology:85,practical:85,logic:80,organization:75},evidence:["technology","practical","technical","problem","organization"]}
+{id:"programmer",name:"Dasturchi",type:"investigative",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50},evidence:["interest","logic","problem","technology","independence","motivation"]},
+{id:"engineer",name:"Muhandis",type:"realistic",requirements:{logic:85,problem:90,technology:95,practical:90,creativity:65,communication:55},evidence:["interest","problem","technology","practical","technical","design"]},
+{id:"designer",name:"Dizayner",type:"artistic",requirements:{creativity:90,technology:65,practical:50,communication:60},evidence:["interest","creativity","technology","design","practical"]},
+{id:"teacher",name:"O‘qituvchi",type:"social",requirements:{communication:90,teamwork:85,organization:80,logic:65,creativity:70},evidence:["communication","teamwork","organization","creativity","logic"]},
+{id:"doctor",name:"Shifokor",type:"social",requirements:{medicine:90,communication:80,problem:80,organization:75},evidence:["medicine","communication","problem","organization","interest"]},
+{id:"lawyer",name:"Huquqshunos",type:"enterprising",requirements:{logic:80,communication:85,organization:80,problem:80},evidence:["problem","communication","organization","logic","motivation"]},
+{id:"economist",name:"Iqtisodchi",type:"conventional",requirements:{logic:85,organization:85,problem:75,communication:65},evidence:["logic","problem","organization","motivation","communication"]},
+{id:"psychologist",name:"Psixolog",type:"social",requirements:{communication:95,teamwork:80,creativity:65,problem:75},evidence:["communication","teamwork","problem","creativity","interest"]},
+{id:"architect",name:"Arxitektor",type:"artistic",requirements:{creativity:85,logic:80,design:90,practical:65},evidence:["design","creativity","technical","practical","interest"]},
+{id:"technologist",name:"Texnolog",type:"realistic",requirements:{technology:85,practical:85,logic:80,organization:75},evidence:["technology","practical","technical","problem","organization"]}
 ];
