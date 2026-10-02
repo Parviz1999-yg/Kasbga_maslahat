@@ -360,3 +360,23 @@ body:before{
 /* Eski pseudo-ko'z modeli o'chiriladi. */
 .css-person i:before{content:none!important;display:none!important}
 .css-person i:after{z-index:5}
+
+
+/* Obsidian uslubidagi savol-javob-dalil grafigi */
+.dialogue-graph{margin:22px 0;border:1px solid rgba(99,216,232,.14);border-radius:20px;background:rgba(4,12,25,.72);overflow:hidden}
+.graph-head{display:flex;justify-content:space-between;gap:15px;padding:16px 18px;border-bottom:1px solid rgba(99,216,232,.1);color:#dff7fb}
+.graph-head span{color:#7899a2;font-size:12px}
+.dialogue-graph-scroll{overflow:auto;padding:10px}
+.dialogue-graph svg{display:block;width:920px;min-width:920px}
+.graph-line{stroke:rgba(105,199,255,.35);stroke-width:2}
+.graph-line.evidence{stroke:rgba(95,224,160,.35);stroke-dasharray:5 4}
+.graph-line.missed{stroke:rgba(255,143,143,.35);stroke-dasharray:5 4}
+.graph-node rect{fill:rgba(10,27,48,.96);stroke:rgba(105,199,255,.3);stroke-width:1.2}
+.question-node rect{fill:rgba(18,42,70,.96);stroke:rgba(105,199,255,.5)}
+.answer-node rect{fill:rgba(20,39,55,.96);stroke:rgba(105,199,255,.28)}
+.evidence-node rect{fill:rgba(12,47,39,.94);stroke:rgba(95,224,160,.38)}
+.graph-node text{fill:#dff7fb;font:600 12px Arial,sans-serif}
+.graph-node .graph-sub{fill:#6e9aa4;font-size:10px}
+.graph-node .graph-answer{fill:#aac6cd;font-size:11px;font-weight:400}
+.graph-empty{padding:20px;color:#829da6}
+@media(max-width:700px){.graph-head{align-items:flex-start;flex-direction:column}}
