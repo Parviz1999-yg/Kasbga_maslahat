@@ -580,7 +580,7 @@ function calculateSystemRecommendation(){
       supportScore*0.10-
       contradictionPenalty
     ));
-    return {profession:p,score,matched,missing,supportingRecords,contradictory,type};
+    return {profession:p,score,matched,missing,supportingRecords,contradictory,type,evidenceScore,requirementScore};
   }).sort((a,b)=>b.score-a.score);
   return candidates[0]||null;
 }
@@ -651,13 +651,15 @@ function renderResult(r){
   const sr=r.systemRecommendation;
   const srEl=$("system-recommendation");
   if(srEl && sr){
+    const reliable=sr.score>=65 && sr.matched.length>=2 && sr.supportingRecords.length>=2;
+    const recName=reliable ? sr.profession.name : "Hozircha aniq kasb tavsiya qilishga dalil yetarli emas";
     const supportQuestions=sr.supportingRecords.slice(0,3).map(rec=>"“"+rec.q.text+"”").join("<br>")||"Aniq asoslovchi javob yetarli emas";
     const matchedText=sr.matched.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"hali yetarli dalil yo‘q";
     const missingText=sr.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"asosiy dalillar qamrab olingan";
     const contradictionText=sr.contradictory.map(x=>CATEGORY_LABEL[x]||x.replace(/^low_/,'')).join(", ");
     srEl.innerHTML=
-      "<div class='system-rec-head'><span>🤖</span><div><b>Saytning mustaqil tavsiyasi</b><strong>"+sr.profession.name+"</strong></div><em>"+sr.score+"/100 dalil mosligi</em></div>"+
-      "<p class='system-rec-type'>Kasb tipi: <b>"+(CAREER_TYPES[sr.profession.type]?.name||sr.profession.type)+"</b></p>"+
+      "<div class='system-rec-head'><span>🤖</span><div><b>Saytning mustaqil tavsiyasi</b><strong>"+recName+"</strong></div><em>"+sr.score+"/100 dalil mosligi</em></div>"+
+      "<p class='system-rec-type'>"+(reliable ? "Aniqlangan yo‘nalish: <b>"+(CAREER_TYPES[sr.profession.type]?.name||sr.profession.type)+"</b>" : "Tizim xulosasi: qo‘shimcha suhbat kerak")+"</p>"+
       "<div class='system-rec-grid'>"+
         "<div><b>Asosiy dalillar</b><span>"+matchedText+"</span></div>"+
         "<div><b>Tavsiyaga asos bo‘lgan javoblar</b><span>"+supportQuestions+"</span></div>"+
