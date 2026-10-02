@@ -4,6 +4,7 @@ const state={
   history:[],
   available:[],
   selectedProfession:null,
+  currentStudent:null,
   evidence:new Set(),
   errors:new Set()
 };
@@ -85,10 +86,41 @@ function resetState(){
   state.errors=new Set();
 }
 
+function renderStudents(){
+  const list=$("student-list");
+  if(!list) return;
+  list.innerHTML="";
+  STUDENTS.forEach(student=>{
+    const card=document.createElement("button");
+    card.className="student-card";
+    card.innerHTML=
+      '<div class="avatar student-avatar css-person person-'+student.id+'"><i></i></div>'+
+      '<div class="student-info"><strong>'+student.name+'</strong><span>'+student.age+' yosh · '+student.grade+'</span><small>'+student.style+'</small></div>'+
+      '<span class="student-check">✓</span>';
+    card.onclick=()=>{
+      document.querySelectorAll(".student-card").forEach(x=>x.classList.remove("selected"));
+      card.classList.add("selected");
+      state.currentStudent=student;
+      $("start-btn").disabled=false;
+      $("start-btn").textContent=student.name+" bilan maslahatni boshlash →";
+      $("start-btn").classList.add("ready");
+    };
+    list.appendChild(card);
+  });
+}
+
+function setTeenMood(text){
+  $("mood").textContent=text;
+  const avatar=$("teen-avatar");
+  avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id;
+}
+
 function startGame(){
+  if(!state.currentStudent) return;
   resetState();
-  $("mood").textContent="Suhbatga tayyor";
-  $("teen-avatar").textContent="👨‍🎓";
+  $("teen-name").textContent=state.currentStudent.name;
+  $("teen-meta").textContent=state.currentStudent.age+" yosh · "+state.currentStudent.grade;
+  setTeenMood("Suhbatga tayyor");
   showScreen("screen-game");
   renderQuestionChoices();
 }
@@ -185,7 +217,7 @@ function renderQuestionChoices(){
   const label=document.querySelector(".question-label");
   if(label) label.textContent="SAVOL TANLANG";
 
-  $("question-text").textContent="Azizbekka qaysi savolni berasiz?";
+  $("question-text").textContent=state.currentStudent.name+"ga qaysi savolni berasiz?";
   $("answers").innerHTML="";
 
   state.available.forEach((q,i)=>{
@@ -211,14 +243,14 @@ function askQuestion(q){
 
   $("answers").innerHTML="";
   $("question-text").textContent=q.text;
-  $("mood").textContent="Azizbek javob bermoqda…";
+  $("mood").textContent=state.currentStudent.name+" javob bermoqda…";
 
   setTimeout(()=>{
-    $("teen-avatar").textContent="🗣️";
+    setTeenMood("Javob berildi");
 
     const response=document.createElement("div");
     response.className="teen-response";
-    response.innerHTML="<span>Azizbek:</span><p>“"+(TEEN.answers[q.id]||"Bu haqda hali aniq o‘ylab ko‘rmaganman.")+"”</p>";
+    response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+getStudentAnswer(state.currentStudent,q)+"”</p>";
     $("answers").appendChild(response);
 
     const clue=document.createElement("div");
@@ -236,7 +268,7 @@ function askQuestion(q){
       else renderQuestionChoices();
     };
     $("answers").appendChild(next);
-    $("mood").textContent="Dalil olindi";
+    setTeenMood("Dalil olindi");
   },300);
 }
 
@@ -254,7 +286,7 @@ function showProfessionChoice(){
 }
 
 function calculateProfessionFit(profession){
-  const profile=TEEN.profile;
+  const profile=state.currentStudent.profile;
   let fit=0,total=0;
   Object.entries(profession.requirements).forEach(([key,need])=>{
     const actual=profile[key] ?? 50;
@@ -302,7 +334,7 @@ function evaluate(profession){
     matched,missing,errorCheck
   });
 
-  $("teen-avatar").textContent=reaction;
+  $("result-avatar").textContent=reaction;
   $("mood").textContent=mood;
 }
 
@@ -321,7 +353,7 @@ function renderResult(r){
 
   $("result-summary").textContent=
     "Siz "+state.selectedProfession.name+
-    " kasbini tavsiya qildingiz. Natija faqat kasb mosligiga emas, balki 5 ta savolda qanday dalil yig‘ilganiga ham bog‘liq.";
+    " kasbini "+state.currentStudent.name+"ga tavsiya qildingiz. Natija faqat kasb mosligiga emas, balki 5 ta savolda qanday dalil yig‘ilganiga ham bog‘liq.";
 
   $("score-grid").innerHTML=[
     ["Kasb mosligi",r.professionFit+"%"],
@@ -356,4 +388,8 @@ function renderResult(r){
 }
 
 $("start-btn").addEventListener("click",startGame);
-$("restart-btn").addEventListener("click",()=>showScreen("screen-start"));
+$("restart-btn").addEventListener("click",()=>{
+  showScreen("screen-start");
+  renderStudents();
+});
+renderStudents();
