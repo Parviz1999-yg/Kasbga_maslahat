@@ -118,7 +118,14 @@ function renderStudents(){
   });
 }
 
-function setGaze(x=0,y=0){\n  document.querySelectorAll(".css-person").forEach(el=>{\n    el.style.setProperty("--gaze-x",Math.max(-2,Math.min(2,x))+"px");\n    el.style.setProperty("--gaze-y",Math.max(-1.5,Math.min(1.5,y))+"px");\n  });\n}\n\nfunction setTeenMood(text){
+function setGaze(x=0,y=0){
+  document.querySelectorAll(".css-person").forEach(el=>{
+    el.style.setProperty("--gaze-x",Math.max(-2,Math.min(2,x))+"px");
+    el.style.setProperty("--gaze-y",Math.max(-1.5,Math.min(1.5,y))+"px");
+  });
+}
+
+function setTeenMood(text){
   $("mood").textContent=text;
   const avatar=$("teen-avatar");
   avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id;
@@ -399,6 +406,18 @@ function renderResult(r){
 $("start-btn").addEventListener("click",startGame);
 $("restart-btn").addEventListener("click",()=>{
   showScreen("screen-start");
-  renderStudents();\n\ndocument.addEventListener("pointermove",e=>{\n  const x=(e.clientX/window.innerWidth-.5)*4;\n  const y=(e.clientY/window.innerHeight-.5)*3;\n  setGaze(x,y);\n});\ndocument.addEventListener("pointerdown",e=>{\n  const x=(e.clientX/window.innerWidth-.5)*5;\n  const y=(e.clientY/window.innerHeight-.5)*4;\n  setGaze(x,y);\n  setTimeout(()=>setGaze(0,0),900);\n});
+  renderStudents();
+
+document.addEventListener("pointermove",e=>{
+  const x=(e.clientX/window.innerWidth-.5)*4;
+  const y=(e.clientY/window.innerHeight-.5)*3;
+  setGaze(x,y);
+});
+document.addEventListener("pointerdown",e=>{
+  const x=(e.clientX/window.innerWidth-.5)*5;
+  const y=(e.clientY/window.innerHeight-.5)*4;
+  setGaze(x,y);
+  setTimeout(()=>setGaze(0,0),900);
+});
 });
 renderStudents();
