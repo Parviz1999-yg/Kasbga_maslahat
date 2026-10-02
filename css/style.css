@@ -380,3 +380,30 @@ body:before{
 .graph-node .graph-answer{fill:#aac6cd;font-size:11px;font-weight:400}
 .graph-empty{padding:20px;color:#829da6}
 @media(max-width:700px){.graph-head{align-items:flex-start;flex-direction:column}}
+
+
+/* Independent evidence-based site recommendation */
+.system-recommendation{
+  margin:22px 0;
+  padding:20px;
+  border:1px solid rgba(70,220,220,.28);
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(20,42,52,.92),rgba(12,27,35,.96));
+  box-shadow:0 12px 35px rgba(0,0,0,.18);
+}
+.system-rec-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.system-rec-head>span{font-size:30px}
+.system-rec-head div{display:flex;flex-direction:column;gap:3px;flex:1;min-width:190px}
+.system-rec-head b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.72}
+.system-rec-head strong{font-size:24px}
+.system-rec-head em{font-style:normal;font-weight:800;padding:8px 12px;border-radius:999px;background:rgba(70,220,220,.12)}
+.system-rec-type{margin:12px 0 16px;opacity:.9}
+.system-rec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.system-rec-grid>div{padding:13px;border-radius:13px;background:rgba(255,255,255,.035)}
+.system-rec-grid b{display:block;font-size:12px;opacity:.65;margin-bottom:5px}
+.system-rec-grid span{display:block;line-height:1.45}
+.system-rec-note{margin:15px 0 0;font-size:13px;line-height:1.55;opacity:.72}
+@media(max-width:700px){
+  .system-rec-grid{grid-template-columns:1fr}
+  .system-rec-head strong{font-size:20px}
+}
