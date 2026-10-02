@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasbga maslahat — Kasb tanlash simulyatori</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="screen-start" class="screen active">
+      <div class="hero-card">
+        <div class="badge">KASB-HUNARGA O‘QITISH METODIKASI</div>
+        <h1>Kasbga maslahat</h1>
+        <p class="subtitle">Kasb tanlashda yo‘l qo‘yiladigan tipik xatoliklarni aniqlash bo‘yicha pedagogik simulyator.</p>
+        <div class="case-card">
+          <div class="avatar avatar-start">👨‍🎓</div>
+          <div>
+            <h2>Azizbek, 15 yosh</h2>
+            <p>9-sinf o‘quvchisi. Siz esa uning kasb tanlashiga maslahat beruvchi mutaxassissiz.</p>
+          </div>
+        </div>
+        <div class="rules">
+          <div><b>5 ta savol</b><span>berishingiz mumkin</span></div>
+          <div><b>Yashirin profil</b><span>javoblar ortida mavjud</span></div>
+          <div><b>Yakuniy tavsiya</b><span>dalillar bilan asoslanadi</span></div>
+        </div>
+        <button id="start-btn" class="primary-btn">Maslahatni boshlash →</button>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen">
+      <header class="game-header">
+        <div>
+          <span class="eyebrow">KASBIY MASLAHAT</span>
+          <h1>Azizbek bilan suhbat</h1>
+        </div>
+        <div class="progress-wrap">
+          <span id="question-counter">1 / 5</span>
+          <div class="progress"><div id="progress-bar"></div></div>
+        </div>
+      </header>
+
+      <div class="game-layout">
+        <aside class="teen-panel">
+          <div id="teen-avatar" class="avatar teen-avatar">👨‍🎓</div>
+          <h2>Azizbek</h2>
+          <p>15 yosh · 9-sinf</p>
+          <div id="mood" class="mood">Suhbatga tayyor</div>
+        </aside>
+
+        <section class="conversation">
+          <div class="question-card">
+            <span class="question-label">SAVOL</span>
+            <h2 id="question-text">...</h2>
+            <div id="answers" class="answers"></div>
+          </div>
+          <div class="evidence-note">Savol tanlashda faqat javobni emas, uning <b>diagnostik qiymatini</b> ham hisobga oling.</div>
+        </section>
+      </div>
+    </section>
+
+    <section id="screen-profession" class="screen">
+      <div class="result-card">
+        <div class="avatar avatar-start">🧑‍💼</div>
+        <span class="eyebrow">5-SAVOLDAN SO‘NG</span>
+        <h1>Endi kasbni tavsiya qiling</h1>
+        <p>Yig‘ilgan dalillarga tayangan holda Azizbekka mos deb hisoblagan kasbni tanlang.</p>
+        <div id="profession-list" class="profession-list"></div>
+      </div>
+    </section>
+
+    <section id="screen-result" class="screen">
+      <div class="result-card">
+        <div id="result-avatar" class="result-avatar">🎉</div>
+        <span class="eyebrow">MASLAHAT NATIJASI</span>
+        <h1 id="result-title">Natija</h1>
+        <p id="result-summary"></p>
+        <div id="score-grid" class="score-grid"></div>
+        <div class="feedback-grid">
+          <div><h3>Foydali savollar</h3><ul id="useful-questions"></ul></div>
+          <div><h3>E’tibor talab qilgan jihatlar</h3><ul id="weak-points"></ul></div>
+        </div>
+        <div class="lesson">
+          <b>Metodik xulosa</b>
+          <p id="methodology"></p>
+        </div>
+        <button id="restart-btn" class="primary-btn">Qayta sinash ↻</button>
+      </div>
+    </section>
+  </main>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
