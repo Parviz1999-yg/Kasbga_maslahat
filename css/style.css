@@ -350,3 +350,13 @@ body:before{
   0%,43%,47%,100%{transform:scaleY(1)}
   44%,46%{transform:scaleY(.08)}
 }
+
+
+/* Alohida ko'z elementlari: yumaloq oq qism va markaziy qorachiq */
+.css-person .eye{position:absolute;z-index:4;width:24%;height:16%;top:34%;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(120,130,135,.25),0 1px 2px rgba(0,0,0,.25);overflow:hidden}
+.css-person .eye.left{left:23%}.css-person .eye.right{right:23%}
+.css-person .pupil{position:absolute;width:34%;height:62%;left:33%;top:19%;border-radius:50%;background:#11161a;box-shadow:inset 0 0 0 2px #39434a,0 0 0 1px rgba(0,0,0,.35);transform:translate(var(--gaze-x),var(--gaze-y));transition:transform .08s linear}
+.css-person .pupil:after{content:"";position:absolute;width:28%;height:28%;left:18%;top:14%;border-radius:50%;background:#fff;opacity:.75}
+/* Eski pseudo-ko'z modeli o'chiriladi. */
+.css-person i:before{content:none!important;display:none!important}
+.css-person i:after{z-index:5}
