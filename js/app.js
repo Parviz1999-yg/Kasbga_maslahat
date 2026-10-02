@@ -651,7 +651,7 @@ function renderResult(r){
   const sr=r.systemRecommendation;
   const srEl=$("system-recommendation");
   if(srEl && sr){
-    const supportQuestions=sr.supportingRecords.slice(0,3).map(rec=>rec.q.id.toUpperCase()).join(", ")||"aniq savol topilmadi";
+    const supportQuestions=sr.supportingRecords.slice(0,3).map(rec=>"“"+rec.q.text+"”").join("<br>")||"Aniq asoslovchi javob yetarli emas";
     const matchedText=sr.matched.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"hali yetarli dalil yo‘q";
     const missingText=sr.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")||"asosiy dalillar qamrab olingan";
     const contradictionText=sr.contradictory.map(x=>CATEGORY_LABEL[x]||x.replace(/^low_/,'')).join(", ");
@@ -660,8 +660,8 @@ function renderResult(r){
       "<p class='system-rec-type'>Kasb tipi: <b>"+(CAREER_TYPES[sr.profession.type]?.name||sr.profession.type)+"</b></p>"+
       "<div class='system-rec-grid'>"+
         "<div><b>Asosiy dalillar</b><span>"+matchedText+"</span></div>"+
-        "<div><b>Javob bergan savollar</b><span>"+supportQuestions+"</span></div>"+
-        "<div><b>Hali tekshirilmagan</b><span>"+missingText+"</span></div>"+
+        "<div><b>Tavsiyaga asos bo‘lgan javoblar</b><span>"+supportQuestions+"</span></div>"+
+        "<div><b>Hali tekshirilmagan jihatlar</b><span>"+missingText+"</span></div>"+
         (contradictionText?"<div><b>Qarama-qarshi signal</b><span>"+contradictionText+"</span></div>":"")+
       "</div>"+
       "<p class='system-rec-note'>Tavsiya yashirin profil yoki oldindan berilgan kasbga emas, shu suhbatda o‘quvchining javoblaridan yig‘ilgan dalillarga tayangan.</p>";
