@@ -1,0 +1,47 @@
+const TEEN={id:"azizbek",name:"Azizbek",age:15,grade:"9-sinf",profile:{logic:85,problem:88,technology:90,practical:75,creativity:65,communication:55,teamwork:60,medicine:30,organization:70},answers:{q1:"Texnika va kompyuterlar",q2:"Matematika",q3:"Muammoni bosqichma-bosqich tahlil qilaman",q4:"Yangi texnologiyalarni sinab ko‘rish",q5:"Kompyuterda dastur yoki loyiha yaratish",q6:"Amaliy ishni ham yoqtiraman",q7:"Mustaqil ishlash qulayroq",q8:"Qiyin bo‘lsa ham qiziq bo‘lsa davom etaman",q9:"Qurilma qanday ishlashini bilishga qiziqaman",q10:"Biror narsani tuzatib ko‘raman",q11:"Matematika va informatika",q12:"Texnik masalalarni yechish",q13:"Yangi narsani o‘rganish",q14:"Ba’zan o‘zim, ba’zan jamoa bilan",q15:"Reja tuzib ishlayman",q16:"Chizma va texnik loyihalarga qiziqaman",q17:"Mexanizm va qurilmalar qiziq",q18:"Hayvonlar va tabiatga qiziqishim o‘rtacha",q19:"Odamlar bilan ko‘p gaplashish talab qilinmaydigan ish",q20:"Kompyuter yoki laboratoriya kabi muhit",q21:"Bir xil ish tez zeriktiradi",q22:"Mashaqqatli vazifani tugatishga harakat qilaman",q23:"Yangi g‘oya o‘ylab topishni yoqtiraman",q24:"Faqat yuqori maoshga qarab tanlamayman",q25:"Do‘stlarimning fikri qarorimni to‘liq belgilamaydi",q26:"Ota-onamning fikrini eshitaman, lekin o‘zim ham tahlil qilaman",q27:"O‘zimning kuchli tomonlarimni aniqlashga harakat qilaman",q28:"Kasb haqida ma’lumot va talablarni tekshiraman",q29:"Texnologiya bilan ishlash",q30:"Qiziqishim va qobiliyatimga mos kasb"}};
+
+const QUESTIONS=[
+{id:"q1",text:"Bo‘sh vaqtingizda nimalar bilan shug‘ullanishni ko‘proq yoqtirasiz?",answers:["Sport va faol harakat","Texnika va kompyuterlar","Odamlar bilan suhbat","Rasm, musiqa yoki ijod"],category:"interest",weight:8},
+{id:"q2",text:"Maktabda qaysi fan sizga ko‘proq qiziq?",answers:["Matematika","Biologiya","Tarix","Adabiyot"],category:"subject",weight:8},
+{id:"q3",text:"Murakkab muammoga duch kelsangiz, odatda nima qilasiz?",answers:["Muammoni bosqichma-bosqich tahlil qilaman","Boshqalardan darhol yordam so‘rayman","Keyinga qoldiraman","Taxminan javob beraman"],category:"problem",weight:10},
+{id:"q4",text:"Yangi texnologiya paydo bo‘lsa, munosabatingiz qanday?",answers:["Qiziqib o‘rganaman","Faqat majbur bo‘lsam foydalanaman","Qiziqmayman","Boshqalardan foydalanishni o‘rganaman"],category:"technology",weight:9},
+{id:"q5",text:"Qaysi faoliyat sizga yaqinroq?",answers:["Kompyuterda dastur yoki loyiha yaratish","Odamlarni davolash","O‘quvchilarga dars berish","Huquqiy masalalarni hal qilish"],category:"career",weight:10},
+{id:"q6",text:"Amaliy, qo‘l bilan bajariladigan ishlar sizga qanday?",answers:["Amaliy ishni ham yoqtiraman","Umuman yoqtirmayman","Faqat majbur bo‘lsam","Faqat ijodiy ishni xohlayman"],category:"practical",weight:8},
+{id:"q7",text:"Ishlash uslubidan qaysi biri sizga qulay?",answers:["Mustaqil ishlash qulayroq","Faqat jamoada ishlash","Rahbar aytganini bajarish","Farqi yo‘q"],category:"independence",weight:7},
+{id:"q8",text:"Qiyin, lekin qiziqarli vazifa berilsa nima qilasiz?",answers:["Qiyin bo‘lsa ham qiziq bo‘lsa davom etaman","Tezda voz kechaman","Boshqa odamga topshiraman","Faqat oson bo‘lsa qilaman"],category:"persistence",weight:8},
+{id:"q9",text:"Qurilma yoki mexanizm ko‘rsangiz, sizda qanday qiziqish uyg‘onadi?",answers:["Qanday ishlashini bilishga qiziqaman","Faqat tashqi ko‘rinishiga qarayman","Umuman qiziqmayman","Faqat narxiga qiziqaman"],category:"technical",weight:9},
+{id:"q10",text:"Biror buyum buzilsa, birinchi reaksiyangiz qanday?",answers:["O‘zim tuzatib ko‘raman","Darhol ustaga beraman","Tashlab yuboraman","Boshqalardan so‘rayman"],category:"practical",weight:8},
+{id:"q11",text:"Qaysi fanlar sizdagi kuchli tomonlarni ko‘proq namoyon qiladi?",answers:["Matematika va informatika","Biologiya va kimyo","Tarix va huquq","Til va adabiyot"],category:"subject",weight:9},
+{id:"q12",text:"Qaysi turdagi vazifani bajarish sizga yoqadi?",answers:["Texnik masalalarni yechish","Odamlarning muammosini tinglash","Matn yozish","Tadbir tashkil qilish"],category:"problem",weight:8},
+{id:"q13",text:"Kasb tanlashda siz uchun eng muhim omillardan biri nima?",answers:["Yangi narsani o‘rganish","Faqat yuqori maosh","Kasbning mashhurligi","Do‘stlarimning tanlovi"],category:"motivation",weight:8},
+{id:"q14",text:"Jamoaviy topshiriqda o‘zingizni qanday tutasiz?",answers:["Ba’zan o‘zim, ba’zan jamoa bilan","Faqat yolg‘iz ishlayman","Faqat boshqaraman","Hech qachon fikr bildirmayman"],category:"teamwork",weight:6},
+{id:"q15",text:"Katta vazifani bajarishda qanday yo‘l tutasiz?",answers:["Reja tuzib ishlayman","Oxirgi kungacha kutaman","Boshqalarga ergashaman","Tasodifiy boshlayman"],category:"organization",weight:7},
+{id:"q16",text:"Chizma, sxema va texnik loyihalar sizga qiziqmi?",answers:["Ha, qiziq","Umuman qiziq emas","Faqat baho uchun","Bilmayman"],category:"design",weight:8},
+{id:"q17",text:"Mexanizm va qurilmalar haqida o‘ylash sizga qanday ta’sir qiladi?",answers:["Qiziq tuyuladi","Zerikarli","Faqat ishlatishni bilsam bo‘ldi","E’tibor bermayman"],category:"technical",weight:8},
+{id:"q18",text:"Tabiat, hayvonlar yoki biologik jarayonlar sizni qanchalik qiziqtiradi?",answers:["Juda qiziqtiradi","O‘rtacha","Kam qiziqtiradi","Umuman qiziqtirmaydi"],category:"medicine",weight:6},
+{id:"q19",text:"Qaysi ish muhiti sizga ko‘proq mos?",answers:["Odamlar bilan doimiy muloqot","Kompyuter yoki laboratoriya","Doimiy safar","Sahna va ommaviy chiqish"],category:"communication",weight:7},
+{id:"q20",text:"Qaysi ish muhiti sizni qulay his qildiradi?",answers:["Kompyuter yoki laboratoriya kabi muhit","Katta savdo zali","Sinf xonasi","Sud yoki rasmiy idora"],category:"environment",weight:7},
+{id:"q21",text:"Bir xil ishni uzoq vaqt takrorlashga munosabatingiz qanday?",answers:["Tez zeriktiradi","Muammo emas","Faqat mukofot bo‘lsa","Boshqalarga topshiraman"],category:"variety",weight:6},
+{id:"q22",text:"Mashaqqatli vazifani tugatish haqida nima deysiz?",answers:["Tugatishga harakat qilaman","Tezda voz kechaman","Boshqa odamni kutaman","Faqat oson qismini qilaman"],category:"persistence",weight:7},
+{id:"q23",text:"Yangi g‘oya o‘ylab topish sizga yoqadimi?",answers:["Ha, yoqadi","Umuman yoqmaydi","Faqat tayyor namuna bilan","Ba’zan"],category:"creativity",weight:7},
+{id:"q24",text:"Kasbni faqat yuqori maoshiga qarab tanlash haqida fikringiz?",answers:["Faqat maoshga qarab tanlamayman","Ha, eng muhimi maosh","Boshqalar nima desa shuni qilaman","Prestij bo‘lsa yetarli"],category:"error_salary",weight:10},
+{id:"q25",text:"Do‘stlaringizning kasb tanlovingizga ta’siri qanday?",answers:["Fikrimni eshitaman, lekin qarorni o‘zim qilaman","Ular tanlaganini tanlayman","Do‘stlarim nima desa shu","Bilmayman"],category:"error_peer",weight:10},
+{id:"q26",text:"Ota-onangizning kasb bo‘yicha fikri siz uchun qanday?",answers:["Eshitaman, lekin o‘zim ham tahlil qilaman","Faqat ularning xohishini bajaraman","Umuman quloq solmayman","Do‘stlarim muhimroq"],category:"error_parent",weight:10},
+{id:"q27",text:"O‘zingizning kuchli va zaif tomonlaringizni bilasizmi?",answers:["Aniqlashga harakat qilaman","Bu haqda o‘ylamaganman","Hamma narsani yaxshi bilaman","Boshqalar aytishi kerak"],category:"selfknowledge",weight:10},
+{id:"q28",text:"Kasb haqida qaror qilishdan oldin ma’lumotlarni qanday tekshirasiz?",answers:["Kasb haqida ma’lumot va talablarni tekshiraman","Biror odam aytsa yetarli","Faqat reklama ko‘raman","Tekshirmay tanlayman"],category:"information",weight:10},
+{id:"q29",text:"Qaysi faoliyatda o‘zingizni ko‘proq tasavvur qilasiz?",answers:["Texnologiya bilan ishlash","Odamlarga tibbiy yordam berish","Odamlarni o‘qitish","Huquqiy himoya"],category:"career",weight:9},
+{id:"q30",text:"Siz uchun ideal kasb qanday bo‘lishi kerak?",answers:["Qiziqishim va qobiliyatimga mos","Eng ko‘p pul beradigan","Eng mashhur kasb","Do‘stlarim havas qiladigan"],category:"motivation",weight:9}
+];
+
+const PROFESSIONS=[
+{id:"programmer",name:"Dasturchi",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50}},
+{id:"engineer",name:"Muhandis",requirements:{logic:85,problem:90,technology:95,practical:90,creativity:65,communication:55}},
+{id:"designer",name:"Dizayner",requirements:{creativity:90,technology:65,practical:50,communication:60}},
+{id:"teacher",name:"O‘qituvchi",requirements:{communication:90,teamwork:85,organization:80,logic:65,creativity:70}},
+{id:"doctor",name:"Shifokor",requirements:{medicine:90,communication:80,problem:80,organization:75}},
+{id:"lawyer",name:"Huquqshunos",requirements:{logic:80,communication:85,organization:80,problem:80}},
+{id:"economist",name:"Iqtisodchi",requirements:{logic:85,organization:85,problem:75,communication:65}},
+{id:"psychologist",name:"Psixolog",requirements:{communication:95,teamwork:80,creativity:65,problem:75}},
+{id:"architect",name:"Arxitektor",requirements:{creativity:85,logic:80,design:90,practical:65}},
+{id:"technologist",name:"Texnolog",requirements:{technology:85,practical:85,logic:80,organization:75}}
+];
