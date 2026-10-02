@@ -4,30 +4,18 @@ const state={
   history:[],
   available:[],
   selectedProfession:null,
-  covered:new Set()
+  evidence:new Set(),
+  errors:new Set()
 };
 
 const $=id=>document.getElementById(id);
 
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  $(id).classList.add("active");
-}
-
-function shuffle(items){
-  return [...items].sort(()=>Math.random()-0.5);
-}
-
-/*
-  Har bir savol qaysi dalilni ochishini belgilaymiz.
-  Bu yerda category — savol turi, evidence — kasbga oid dalil.
-*/
 const CATEGORY_EVIDENCE={
   interest:["interest"],
   subject:["logic","interest"],
   problem:["problem","logic"],
   technology:["technology"],
-  career:["interest","technology","communication"],
+  career:["interest","technology"],
   practical:["practical"],
   independence:["independence"],
   persistence:["persistence"],
@@ -48,18 +36,57 @@ const CATEGORY_EVIDENCE={
   motivation:["motivation"]
 };
 
+const CATEGORY_LABEL={
+  interest:"qiziqish",
+  subject:"qobiliyat/fan",
+  problem:"muammo yechish",
+  technology:"texnologik qiziqish",
+  career:"kasbiy qiziqish",
+  practical:"amaliy faoliyat",
+  independence:"mustaqillik",
+  persistence:"qat’iyat",
+  technical:"texnik fikrlash",
+  teamwork:"jamoada ishlash",
+  organization:"tashkilotchilik",
+  design:"dizayn",
+  medicine:"tibbiyotga qiziqish",
+  communication:"muloqot",
+  environment:"ish muhiti",
+  variety:"ish xilma-xilligi",
+  creativity:"ijodkorlik",
+  error_salary:"faqat maoshga tayanish xatosi",
+  error_peer:"do‘stlarga ergashish xatosi",
+  error_parent:"ota-ona xohishiga ko‘r-ko‘rona ergashish xatosi",
+  selfknowledge:"o‘zini anglash",
+  information:"kasb haqida ma’lumot",
+  motivation:"kasbiy motiv"
+};
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function shuffle(items){
+  return [...items].sort(()=>Math.random()-0.5);
+}
+
 function questionEvidence(q){
   return q.evidence || CATEGORY_EVIDENCE[q.category] || [q.category];
 }
 
-function startGame(){
+function resetState(){
   state.step=0;
   state.asked=[];
   state.history=[];
   state.available=[];
   state.selectedProfession=null;
-  state.covered=new Set();
+  state.evidence=new Set();
+  state.errors=new Set();
+}
 
+function startGame(){
+  resetState();
   $("mood").textContent="Suhbatga tayyor";
   $("teen-avatar").textContent="👨‍🎓";
   showScreen("screen-game");
@@ -67,47 +94,81 @@ function startGame(){
 }
 
 /*
-  Muhim qoida:
-  - Savol qayta chiqmaydi.
-  - Bir xil kategoriya ketma-ket takrorlanmaydi.
-  - Oldin ochilmagan dalilni beradigan savollar ustuvor.
-  - Har safar 4 ta turli yo'nalishdagi real savol ko'rsatiladi.
-  - Tasodifiylik faqat variantlarning joylashuviga ta'sir qiladi.
+  O‘yin 5 bosqichli diagnostik suhbat sifatida ishlaydi.
+  Maqsad — bir xil 4 savolni aylantirish emas, 5 savolda turli
+  dalil bloklarini tekshirish. Har bosqich oldingi suhbat tarixini
+  hisobga oladi va hali tekshirilmagan yo‘nalishlarni ustun qo‘yadi.
 */
+const STAGE_TARGETS=[
+  ["interest","subject","problem","selfknowledge"],
+  ["technology","technical","practical","independence","persistence"],
+  ["communication","teamwork","organization","design","environment","creativity"],
+  ["error_salary","error_peer","error_parent","information","motivation"],
+  ["career","subject","problem","technology","practical","information","motivation"]
+];
+
+function candidateScore(q){
+  let score=q.weight||5;
+  const evidence=questionEvidence(q);
+
+  // Yangi dalil beradigan savol doim ustun.
+  score += evidence.some(e=>!state.evidence.has(e)) ? 35 : 0;
+
+  // Hali so‘ralmagan xatolik/self-knowledge savollari metodik maqsad uchun muhim.
+  if(["error_salary","error_peer","error_parent","selfknowledge","information"].includes(q.category)
+     && !state.asked.includes(q.id)) score+=8;
+
+  // Bir xil kategoriya ketma-ket takrorlanmasin.
+  const last=state.history[state.history.length-1];
+  if(last && last.category===q.category) score-=30;
+
+  // Oldingi savol bilan bog‘liq mantiqiy davomiylik.
+  if(last){
+    const pair=[
+      ["interest","subject"],["subject","problem"],["technology","technical"],
+      ["technical","practical"],["communication","teamwork"],
+      ["teamwork","organization"],["selfknowledge","information"],
+      ["information","motivation"],["career","motivation"]
+    ];
+    if(pair.some(([a,b])=>(a===last.category&&b===q.category)||(b===last.category&&a===q.category))){
+      score+=12;
+    }
+  }
+  return score;
+}
+
 function chooseAvailableQuestions(){
   const unused=QUESTIONS.filter(q=>!state.asked.includes(q.id));
-  const lastCategory=state.history.length
-    ? state.history[state.history.length-1].category
-    : null;
+  const targets=STAGE_TARGETS[Math.min(state.step,STAGE_TARGETS.length-1)];
 
-  const uncovered=unused.filter(q=>
-    questionEvidence(q).some(e=>!state.covered.has(e))
-  );
+  let pool=unused.filter(q=>targets.includes(q.category));
 
-  let pool=uncovered.filter(q=>q.category!==lastCategory);
-
+  // Agar bosqichdagi mos savollar kamayib qolsa, butun bankdan yangi dalil beradiganlarni olamiz.
   if(pool.length<4){
-    pool=unused.filter(q=>q.category!==lastCategory);
+    const extra=unused.filter(q=>
+      questionEvidence(q).some(e=>!state.evidence.has(e))
+    );
+    pool=[...new Map([...pool,...extra].map(q=>[q.id,q])).values()];
   }
 
-  if(pool.length<4){
-    pool=unused;
-  }
+  if(pool.length<4) pool=unused;
 
-  // Avval turli kategoriyalarni olish
+  const ranked=shuffle(pool)
+    .sort((a,b)=>candidateScore(b)-candidateScore(a));
+
   const result=[];
-  const usedCategories=new Set();
+  const categories=new Set();
 
-  for(const q of shuffle(pool).sort((a,b)=>b.weight-a.weight)){
+  // 4 ta variantning o‘zi ham turli metodik yo‘nalishlardan bo‘lsin.
+  for(const q of ranked){
     if(result.length>=4) break;
-    if(!usedCategories.has(q.category)){
+    if(!categories.has(q.category)){
       result.push(q);
-      usedCategories.add(q.category);
+      categories.add(q.category);
     }
   }
 
-  // Yetmasa, boshqa unused savollar bilan to'ldiramiz
-  for(const q of shuffle(pool).sort((a,b)=>b.weight-a.weight)){
+  for(const q of ranked){
     if(result.length>=4) break;
     if(!result.some(x=>x.id===q.id)) result.push(q);
   }
@@ -135,15 +196,18 @@ function renderQuestionChoices(){
     $("answers").appendChild(b);
   });
 
-  $("mood").textContent="Savol tanlashingizni kutmoqda";
+  $("mood").textContent="Dalil yig‘ish uchun savol tanlang";
 }
 
 function askQuestion(q){
   state.asked.push(q.id);
   state.history.push(q);
 
-  // Savol ochgan dalillarni darhol saqlaymiz
-  questionEvidence(q).forEach(e=>state.covered.add(e));
+  questionEvidence(q).forEach(e=>state.evidence.add(e));
+
+  if(["error_salary","error_peer","error_parent"].includes(q.category)){
+    state.errors.add(q.category);
+  }
 
   $("answers").innerHTML="";
   $("question-text").textContent=q.text;
@@ -157,21 +221,22 @@ function askQuestion(q){
     response.innerHTML="<span>Azizbek:</span><p>“"+(TEEN.answers[q.id]||"Bu haqda hali aniq o‘ylab ko‘rmaganman.")+"”</p>";
     $("answers").appendChild(response);
 
+    const clue=document.createElement("div");
+    clue.className="evidence-note";
+    clue.innerHTML="🔎 <b>Bu savol tekshirgan dalil:</b> "+questionEvidence(q).map(e=>CATEGORY_LABEL[e]||e).join(", ");
+    $("answers").appendChild(clue);
+
     const next=document.createElement("button");
     next.className="primary-btn";
     next.style.marginTop="18px";
-    next.textContent=state.step===4
-      ?"Yakuniy tavsiyaga o‘tish →"
-      :"Keyingi savollarni ko‘rish →";
-
+    next.textContent=state.step===4 ? "Yakuniy tavsiyaga o‘tish →" : "Keyingi savollarni tanlash →";
     next.onclick=()=>{
       state.step++;
       if(state.step>=5) showProfessionChoice();
       else renderQuestionChoices();
     };
-
     $("answers").appendChild(next);
-    $("mood").textContent="Javob berildi";
+    $("mood").textContent="Dalil olindi";
   },300);
 }
 
@@ -182,7 +247,7 @@ function showProfessionChoice(){
   shuffle(PROFESSIONS).forEach(p=>{
     const b=document.createElement("button");
     b.className="profession-btn";
-    b.innerHTML="<b>"+p.name+"</b><br><small>Yakuniy tavsiya sifatida tanlash</small>";
+    b.innerHTML="<b>"+p.name+"</b><br><small>Yig‘ilgan dalillar asosida tavsiya qilish</small>";
     b.onclick=()=>evaluate(p);
     $("profession-list").appendChild(b);
   });
@@ -190,16 +255,12 @@ function showProfessionChoice(){
 
 function calculateProfessionFit(profession){
   const profile=TEEN.profile;
-  let fit=0;
-  let total=0;
-
+  let fit=0,total=0;
   Object.entries(profession.requirements).forEach(([key,need])=>{
     const actual=profile[key] ?? 50;
-    const closeness=Math.max(0,100-Math.abs(actual-need));
-    fit+=closeness;
+    fit+=Math.max(0,100-Math.abs(actual-need));
     total+=100;
   });
-
   return Math.round((fit/Math.max(1,total))*100);
 }
 
@@ -207,48 +268,42 @@ function evaluate(profession){
   state.selectedProfession=profession;
 
   const professionFit=calculateProfessionFit(profession);
-
-  const gathered=[...state.covered];
   const required=profession.evidence||[];
-  const matched=required.filter(x=>gathered.includes(x));
-  const evidenceCoverage=Math.round(
-    matched.length/Math.max(1,required.length)*100
-  );
+  const matched=required.filter(x=>state.evidence.has(x));
+  const missing=required.filter(x=>!state.evidence.has(x));
+  const evidenceCoverage=Math.round(matched.length/Math.max(1,required.length)*100);
 
   const diagnosticQuality=Math.round(
-    state.history.reduce((sum,q)=>sum+q.weight,0)/
+    state.history.reduce((sum,q)=>sum+(q.weight||5),0)/
     Math.max(1,state.history.length*10)*100
   );
 
-  // Dalil yetarli bo'lmasa, kasb mosligi baland bo'lsa ham "asoslangan" deb chiqmaydi.
+  const errorCheck=state.errors.size>0 ? 100 : 0;
   const supported=Math.round(
-    professionFit*0.40+
+    professionFit*0.35+
     evidenceCoverage*0.40+
-    diagnosticQuality*0.20
+    diagnosticQuality*0.15+
+    errorCheck*0.10
   );
 
   let reaction="😔";
-  let mood="Tavsiya yetarli asoslanmadi";
+  let mood="Tavsiya yetarli dalil bilan asoslanmadi";
 
   if(evidenceCoverage>=70 && professionFit>=75 && supported>=75){
     reaction="🎉";
-    mood="Azizbek xursand bo‘ldi";
+    mood="Azizbek tavsiyadan mamnun";
   }else if(evidenceCoverage>=40 && professionFit>=60){
     reaction="😮‍💨";
-    mood="Azizbek biroz ikkilanib qoldi";
+    mood="Azizbek hali ikkilanmoqda";
   }
+
+  renderResult({
+    professionFit,evidenceCoverage,diagnosticQuality,supported,
+    matched,missing,errorCheck
+  });
 
   $("teen-avatar").textContent=reaction;
   $("mood").textContent=mood;
-
-  renderResult({
-    professionFit,
-    evidenceCoverage,
-    diagnosticQuality,
-    supported,
-    gathered,
-    matched
-  });
 }
 
 function renderResult(r){
@@ -266,40 +321,38 @@ function renderResult(r){
 
   $("result-summary").textContent=
     "Siz "+state.selectedProfession.name+
-    " kasbini tavsiya qildingiz. Tizim kasb mosligi, yig‘ilgan dalillar va savollarning diagnostik qiymatini alohida baholadi.";
+    " kasbini tavsiya qildingiz. Natija faqat kasb mosligiga emas, balki 5 ta savolda qanday dalil yig‘ilganiga ham bog‘liq.";
 
   $("score-grid").innerHTML=[
     ["Kasb mosligi",r.professionFit+"%"],
     ["Savollar sifati",r.diagnosticQuality+"%"],
     ["Dalil qamrovi",r.evidenceCoverage+"%"]
-  ].map(x=>
-    "<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>"
-  ).join("");
+  ].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
 
-  $("useful-questions").innerHTML=state.history.map(q=>
-    "<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+"</li>"
-  ).join("");
+  const useful=state.history.filter(q=>questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
+  const weak=state.history.filter(q=>!questionEvidence(q).some(e=>state.selectedProfession.evidence?.includes(e)));
 
-  const required=state.selectedProfession.evidence||[];
-  const missing=required.filter(x=>!r.gathered.includes(x));
+  $("useful-questions").innerHTML=useful.length
+    ?useful.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+"</li>").join("")
+    :"<li>Tanlangan kasbga bevosita dalil bergan savol kam.</li>";
 
-  $("weak-points").innerHTML=missing.length
-    ?missing.map(x=>"<li>"+x+" bo‘yicha dalil yetishmadi.</li>").join("")
+  $("weak-points").innerHTML=r.missing.length
+    ?"<li><b>Yetishmagan dalillar:</b> "+r.missing.map(x=>CATEGORY_LABEL[x]||x).join(", ")+"</li>"
+     +(weak.length?weak.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+" (tanlangan kasb uchun qiymati past)</li>").join(""):"")
     :"<li>Tanlangan kasb uchun asosiy dalillar yig‘ildi.</li>";
 
-  if(r.evidenceCoverage<40){
-    $("methodology").textContent=
-      "Asosiy metodik xato — kasb tanlashdan oldin yetarli dalil yig‘ilmadi. Savollarni faqat yoqimli yoki umumiy mavzular bo‘yicha emas, kasb talab qiladigan ko‘rsatkichlarni aniqlash uchun tanlash kerak.";
+  let lesson;
+  if(r.errorCheck===0){
+    lesson="Siz 5 savolda kasbga moslikni tekshirish bilan birga qaror xatolarini ham aniqlashingiz kerak edi. Faqat qiziqish yoki qobiliyatni aniqlashning o‘zi yetarli emas.";
+  }else if(r.evidenceCoverage<40){
+    lesson="Asosiy metodik xato — yakuniy tavsiyaga yetarli dalil yig‘masdan o‘tish. Kasb tanlashda qiziqish, qobiliyat, ish uslubi, kasb talablari va qaror sabablarini birgalikda tekshirish zarur.";
   }else if(r.evidenceCoverage<70){
-    $("methodology").textContent=
-      "Dalillar qisman yig‘ildi. Keyingi bosqichda qobiliyat, qiziqish, ish uslubi va kasb talablari o‘rtasidagi bog‘liqlikni tekshiradigan savollarni tanlash muhim.";
-  }else if(r.diagnosticQuality<75){
-    $("methodology").textContent=
-      "Dalil qamrovi yaxshi, ammo ayrim savollar qaror uchun kamroq ma’lumot berdi. Maslahatchi har bir savolning diagnostik qiymatini oldindan o‘ylashi kerak.";
+    lesson="Dalillar qisman yig‘ildi. Tipik xato — bitta-ikkita belgiga tayanib xulosa chiqarish. Maslahatchi qarorni bir nechta mustaqil ko‘rsatkich bilan asoslaydi.";
   }else{
-    $("methodology").textContent=
-      "Siz savollarni maqsadli tanlab, bir nechta muhim ko‘rsatkichlar bo‘yicha dalil yig‘dingiz. Bu kasb tanlashdagi shoshma-shosharlik va faqat bitta belgiga tayanish xatosini kamaytiradi.";
+    lesson="Metodik jihatdan muhim qoida: kasb tavsiyasi faqat 'yoqadi' degan javobga emas, qobiliyat, ish uslubi, kasb talablari, o‘zini anglash va qaror sabablariga oid dalillarga tayanishi kerak.";
   }
+
+  $("methodology").textContent=lesson;
 }
 
 $("start-btn").addEventListener("click",startGame);
