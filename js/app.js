@@ -6,7 +6,9 @@ const state={
   selectedProfession:null,
   currentStudent:null,
   evidence:new Set(),
-  errors:new Set()
+  errors:new Set(),
+  timer:null,
+  timeLeft:20
 };
 
 const $=id=>document.getElementById(id);
@@ -85,6 +87,56 @@ function questionEvidence(q){
   return q.evidence || CATEGORY_EVIDENCE[q.category] || [q.category];
 }
 
+function stopTimer(){
+  if(state.timer){clearInterval(state.timer);state.timer=null;}
+}
+
+function renderEvidencePanel(){
+  const el=$("evidence-list");
+  if(!el) return;
+  const items=[
+    ["interest","Qiziqish"],["logic","Mantiqiy fikrlash"],["problem","Muammo yechish"],
+    ["technology","Texnologiya"],["practical","Amaliy faoliyat"],["communication","Muloqot"],
+    ["teamwork","Jamoa"],["organization","Tashkilotchilik"],["creativity","Ijodkorlik"],
+    ["medicine","Tibbiyot"],["independence","Mustaqillik"],["decision_error","Qaror sababi"]
+  ];
+  el.innerHTML=items.map(([key,label])=>{
+    const found=state.evidence.has(key);
+    return '<div class="evidence-item '+(found?'found':'')+'"><i class="e-dot"></i><span>'+(found?'Aniqlandi: ':'Noma’lum: ')+label+'</span></div>';
+  }).join('');
+}
+
+function startTimer(){
+  stopTimer(); state.timeLeft=20;
+  const timerEl=$("timer"), card=document.querySelector(".question-card");
+  const draw=()=>{
+    if(!timerEl) return;
+    timerEl.textContent="00:"+String(state.timeLeft).padStart(2,"0");
+    timerEl.classList.toggle("warning",state.timeLeft<=8&&state.timeLeft>4);
+    timerEl.classList.toggle("danger",state.timeLeft<=4);
+    if(card) card.classList.toggle("time-pressure",state.timeLeft<=8);
+  };
+  draw();
+  state.timer=setInterval(()=>{
+    state.timeLeft--;
+    draw();
+    if(state.timeLeft<=0){
+      stopTimer();
+      const mood=$("mood");
+      if(mood) mood.textContent="Vaqt tugadi — bu savol o‘tkazib yuborildi";
+      state.step++;
+      setTimeout(()=>state.step>=5?showProfessionChoice():renderQuestionChoices(),700);
+    }
+  },1000);
+}
+
+function stopAndReact(q){
+  stopTimer();
+  const avatar=$("teen-avatar");
+  const reaction=(q.category.includes("error")?"surprised":q.category==="selfknowledge"?"thinking":"smile");
+  avatar.className="avatar teen-avatar css-person person-"+state.currentStudent.id+" "+reaction;
+}
+
 function resetState(){
   state.step=0;
   state.asked=[];
@@ -93,6 +145,9 @@ function resetState(){
   state.selectedProfession=null;
   state.evidence=new Set();
   state.errors=new Set();
+  stopTimer();
+  state.timeLeft=20;
+  renderEvidencePanel();
 }
 
 function renderStudents(){
@@ -142,6 +197,7 @@ function startGame(){
   $("teen-meta").textContent="Suhbatdagi o‘quvchi";
   setTeenMood("Sizni kutyapti…");
   showScreen("screen-game");
+  renderEvidencePanel();
   renderStudentGreeting();
 }
 
@@ -248,9 +304,12 @@ function renderQuestionChoices(){
   });
 
   $("mood").textContent="Dalil yig‘ish uchun savol tanlang";
+  renderEvidencePanel();
+  startTimer();
 }
 
 function askQuestion(q){
+  stopTimer();
   state.asked.push(q.id);
   state.history.push(q);
 
@@ -261,15 +320,18 @@ function askQuestion(q){
   }
 
   $("answers").innerHTML="";
+  renderEvidencePanel();
   $("question-text").textContent=q.text;
   $("mood").textContent=state.currentStudent.name+" javob bermoqda…";
 
   setTimeout(()=>{
+    stopAndReact(q);
     setTeenMood("Javob berdi");
 
     const response=document.createElement("div");
     response.className="teen-response";
-    response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+getStudentAnswer(state.currentStudent,q)+"”</p>";
+    const answer=getStudentAnswer(state.currentStudent,q);
+    response.innerHTML="<span>"+state.currentStudent.name+":</span><p>“"+answer+"”</p>"+(q.category.includes("error")?"<span class='reaction-chip'>Bu savol muhim qaror sababini ochishi mumkin.</span>":"");
     $("answers").appendChild(response);
 
     const clue=document.createElement("div");
@@ -292,6 +354,7 @@ function askQuestion(q){
 }
 
 function showProfessionChoice(){
+  stopTimer();
   showScreen("screen-profession");
   const n=$("profession-student-name"); if(n) n.textContent=state.currentStudent.name;
   $("profession-list").innerHTML="";
@@ -409,6 +472,7 @@ function renderResult(r){
 
 $("start-btn").addEventListener("click",startGame);
 $("restart-btn").addEventListener("click",()=>{
+  stopTimer();
   showScreen("screen-start");
   renderStudents();
 
