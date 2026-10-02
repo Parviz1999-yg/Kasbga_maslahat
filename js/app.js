@@ -94,7 +94,7 @@ const SIGNAL_RULES={
   problem:[[/tahlil|qismlarga|sabab|dalil|mantiq/i,"problem"],[/yechim|hal qil|yech/i,"problem"],[/yordam so‘ray|boshqalarga topshir/i,"teamwork"]],
   technology:[[/texnolog|dastur|platform|kompyuter/i,"technology"],[/qiziqmay|foydalanmay/i,"low_technology_interest"]],
   career:[[/dasturch|program|kod/i,"technology"],[/muhandis|mexan|texnik/i,"technical"],[/dizayn|arxitekt/i,"creativity"],[/o‘qit|ta’lim/i,"communication"],[/shifokor|tibb/i,"medicine"],[/huquq|yurist/i,"communication"],[/iqtisod|moliya/i,"logic"]],
-  practical:[[/qo‘l bilan|yas|tuzat|amaliy|ustaxona/i,"practical"],[/nazariya/i,"low_practical"],
+  practical:[[/qo‘l bilan|yas|tuzat|amaliy|ustaxona/i,"practical"],[/nazariya/i,"low_practical"]],
   independence:[[/mustaqil|o‘zim|o‘zi qaror/i,"independence"],[/boshqalarga topshir|ko‘rsatma kut/i,"dependence"]],
   persistence:[[/davom|tugat|oxirigacha|urin/i,"persistence"],[/voz kech|keyinga qoldir/i,"low_persistence"]],
   technical:[[/qurilma|mexanizm|asbob|ichki tuzil|texnik/i,"technical"],[/qiziqmay/i,"low_technical_interest"]],
