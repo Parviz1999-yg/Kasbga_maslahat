@@ -92,7 +92,7 @@ function renderResult(r){
   $("result-summary").textContent="Siz "+state.selectedProfession.name+" kasbini tavsiya qildingiz. Natija kasb mosligi bilan birga siz tanlagan 5 ta savolning qamrovi va diagnostik qiymati asosida baholandi.";
   $("score-grid").innerHTML=[["Kasb mosligi",r.professionFit+"%"],["Savollar sifati",r.diagnosticQuality+"%"],["Dalil qamrovi",r.evidenceCoverage+"%"]].map(x=>"<div class='score'><b>"+x[1]+"</b><span>"+x[0]+"</span></div>").join("");
   $("useful-questions").innerHTML=state.history.map(q=>"<li><b>"+q.id.toUpperCase()+"</b> — "+q.text+"</li>").join("");
-  const required=Object.keys(state.selectedProfession.requirements||{});const missing=required.filter(x=>!r.gathered.includes(x));
+  const required=state.selectedProfession.evidence||[];const missing=required.filter(x=>!r.gathered.includes(x));
   $("weak-points").innerHTML=missing.length?missing.map(x=>"<li>"+x+" bo‘yicha yetarli savol berilmadi.</li>").join(""):"<li>Tanlangan kasb uchun asosiy ko‘rsatkichlar bo‘yicha savollar berildi.</li>";
   $("methodology").textContent=r.evidenceCoverage<50?"Asosiy xato: kasb tavsiyasi uchun yetarli dalil yig‘ilmagan. 5 ta savolni maqsadli tanlash kerak.":r.diagnosticQuality<75?"Savollar foydali, ammo ularning diagnostik qiymatini hisobga olish kerak. Har bir savol kasbiy qaror uchun yangi va muhim ma’lumot berishi lozim.":"Siz savollarni maqsadli tanlab, kasbiy tavsiya uchun yetarli dalil yig‘ishga harakat qildingiz.";
 }
