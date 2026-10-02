@@ -265,11 +265,11 @@ function startGame(){
   hisobga oladi va hali tekshirilmagan yo‘nalishlarni ustun qo‘yadi.
 */
 const STAGE_TARGETS=[
-  ["interest","subject","problem","selfknowledge"],
+  ["interest","subject","problem","selfknowledge","age","education"],
   ["technology","technical","practical","independence","persistence"],
   ["communication","teamwork","organization","design","environment","creativity"],
   ["error_salary","error_peer","error_parent","information","motivation"],
-  ["career","subject","problem","technology","practical","information","motivation"]
+  ["career","subject","problem","technology","practical","information","motivation","age","education"]
 ];
 
 function candidateScore(q){
