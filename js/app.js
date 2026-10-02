@@ -108,7 +108,7 @@ const SIGNAL_RULES={
   creativity:[[/yangi g‘oya|ijod|yangi variant|chizma/i,"creativity"],[/tayyor|takror/i,"low_creativity"]],
   error_salary:[[/faqat maosh|faqat daromad|prestij/i,"decision_error"],[/qiziqish|mos|rivojlanish|vazifa/i,"decision_awareness"]],
   error_peer:[[/do‘st|tanish/i,"peer_influence_check"],[/o‘zim|o‘z qiziqish/i,"decision_awareness"]],
-  error_parent:[[/ota-ona|ota onam/i,"parent_influence_check"],[/o‘zim|moslik|qiziqish/i,"decision_awareness"],
+  error_parent:[[/ota-ona|ota onam/i,"parent_influence_check"],[/o‘zim|moslik|qiziqish/i,"decision_awareness"]],
   selfknowledge:[[/kuchli tomon|qobiliyat|o‘zimni|o‘z qobiliyat/i,"selfknowledge"]],
   information:[[/rasmiy|manba|solishtir|talab|kundalik|mutaxassis|ma’lumot/i,"information"],[/reklama|tanishim fikri|tekshirmay/i,"low_information"]],
   motivation:[[/qiziqish|rivojlanish|foyda|barqaror|daromad/i,"motivation"]]
