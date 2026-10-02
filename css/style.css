@@ -322,3 +322,31 @@ body:before{
   background:var(--hair);
   box-shadow:inset 0 3px 6px rgba(255,255,255,.05);
 }
+
+
+/* Yakuniy ko'z modeli: yumaloq oq qism, alohida qorachiq. Qosh va kiprik yo'q. */
+.css-person i:before{
+  content:"";
+  position:absolute;
+  z-index:4;
+  left:10%; top:30%; width:80%; height:26%;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at calc(25% + var(--gaze-x)) calc(50% + var(--gaze-y)),#11161a 0 12%,#59636c 13% 20%,#080b0e 21% 27%,transparent 28%),
+    radial-gradient(circle at calc(75% + var(--gaze-x)) calc(50% + var(--gaze-y)),#11161a 0 12%,#59636c 13% 20%,#080b0e 21% 27%,transparent 28%),
+    radial-gradient(circle at 25% 50%,#fff 0 46%,#e9eef2 47% 53%,transparent 54%),
+    radial-gradient(circle at 75% 50%,#fff 0 46%,#e9eef2 47% 53%,transparent 54%);
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.28));
+  transform-origin:center;
+  animation:realBlink 5.2s ease-in-out infinite;
+  box-shadow:none!important;
+}
+
+/* Qosh va kipriklar olib tashlandi. */
+.css-person i:before{box-shadow:none!important}
+
+/* Ko'z oqi qimirlamaydi; faqat qorachiq -- pointer harakatiga ergashadi. */
+@keyframes realBlink{
+  0%,43%,47%,100%{transform:scaleY(1)}
+  44%,46%{transform:scaleY(.08)}
+}
