@@ -170,41 +170,21 @@ function candidateScore(q){
 }
 
 function chooseAvailableQuestions(){
-  const unused=QUESTIONS.filter(q=>!state.asked.includes(q.id));
+  const poolIds=STUDENT_QUESTION_POOLS[state.currentStudent.id]||QUESTIONS.map(q=>q.id);
+  const unused=QUESTIONS.filter(q=>poolIds.includes(q.id)&&!state.asked.includes(q.id));
   const targets=STAGE_TARGETS[Math.min(state.step,STAGE_TARGETS.length-1)];
-
   let pool=unused.filter(q=>targets.includes(q.category));
-
-  // Agar bosqichdagi mos savollar kamayib qolsa, butun bankdan yangi dalil beradiganlarni olamiz.
-  if(pool.length<4){
-    const extra=unused.filter(q=>
-      questionEvidence(q).some(e=>!state.evidence.has(e))
-    );
-    pool=[...new Map([...pool,...extra].map(q=>[q.id,q])).values()];
-  }
-
-  if(pool.length<4) pool=unused;
-
-  const ranked=shuffle(pool)
-    .sort((a,b)=>candidateScore(b)-candidateScore(a));
-
-  const result=[];
-  const categories=new Set();
-
-  // 4 ta variantning o‘zi ham turli metodik yo‘nalishlardan bo‘lsin.
+  if(pool.length<6) pool=[...new Map([...pool,...unused].map(q=>[q.id,q])).values()];
+  const ranked=shuffle(pool).sort((a,b)=>candidateScore(b)-candidateScore(a));
+  const result=[], categories=new Set();
   for(const q of ranked){
-    if(result.length>=4) break;
-    if(!categories.has(q.category)){
-      result.push(q);
-      categories.add(q.category);
-    }
+    if(result.length>=6) break;
+    if(!categories.has(q.category)){result.push(q);categories.add(q.category);}
   }
-
   for(const q of ranked){
-    if(result.length>=4) break;
+    if(result.length>=6) break;
     if(!result.some(x=>x.id===q.id)) result.push(q);
   }
-
   return shuffle(result);
 }
 
@@ -274,6 +254,7 @@ function askQuestion(q){
 
 function showProfessionChoice(){
   showScreen("screen-profession");
+  const n=$("profession-student-name"); if(n) n.textContent=state.currentStudent.name;
   $("profession-list").innerHTML="";
 
   shuffle(PROFESSIONS).forEach(p=>{
