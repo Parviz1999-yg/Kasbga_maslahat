@@ -34,13 +34,13 @@ const QUESTIONS=[
 ];
 
 const PROFESSIONS=[
-{id:"programmer",name:"Dasturchi",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50},evidence:["interest","subject","problem","technology","independence","motivation"]},
+{id:"programmer",name:"Dasturchi",requirements:{logic:90,problem:90,technology:85,independence:80,creativity:65,communication:50},evidence:["interest","logic","problem","technology","independence","motivation"]},
 {id:"engineer",name:"Muhandis",requirements:{logic:85,problem:90,technology:95,practical:90,creativity:65,communication:55},evidence:["interest","problem","technology","practical","technical","design"]},
 {id:"designer",name:"Dizayner",requirements:{creativity:90,technology:65,practical:50,communication:60},evidence:["interest","creativity","technology","design","practical"]},
-{id:"teacher",name:"O‘qituvchi",requirements:{communication:90,teamwork:85,organization:80,logic:65,creativity:70},evidence:["communication","teamwork","organization","creativity","subject"]},
+{id:"teacher",name:"O‘qituvchi",requirements:{communication:90,teamwork:85,organization:80,logic:65,creativity:70},evidence:["communication","teamwork","organization","creativity","logic"]},
 {id:"doctor",name:"Shifokor",requirements:{medicine:90,communication:80,problem:80,organization:75},evidence:["medicine","communication","problem","organization","interest"]},
-{id:"lawyer",name:"Huquqshunos",requirements:{logic:80,communication:85,organization:80,problem:80},evidence:["problem","communication","organization","subject","motivation"]},
-{id:"economist",name:"Iqtisodchi",requirements:{logic:85,organization:85,problem:75,communication:65},evidence:["subject","problem","organization","motivation","communication"]},
+{id:"lawyer",name:"Huquqshunos",requirements:{logic:80,communication:85,organization:80,problem:80},evidence:["problem","communication","organization","logic","motivation"]},
+{id:"economist",name:"Iqtisodchi",requirements:{logic:85,organization:85,problem:75,communication:65},evidence:["logic","problem","organization","motivation","communication"]},
 {id:"psychologist",name:"Psixolog",requirements:{communication:95,teamwork:80,creativity:65,problem:75},evidence:["communication","teamwork","problem","creativity","interest"]},
 {id:"architect",name:"Arxitektor",requirements:{creativity:85,logic:80,design:90,practical:65},evidence:["design","creativity","technical","practical","interest"]},
 {id:"technologist",name:"Texnolog",requirements:{technology:85,practical:85,logic:80,organization:75},evidence:["technology","practical","technical","problem","organization"]}
