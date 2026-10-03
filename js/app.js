@@ -1,73 +1,51 @@
-const state={selectedStudentId:null,currentQuestionId:null,answered:false,evidence:[]};
+const state={selectedStudentId:null,asked:new Set(),signals:[]};
 const $=id=>document.getElementById(id);
-
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(screen=>screen.classList.remove("active"));
-  $(id)?.classList.add("active");
-}
-function getStudent(){return STUDENTS.find(student=>student.id===state.selectedStudentId);}
-function getQuestion(){return STAGE_1.questions.find(question=>question.id===state.currentQuestionId);}
-
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(id)?.classList.add("active");}
+function getStudent(){return STUDENTS.find(s=>s.id===state.selectedStudentId);}
 function renderStudentList(){
   const list=$("student-list"); if(!list)return;
-  list.innerHTML=STUDENTS.map(student=>`
-    <button class="student-option" data-student-id="${student.id}">
-      <div class="avatar css-person ${student.avatarClass}"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
-      <span><strong>${student.name}</strong><small>${student.meta}</small></span>
-    </button>`).join("");
-  list.querySelectorAll(".student-option").forEach(button=>button.addEventListener("click",()=>selectStudent(button.dataset.studentId)));
+  list.innerHTML=STUDENTS.map(s=>`<button class="student-option" data-student-id="${s.id}">
+    <div class="avatar css-person ${s.avatarClass}"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
+    <span><strong>${s.name}</strong><small>${s.className} · ${s.age} yosh</small></span>
+  </button>`).join("");
+  list.querySelectorAll(".student-option").forEach(b=>b.addEventListener("click",()=>selectStudent(b.dataset.studentId)));
 }
-
-function selectStudent(studentId){
-  state.selectedStudentId=studentId;
-  document.querySelectorAll(".student-option").forEach(button=>button.classList.toggle("selected",button.dataset.studentId===studentId));
-  const student=getStudent();
-  $("start-btn").disabled=false;
-  $("start-btn").textContent="Suhbatni boshlash →";
-  $("start-btn").onclick=startConversation;
-  if(student)$("start-intro").textContent=student.intro;
+function selectStudent(id){
+  state.selectedStudentId=id;
+  document.querySelectorAll(".student-option").forEach(b=>b.classList.toggle("selected",b.dataset.studentId===id));
+  const s=getStudent(); $("start-btn").disabled=false; $("start-btn").textContent="Suhbatni boshlash →"; $("start-btn").onclick=startConversation;
+  if(s)$("start-intro").textContent=s.intro;
 }
-
 function startConversation(){
   if(!state.selectedStudentId)return;
-  state.currentQuestionId=STAGE_1.questions[0].id;
-  state.answered=false; state.evidence=[];
-  const student=getStudent();
-  $("teen-name").textContent=student.name;
-  $("teen-meta").textContent=student.meta;
-  $("teen-avatar").className=`avatar teen-avatar css-person ${student.avatarClass}`;
-  $("stage-title").textContent=STAGE_1.title;
-  $("stage-description").textContent=STAGE_1.description;
-  renderQuestion();
-  showScreen("screen-game");
+  state.asked=new Set(); state.signals=[];
+  const s=getStudent();
+  $("teen-name").textContent=s.name; $("teen-meta").textContent=`${s.className} · ${s.age} yosh`;
+  $("teen-avatar").className=`avatar teen-avatar css-person ${s.avatarClass}`;
+  $("stage-title").textContent=STAGE_1.title; $("stage-description").textContent=STAGE_1.description;
+  renderQuestionMenu(); clearAnswer(); showScreen("screen-game");
 }
-
-function renderQuestion(){
-  const question=getQuestion(); if(!question)return;
-  $("question-text").textContent=question.text;
-  $("question-level").textContent=question.relevanceLabel;
-  $("question-purpose").textContent=question.diagnosticPurpose;
-  $("answer-box").hidden=!state.answered;
-  $("ask-btn").hidden=state.answered;
-  if(!state.answered){
-    $("mood").textContent="Savolni kutmoqda";
-    $("answer-text").textContent="";
-    $("evidence-list").innerHTML="";
-    $("evidence-list-bottom").innerHTML="";
-    return;
-  }
-  const answer=question.answers[getStudent().id];
-  $("answer-text").textContent=answer.text;
-  $("mood").textContent="Javob berdi";
-  state.evidence=answer.evidence||[];
-  const chips=state.evidence.map(item=>`<span class="evidence-chip">${formatEvidence(item)}</span>`).join("");
-  $("evidence-list").innerHTML=chips;
-  $("evidence-list-bottom").innerHTML=chips;
-  $("ask-btn").hidden=true;
+function renderQuestionMenu(){
+  const box=$("question-menu"); if(!box)return;
+  box.innerHTML=STAGE_1.questions.map((q,i)=>`<button class="question-choice ${state.asked.has(q.id)?"used":""}" data-q="${q.id}" ${state.asked.has(q.id)?"disabled":""}>
+    <span>${i+1}</span><b>${q.text}</b><small>${q.relevanceLabel}</small>
+  </button>`).join("");
+  box.querySelectorAll(".question-choice:not(:disabled)").forEach(b=>b.addEventListener("click",()=>selectQuestion(b.dataset.q)));
+  $("progress-text").textContent=`${state.asked.size} / ${STAGE_1.questions.length}`;
+  $("progress-bar").style.width=`${state.asked.size/STAGE_1.questions.length*100}%`;
 }
-function formatEvidence(value){
-  const labels={technology:"Inson–texnika",signs:"Inson–belgilar tizimi",artistic:"Inson–badiiy obraz",nature:"Inson–tabiat",people:"Inson–inson",creativity:"Ijodkorlik",logic:"Tahliliy qiziqish",practical:"Amaliy faoliyat",communication:"Muloqot"};
-  return labels[value]||value;
+function selectQuestion(id){
+  const q=STAGE_1.questions.find(x=>x.id===id); if(!q)return;
+  $("question-level").textContent=q.relevanceLabel; $("question-text").textContent=q.text;
+  $("question-purpose").textContent=""; $("answer-box").hidden=true; $("ask-btn").hidden=false;
+  $("ask-btn").onclick=()=>askQuestion(q); $("mood").textContent="Savolni kutmoqda";
 }
-function askQuestion(){if(state.answered||!getQuestion())return;state.answered=true;renderQuestion();}
-document.addEventListener("DOMContentLoaded",()=>{renderStudentList();$("ask-btn")?.addEventListener("click",askQuestion);});
+function askQuestion(q){
+  if(state.asked.has(q.id))return;
+  state.asked.add(q.id);
+  const answer=q.answers[getStudent().id]; state.signals.push(...(answer.signals||[]));
+  $("answer-text").textContent=answer.text; $("answer-box").hidden=false; $("ask-btn").hidden=true; $("mood").textContent="Javob berdi";
+  renderQuestionMenu();
+}
+function clearAnswer(){ $("question-text").textContent="Savolni tanlang"; $("question-level").textContent=""; $("answer-text").textContent=""; $("answer-box").hidden=true; $("ask-btn").hidden=true; $("mood").textContent="Savolni kutmoqda"; }
+document.addEventListener("DOMContentLoaded",renderStudentList);
