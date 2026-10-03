@@ -147,6 +147,25 @@ function goToNextStage(){
     $("question-label").textContent="SAVOLNI TANLANG";
     $("mood").textContent="Savolni kutmoqda";
     renderQuestionChoices();
+  else if(state.currentStage===3){
+    state.currentStage=4;
+    state.asked=false;
+    state.currentQuestion=null;
+    state.questionOrder=shuffle(STAGE_4.questions);
+    $("stage-title").textContent=STAGE_4.title;
+    $("stage-description").textContent=STAGE_4.description;
+    $("progress-text").textContent="4 / 5";
+    $("progress-bar").style.width="60%";
+    $("question-card").classList.remove("answered-card","answer-mode");
+    $("screen-game").classList.remove("answer-only");
+    $("question-text").hidden=true;
+    $("answer-box").hidden=true;
+    $("next-stage-btn").hidden=true;
+    $("ask-btn").hidden=true;
+    $("question-label").hidden=false;
+    $("question-label").textContent="SAVOLNI TANLANG";
+    $("mood").textContent="Savolni kutmoqda";
+    renderQuestionChoices();
   }
 }
 
