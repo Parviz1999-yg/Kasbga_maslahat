@@ -154,22 +154,12 @@ function scheduleNextAvatarBlink(avatar){
     scheduleNextAvatarBlink(avatar);
   },next);
 }
-function startGazeSystem{
+function startGazeSystem(){
   const move=e=>setGaze(e.clientX,e.clientY);
   if(!state.gazeStarted){
     document.addEventListener("pointermove",move,{passive:true});
     document.addEventListener("touchmove",e=>{const t=e.touches[0];if(t)setGaze(t.clientX,t.clientY);},{passive:true});
     state.gazeStarted=true;
   }
-  scheduleBlink();
 }
-function scheduleBlink(){
-  const avatars=[...document.querySelectorAll(".css-person")];
-  if(!avatars.length)return;
-  setTimeout(()=>{
-    avatars.forEach(a=>a.classList.add("blink-now"));
-    setTimeout(()=>avatars.forEach(a=>a.classList.remove("blink-now")),170);
-    scheduleBlink();
-  },3200+Math.random()*3600);
-}
-document.addEventListener("DOMContentLoaded",renderStudentList);
+document.addEventListener("DOMContentLoaded",()=>{renderStudentList();startBlinkSystem();});
