@@ -1,4 +1,4 @@
-const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],gazeStarted:false};
+const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],gazeStarted:false,gazeTimer:null};
 const $=id=>document.getElementById(id);
 
 function showScreen(id){
@@ -108,13 +108,27 @@ function animateResponse(){
 function setGaze(clientX,clientY){
   document.querySelectorAll(".css-person").forEach(person=>{
     const rect=person.getBoundingClientRect();
-    const x=(clientX-(rect.left+rect.width/2))/(rect.width/2);
-    const y=(clientY-(rect.top+rect.height/2))/(rect.height/2);
-    const gx=Math.max(-2.5,Math.min(2.5,x*2.5));
-    const gy=Math.max(-1.7,Math.min(1.7,y*1.7));
+    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    const dx=clientX-cx, dy=clientY-cy;
+    const distance=Math.hypot(dx,dy);
+    if(distance<70){
+      person.style.setProperty("--gaze-x","0px");
+      person.style.setProperty("--gaze-y","0px");
+      return;
+    }
+    const maxX=3.2, maxY=2.1;
+    const gx=Math.max(-maxX,Math.min(maxX,dx/70));
+    const gy=Math.max(-maxY,Math.min(maxY,dy/70));
     person.style.setProperty("--gaze-x",gx+"px");
     person.style.setProperty("--gaze-y",gy+"px");
   });
+  clearTimeout(state.gazeTimer);
+  state.gazeTimer=setTimeout(()=>{
+    document.querySelectorAll(".css-person").forEach(person=>{
+      person.style.setProperty("--gaze-x","0px");
+      person.style.setProperty("--gaze-y","0px");
+    });
+  },900);
 }
 function startGazeSystem(){
   const move=e=>setGaze(e.clientX,e.clientY);
