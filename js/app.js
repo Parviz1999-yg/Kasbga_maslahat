@@ -128,7 +128,7 @@ function goToNextStage(){
     $("mood").textContent="Savolni kutmoqda";
     renderQuestionChoices();
   }
-  if(state.currentStage===2){
+  else if(state.currentStage===2){
     state.currentStage=3;
     state.asked=false;
     state.currentQuestion=null;
