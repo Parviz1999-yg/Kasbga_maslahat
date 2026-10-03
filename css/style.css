@@ -425,3 +425,28 @@ body:before{
 .career-expanded>b{font-size:12px;color:#69c7ff}
 .career-expanded>div{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 @media(max-width:700px){.career-group-card{grid-template-columns:42px 1fr}.career-group-score{grid-column:2;justify-self:start}}
+
+/* Stage 1 visual interaction: ko‘z, qorachiq, qarash va yangi kartalar */
+.eye{transition:transform .12s ease}
+.css-person .eye{transform-origin:center}
+.css-person.blink-now .eye{animation:eyeBlink .16s ease-in-out both}
+.css-person.blink-now .pupil{opacity:0}
+@keyframes eyeBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.08)}}
+.answered-card{animation:answerCardGlow .8s ease-out}
+@keyframes answerCardGlow{0%{transform:scale(.99);box-shadow:0 0 0 rgba(105,199,255,0)}55%{transform:scale(1.008);box-shadow:0 0 38px rgba(105,199,255,.14)}100%{transform:scale(1)}}
+.primary-btn{position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}
+.primary-btn:after{content:"";position:absolute;inset:0;transform:translateX(-110%);background:linear-gradient(100deg,transparent,rgba(255,255,255,.28),transparent);transition:transform .55s ease}
+.primary-btn:hover:after{transform:translateX(110%)}
+.question-card{transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease}
+.question-card:hover{transform:translateY(-2px);border-color:rgba(105,199,255,.38)}
+.answer-box{margin-top:22px;padding:20px;border-radius:18px;background:linear-gradient(145deg,rgba(14,35,59,.94),rgba(6,16,30,.96));border:1px solid rgba(105,199,255,.24);animation:speechIn .45s cubic-bezier(.2,.8,.2,1)}
+.answer-box p{font-size:clamp(18px,2.1vw,23px);line-height:1.6;margin:9px 0 0;color:#eef8ff}
+.student-option{font:inherit}
+.student-option .student-avatar{flex:none}
+.student-option .student-info{min-width:0}
+.student-option .student-info span{display:block;color:#8eabb2;font-size:12px;margin-top:2px}
+.student-option .student-check{position:absolute;right:10px;top:9px}
+@media(max-width:700px){
+  .primary-btn{width:100%}
+  .question-card h2{font-size:26px}
+}
