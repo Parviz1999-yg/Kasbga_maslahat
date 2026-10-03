@@ -69,6 +69,7 @@ function chooseQuestion(id){
   $("question-text").hidden=false;
   $("ask-btn").hidden=false;
   $("ask-btn").textContent="Ushbu savolni berish";
+  $("ask-btn").onclick=askQuestion;
   $("question-list").hidden=true;
   $("question-label")?.classList.add("hidden");
 }
@@ -85,6 +86,8 @@ function askQuestion(){
   $("ask-btn").hidden=true;
   $("question-list").hidden=true;
   $("answer-box").hidden=false;
+  $("ask-btn").hidden=true;
+  $("question-label")?.classList.add("hidden");
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
   $("question-card").classList.add("answered-card");
