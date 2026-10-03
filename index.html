@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasbga maslahat — Kasb tanlash simulyatori</title>
-  <link rel="stylesheet" href="css/style.css?v=class-2">
+  <title>Kasbga maslahat — Pedagogik simulyator</title>
+  <link rel="stylesheet" href="css/style.css?v=stage1">
 </head>
 <body>
   <main class="app-shell">
@@ -12,26 +12,26 @@
       <div class="hero-card">
         <div class="badge">KASB-HUNARGA O‘QITISH METODIKASI</div>
         <h1>Kasbga maslahat</h1>
-        <p class="subtitle">Kasb tanlashda yo‘l qo‘yiladigan tipik xatoliklarni aniqlash bo‘yicha pedagogik simulyator.</p>
+        <p class="subtitle">8–9-sinf o‘quvchisi bilan kasbga yo‘naltirish suhbatini mashq qilish uchun pedagogik simulyator.</p>
         <div class="case-card">
           <div class="avatar avatar-start css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
           <div>
-            <h2>Virtual o‘quvchilar bilan ishlash</h2>
-            <p>Har bir o‘quvchining yashirin qobiliyatlari, qiziqishlari va qaror konteksti turlicha. Savollar ham aynan shu o‘quvchiga mos tanlanadi.</p>
+            <h2>Maslahatchi sifatida ishlang</h2>
+            <p id="start-intro">Avval o‘quvchini tanlang. Keyin u bilan suhbat boshlanadi va savol orqali kerakli ma’lumotni o‘zingiz aniqlaysiz.</p>
           </div>
         </div>
         <div class="student-selection">
           <div class="section-heading">
             <span class="eyebrow">MASLAHAT OLUVCHINI TANLANG</span>
             <h2>Qaysi o‘quvchi bilan ishlaysiz?</h2>
-            <p>O‘quvchini tanlang. Avval u sizga murojaat qiladi, keyin suhbat davomida kerakli ma’lumotlarni savollar orqali o‘zingiz aniqlaysiz.</p>
+            <p>Har bir o‘quvchining javobi individual. Bir xil savol turli o‘quvchilarda turli dalillarni ochadi.</p>
           </div>
           <div id="student-list" class="student-list"></div>
         </div>
         <div class="rules">
-          <div><b>5 ta savol</b><span>6 ta variantdan tanlaysiz</span></div>
-          <div><b>Jonli suhbat</b><span>ma’lumotni savol bilan topasiz</span></div>
-          <div><b>Yakuniy tavsiya</b><span>dalillar bilan asoslanadi</span></div>
+          <div><b>1-bosqich</b><span>Mehnat predmetini aniqlash</span></div>
+          <div><b>1 ta savol</b><span>hozircha sinov uchun</span></div>
+          <div><b>5 daraja</b><span>savolning diagnostik aloqadorligi</span></div>
         </div>
         <button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button>
       </div>
@@ -40,68 +40,48 @@
     <section id="screen-game" class="screen">
       <header class="game-header">
         <div>
-          <span class="eyebrow">KASBIY MASLAHAT</span>
-          <h1>Azizbek bilan suhbat</h1>
+          <span class="eyebrow" id="stage-title">1-bosqich</span>
+          <h1 id="teen-name">O‘quvchi</h1>
+          <p id="stage-description" class="stage-description"></p>
         </div>
         <div class="progress-wrap">
-          <span id="question-counter">1 / 5</span>
-          <div class="progress"><div id="progress-bar"></div></div>
+          <span>1 / 1</span>
+          <div class="progress"><div style="width:100%"></div></div>
         </div>
       </header>
-
       <div class="game-layout">
         <aside class="teen-panel">
           <div id="teen-avatar" class="avatar teen-avatar css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
-          <h2 id="teen-name">Azizbek</h2>
-          <p id="teen-meta">Suhbatdagi o‘quvchi</p>
-          <div id="mood" class="mood">Suhbatga tayyor</div><div id="evidence-panel" class="evidence-panel"><div class="evidence-title">DALILLAR</div><div id="evidence-list"></div></div><div id="timer" class="timer">00:20</div>
+          <h2 id="teen-meta">Suhbatdagi o‘quvchi</h2>
+          <div id="mood" class="mood">Savolni kutmoqda</div>
+          <div class="evidence-panel">
+            <div class="evidence-title">ANIQLANAYOTGAN DALILLAR</div>
+            <div id="evidence-list"></div>
+          </div>
         </aside>
-
         <section class="conversation">
           <div class="question-card">
-            <span class="question-label">SAVOL TANLANG</span>
-            <h2 id="question-text">...</h2>
-            <div id="answers" class="answers"></div>
+            <span class="question-label">SAVOL</span>
+            <div class="question-level" id="question-level">Tegishli</div>
+            <h2 id="question-text">Nima bilan ishlashni yoqtirasiz?</h2>
+            <p class="question-purpose" id="question-purpose"></p>
+            <button id="ask-btn" class="primary-btn">Savolni berish</button>
+            <div id="answer-box" class="answer-box" hidden>
+              <span class="question-label">O‘QUVCHINING JAVOBI</span>
+              <p id="answer-text"></p>
+              <div class="answer-analysis">
+                <strong>Bu javobdan hozircha ko‘rinayotgan jihatlar:</strong>
+                <div id="evidence-list-bottom"></div>
+              </div>
+              <button id="continue-btn" class="secondary-btn" disabled>Keyingi savol keyingi bosqichda</button>
+            </div>
           </div>
-          
         </section>
       </div>
     </section>
-
-    <section id="screen-profession" class="screen">
-      <div class="result-card">
-        <div id="profession-avatar" class="avatar avatar-start css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
-        <span class="eyebrow">5-SAVOLDAN SO‘NG</span>
-        <h1>Endi kasbni tavsiya qiling</h1>
-        <p>Yig‘ilgan dalillarga tayangan holda <span id="profession-student-name">o‘quvchiga</span> mos deb hisoblagan kasbni tanlang.</p>
-        <div id="profession-list" class="profession-list"></div>
-      </div>
-    </section>
-
-    <section id="screen-result" class="screen">
-      <div class="result-card">
-        <div id="result-avatar" class="result-avatar">🎉</div>
-        <span class="eyebrow">MASLAHAT NATIJASI</span>
-        <h1 id="result-title">Natija</h1>
-        <p id="result-summary"></p>
-        <div id="score-grid" class="score-grid"></div>
-        <div class="feedback-grid">
-          <div><h3>Foydali savollar</h3><ul id="useful-questions"></ul></div>
-          <div><h3>E’tibor talab qilgan jihatlar</h3><ul id="weak-points"></ul></div>
-        </div>
-                <div id="system-recommendation" class="system-recommendation"></div>
-        <div id="career-groups-panel" class="career-groups-panel"></div>
-        <div id="dialogue-graph" class="dialogue-graph"></div>
-        <div class="lesson">
-          <b>Metodik xulosa</b>
-          <p id="methodology"></p>
-        </div>
-        <button id="restart-btn" class="primary-btn">Qayta sinash ↻</button>
-      </div>
-    </section>
   </main>
-  <script src="js/data.js?v=class-1"></script>
-  <script src="js/app.js?v=class-1"></script>
-  <script src="js/pedagogy.js?v=ped-20261002"></script>
+  <script src="js/data/students.js?v=stage1"></script>
+  <script src="js/data/stage1.js?v=stage1"></script>
+  <script src="js/app.js?v=stage1"></script>
 </body>
 </html>
