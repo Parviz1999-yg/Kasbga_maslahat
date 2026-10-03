@@ -8,71 +8,66 @@ const STAGE_2 = {
     {
       id:"s2q1",
       text:"Qanday joyda ishlashni yoqtirasiz?",
-      evidenceRelevance:5,
       evidenceType:"direct",
       answers:{
-        azizbek:{text:"Tinch, yopiq joyda.",signals:["indoor","calm"]},
-        madina:{text:"Yorug‘ va erkin joyda.",signals:["indoor","creative"]},
-        javohir:{text:"Tartibli joyda.",signals:["indoor","order"]},
-        sevinch:{text:"Toza va qulay joyda.",signals:["indoor","clean"]},
-        diyor:{text:"Ustaxona kabi joyda.",signals:["practical","active"]},
-        zuhra:{text:"Odamlar bor joyda.",signals:["social"]}
+        azizbek:{evidenceRelevance:5,text:"Tinch, yopiq joyda.",signals:["indoor","calm"]},
+        madina:{evidenceRelevance:4,text:"Yorug‘ va erkin joyda.",signals:["indoor","creative"]},
+        javohir:{evidenceRelevance:3,text:"Tartibli joyda.",signals:["indoor","order"]},
+        sevinch:{evidenceRelevance:2,text:"Toza va qulay joyda.",signals:["indoor","clean"]},
+        diyor:{evidenceRelevance:5,text:"Ustaxona kabi joyda.",signals:["practical","active"]},
+        zuhra:{evidenceRelevance:4,text:"Odamlar bor joyda.",signals:["social"]}
       }
     },
     {
       id:"s2q2",
       text:"Ish joyingiz tinch bo‘lishini xohlaysizmi?",
-      evidenceRelevance:5,
       evidenceType:"direct",
       answers:{
-        azizbek:{text:"Ha, albatta.",signals:["calm"]},
-        madina:{text:"Juda jim bo‘lmasa yaxshi.",signals:["moderate"]},
-        javohir:{text:"Ha, tinchlik kerak.",signals:["calm"]},
-        sevinch:{text:"Ha, qulayroq.",signals:["calm"]},
-        diyor:{text:"Biroz harakat bo‘lsa yaxshi.",signals:["active"]},
-        zuhra:{text:"Odamlar bilan suhbat bo‘lsa yaxshi.",signals:["social","active"]}
+        azizbek:{evidenceRelevance:4,text:"Ha, albatta.",signals:["calm"]},
+        madina:{evidenceRelevance:5,text:"Juda jim bo‘lmasa yaxshi.",signals:["moderate"]},
+        javohir:{evidenceRelevance:2,text:"Ha, tinchlik kerak.",signals:["calm"]},
+        sevinch:{evidenceRelevance:3,text:"Ha, qulayroq.",signals:["calm"]},
+        diyor:{evidenceRelevance:3,text:"Biroz harakat bo‘lsa yaxshi.",signals:["active"]},
+        zuhra:{evidenceRelevance:2,text:"Odamlar bilan suhbat bo‘lsa yaxshi.",signals:["social","active"]}
       }
     },
     {
       id:"s2q3",
       text:"Odamlar bilan birga ishlash sizga yoqadimi?",
-      evidenceRelevance:5,
       evidenceType:"direct",
       answers:{
-        azizbek:{text:"Ba’zan.",signals:["mixed-social"]},
-        madina:{text:"Ha, yoqadi.",signals:["social"]},
-        javohir:{text:"Kerak bo‘lsa.",signals:["mixed-social"]},
-        sevinch:{text:"Ha, juda yoqadi.",signals:["social"]},
-        diyor:{text:"Kichik guruh bilan.",signals:["team"]},
-        zuhra:{text:"Ha, juda yoqadi.",signals:["social"]}
+        azizbek:{evidenceRelevance:3,text:"Ba’zan.",signals:["mixed-social"]},
+        madina:{evidenceRelevance:2,text:"Ha, yoqadi.",signals:["social"]},
+        javohir:{evidenceRelevance:5,text:"Kerak bo‘lsa.",signals:["mixed-social"]},
+        sevinch:{evidenceRelevance:4,text:"Ha, juda yoqadi.",signals:["social"]},
+        diyor:{evidenceRelevance:4,text:"Kichik guruh bilan.",signals:["team"]},
+        zuhra:{evidenceRelevance:5,text:"Ha, juda yoqadi.",signals:["social"]}
       }
     },
     {
       id:"s2q4",
       text:"Turli joylarda ishlashga qanday qaraysiz?",
-      evidenceRelevance:4,
       evidenceType:"indirect",
       answers:{
-        azizbek:{text:"Bir joy qulayroq.",signals:["stable"]},
-        madina:{text:"Juda qiziq.",signals:["variety"]},
-        javohir:{text:"Vaziyatga qarab.",signals:["flexible"]},
-        sevinch:{text:"Farqi yo‘q.",signals:["neutral"]},
-        diyor:{text:"Yaxshi, yoqadi.",signals:["variety","active"]},
-        zuhra:{text:"Yangi joylar yoqadi.",signals:["variety","social"]}
+        azizbek:{evidenceRelevance:2,text:"Bir joy qulayroq.",signals:["stable"]},
+        madina:{evidenceRelevance:3,text:"Juda qiziq.",signals:["variety"]},
+        javohir:{evidenceRelevance:4,text:"Vaziyatga qarab.",signals:["flexible"]},
+        sevinch:{evidenceRelevance:5,text:"Farqi yo‘q.",signals:["neutral"]},
+        diyor:{evidenceRelevance:2,text:"Yaxshi, yoqadi.",signals:["variety","active"]},
+        zuhra:{evidenceRelevance:3,text:"Yangi joylar yoqadi.",signals:["variety","social"]}
       }
     },
     {
       id:"s2q5",
       text:"Maktabdan keyin bo‘sh vaqtingizni qanday o‘tkazishni yoqtirasiz?",
-      evidenceRelevance:1,
       evidenceType:"distractor",
       answers:{
-        azizbek:{text:"Kompyuterda o‘yin o‘ynashni yoki video ko‘rishni.",signals:[]},
-        madina:{text:"Rasm chizishni yoki musiqa tinglashni.",signals:[]},
-        javohir:{text:"Kitob o‘qishni yoki masalalar yechishni.",signals:[]},
-        sevinch:{text:"Tabiat qo‘ynida sayr qilishni.",signals:[]},
-        diyor:{text:"Sport bilan shug‘ullanishni.",signals:[]},
-        zuhra:{text:"Do‘stlarim bilan suhbatlashishni.",signals:[]}
+        azizbek:{evidenceRelevance:1,text:"Kompyuterda o‘yin o‘ynashni yoki video ko‘rishni.",signals:[]},
+        madina:{evidenceRelevance:1,text:"Rasm chizishni yoki musiqa tinglashni.",signals:[]},
+        javohir:{evidenceRelevance:1,text:"Kitob o‘qishni yoki masalalar yechishni.",signals:[]},
+        sevinch:{evidenceRelevance:1,text:"Tabiat qo‘ynida sayr qilishni.",signals:[]},
+        diyor:{evidenceRelevance:1,text:"Sport bilan shug‘ullanishni.",signals:[]},
+        zuhra:{evidenceRelevance:1,text:"Do‘stlarim bilan suhbatlashishni.",signals:[]}
       }
     }
   ]
