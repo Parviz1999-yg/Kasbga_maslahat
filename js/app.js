@@ -1,4 +1,4 @@
-const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],gazeStarted:false,gazeTimer:null};
+const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],gazeStarted:false,gazeTimer:null,blinkStarted:false};
 const $=id=>document.getElementById(id);
 
 function showScreen(id){
@@ -49,6 +49,7 @@ function startConversation(){
   renderQuestionChoices();
   showScreen("screen-game");
   startGazeSystem();
+  startBlinkSystem();
 }
 function renderQuestionChoices(){
   const list=$("question-list");
@@ -90,7 +91,7 @@ function askQuestion(){
   $("question-label").hidden=true;
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
-  $("question-card").classList.add("answered-card");
+  $("question-card").classList.add("answered-card","answer-mode");
   document.querySelectorAll(".question-choice").forEach(btn=>{
     btn.disabled=true;
     btn.classList.toggle("chosen",btn.dataset.questionId===q.id);
@@ -130,7 +131,30 @@ function setGaze(clientX,clientY){
     });
   },900);
 }
-function startGazeSystem(){
+function startBlinkSystem(){
+  if(state.blinkStarted)return;
+  state.blinkStarted=true;
+  document.querySelectorAll(".css-person").forEach(scheduleAvatarBlink);
+}
+function scheduleAvatarBlink(avatar){
+  if(!avatar || avatar.dataset.blinkBound==="1")return;
+  avatar.dataset.blinkBound="1";
+  const next=2600+Math.random()*6200;
+  setTimeout(()=>{
+    avatar.classList.add("blink-now");
+    setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
+    scheduleNextAvatarBlink(avatar);
+  },next);
+}
+function scheduleNextAvatarBlink(avatar){
+  const next=3200+Math.random()*7200;
+  setTimeout(()=>{
+    avatar.classList.add("blink-now");
+    setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
+    scheduleNextAvatarBlink(avatar);
+  },next);
+}
+function startGazeSystem{
   const move=e=>setGaze(e.clientX,e.clientY);
   if(!state.gazeStarted){
     document.addEventListener("pointermove",move,{passive:true});
