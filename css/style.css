@@ -495,3 +495,61 @@ body:before{
   to{opacity:1;transform:translateY(0) scale(1)}
 }
 .css-person .pupil{transition:transform .14s cubic-bezier(.2,.8,.2,1)}
+
+
+/* Javob berilgach — faqat markaziy savol-javob oynasi */
+.screen.answer-only{
+  padding:24px;
+  align-items:center;
+  justify-content:center;
+}
+.screen.answer-only .game-header,
+.screen.answer-only .teen-panel{display:none!important}
+.screen.answer-only .game-layout{
+  width:min(900px,100%);
+  display:block;
+  margin:0;
+}
+.screen.answer-only .conversation{width:100%;min-width:0}
+.screen.answer-only .question-card{
+  width:100%;
+  min-height:420px;
+  margin:0;
+  padding:52px clamp(28px,6vw,72px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:stretch;
+  text-align:center;
+  cursor:default;
+}
+.screen.answer-only .question-card:hover{transform:none}
+.screen.answer-only .question-card .question-label,
+.screen.answer-only .question-list,
+.screen.answer-only .question-card .primary-btn{display:none!important}
+.screen.answer-only .selected-question-text{
+  display:block!important;
+  margin:0 auto 24px;
+  max-width:760px;
+  font-size:clamp(25px,4vw,40px);
+  line-height:1.3;
+}
+.screen.answer-only .answer-window{
+  width:100%;
+  min-height:190px;
+  margin:0;
+  text-align:left;
+}
+.screen.answer-only .answer-window .question-label{display:block!important;text-align:left}
+.screen.answer-only .answer-window p{max-width:none}
+
+/* Har bir qiyofa mustaqil ko'z yumadi — bir vaqtda saf tortib emas */
+.css-person.blink-now .eye{animation:eyeBlink .16s ease-in-out both}
+.css-person.blink-now .pupil{opacity:0}
+@keyframes eyeBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.08)}}
+@media(max-width:700px){
+  .screen.answer-only{padding:16px}
+  .screen.answer-only .question-card{min-height:360px;padding:36px 20px}
+  .screen.answer-only .selected-question-text{font-size:25px}
+  .screen.answer-only .answer-window{min-height:170px;padding:22px}
+}
