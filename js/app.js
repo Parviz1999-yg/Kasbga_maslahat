@@ -141,7 +141,7 @@ function startBlinkSystem(){
 function scheduleAvatarBlink(avatar){
   if(!avatar || avatar.dataset.blinkBound==="1")return;
   avatar.dataset.blinkBound="1";
-  const next=2600+Math.random()*6200;
+  const next=1800+Math.random()*4200;
   setTimeout(()=>{
     avatar.classList.add("blink-now");
     setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
@@ -149,7 +149,7 @@ function scheduleAvatarBlink(avatar){
   },next);
 }
 function scheduleNextAvatarBlink(avatar){
-  const next=3200+Math.random()*7200;
+  const next=3000+Math.random()*6500;
   setTimeout(()=>{
     avatar.classList.add("blink-now");
     setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
