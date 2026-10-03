@@ -1,87 +1,17 @@
 <!DOCTYPE html>
 <html lang="uz">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasbga maslahat — Pedagogik simulyator</title>
-  <link rel="stylesheet" href="css/style.css?v=stage1">
-</head>
-<body>
-  <main class="app-shell">
-    <section id="screen-start" class="screen active">
-      <div class="hero-card">
-        <div class="badge">KASB-HUNARGA O‘QITISH METODIKASI</div>
-        <h1>Kasbga maslahat</h1>
-        <p class="subtitle">8–9-sinf o‘quvchisi bilan kasbga yo‘naltirish suhbatini mashq qilish uchun pedagogik simulyator.</p>
-        <div class="case-card">
-          <div class="avatar avatar-start css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
-          <div>
-            <h2>Maslahatchi sifatida ishlang</h2>
-            <p id="start-intro">Avval o‘quvchini tanlang. Keyin u bilan suhbat boshlanadi va savol orqali kerakli ma’lumotni o‘zingiz aniqlaysiz.</p>
-          </div>
-        </div>
-        <div class="student-selection">
-          <div class="section-heading">
-            <span class="eyebrow">MASLAHAT OLUVCHINI TANLANG</span>
-            <h2>Qaysi o‘quvchi bilan ishlaysiz?</h2>
-            <p>Har bir o‘quvchining javobi individual. Bir xil savol turli o‘quvchilarda turli dalillarni ochadi.</p>
-          </div>
-          <div id="student-list" class="student-list"></div>
-        </div>
-        <div class="rules">
-          <div><b>1-bosqich</b><span>Mehnat predmetini aniqlash</span></div>
-          <div><b>1 ta savol</b><span>hozircha sinov uchun</span></div>
-          <div><b>5 daraja</b><span>savolning diagnostik aloqadorligi</span></div>
-        </div>
-        <button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button>
-      </div>
-    </section>
-
-    <section id="screen-game" class="screen">
-      <header class="game-header">
-        <div>
-          <span class="eyebrow" id="stage-title">1-bosqich</span>
-          <h1 id="teen-name">O‘quvchi</h1>
-          <p id="stage-description" class="stage-description"></p>
-        </div>
-        <div class="progress-wrap">
-          <span>1 / 1</span>
-          <div class="progress"><div style="width:100%"></div></div>
-        </div>
-      </header>
-      <div class="game-layout">
-        <aside class="teen-panel">
-          <div id="teen-avatar" class="avatar teen-avatar css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
-          <h2 id="teen-meta">Suhbatdagi o‘quvchi</h2>
-          <div id="mood" class="mood">Savolni kutmoqda</div>
-          <div class="evidence-panel">
-            <div class="evidence-title">ANIQLANAYOTGAN DALILLAR</div>
-            <div id="evidence-list"></div>
-          </div>
-        </aside>
-        <section class="conversation">
-          <div class="question-card">
-            <span class="question-label">SAVOL</span>
-            <div class="question-level" id="question-level">Tegishli</div>
-            <h2 id="question-text">Nima bilan ishlashni yoqtirasiz?</h2>
-            <p class="question-purpose" id="question-purpose"></p>
-            <button id="ask-btn" class="primary-btn">Savolni berish</button>
-            <div id="answer-box" class="answer-box" hidden>
-              <span class="question-label">O‘QUVCHINING JAVOBI</span>
-              <p id="answer-text"></p>
-              <div class="answer-analysis">
-                <strong>Bu javobdan hozircha ko‘rinayotgan jihatlar:</strong>
-                <div id="evidence-list-bottom"></div>
-              </div>
-              <button id="continue-btn" class="secondary-btn" disabled>Keyingi savol keyingi bosqichda</button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </section>
-  </main>
-  <script src="js/data/students.js?v=stage1"></script>
-  <script src="js/data/stage1.js?v=stage1"></script>
-  <script src="js/app.js?v=stage1"></script>
-</body>
-</html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Kasbga maslahat — Pedagogik simulyator</title><link rel="stylesheet" href="css/style.css?v=stage1"></head>
+<body><main class="app-shell">
+<section id="screen-start" class="screen active"><div class="hero-card">
+<div class="badge">KASB-HUNARGA O‘QITISH METODIKASI</div><h1>Kasbga maslahat</h1>
+<p class="subtitle">8–9-sinf o‘quvchisi bilan kasbga yo‘naltirish suhbatini mashq qilish uchun pedagogik simulyator.</p>
+<div class="case-card"><div class="avatar avatar-start css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div><div><h2>Maslahatchi sifatida ishlang</h2><p id="start-intro">Avval o‘quvchini tanlang. Keyin savollarni o‘zingiz tanlab, suhbatni olib boring.</p></div></div>
+<div class="student-selection"><div class="section-heading"><span class="eyebrow">MASLAHAT OLUVCHINI TANLANG</span><h2>Qaysi o‘quvchi bilan ishlaysiz?</h2><p>Har bir o‘quvchining javobi individual.</p></div><div id="student-list" class="student-list"></div></div>
+<div class="rules"><div><b>1-bosqich</b><span>Mehnat predmetiga oid suhbat</span></div><div><b>5 ta savol</b><span>istalgan tartibda tanlanadi</span></div><div><b>5 daraja</b><span>savolning aloqadorligi</span></div></div>
+<button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button></div></section>
+<section id="screen-game" class="screen"><header class="game-header"><div><span class="eyebrow" id="stage-title">1-bosqich</span><h1 id="teen-name">O‘quvchi</h1><p id="stage-description" class="stage-description"></p></div><div class="progress-wrap"><span id="progress-text">0 / 5</span><div class="progress"><div id="progress-bar" style="width:0%"></div></div></div></header>
+<div class="game-layout"><aside class="teen-panel"><div id="teen-avatar" class="avatar teen-avatar css-person person-azizbek"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div><h2 id="teen-meta">9-sinf · 15 yosh</h2><div id="mood" class="mood">Savolni kutmoqda</div></aside>
+<section class="conversation"><div class="question-selector"><div class="question-label">SAVOLLAR BANKI</div><div id="question-menu"></div></div>
+<div class="question-card"><span class="question-label">TANLANGAN SAVOL</span><div class="question-level" id="question-level"></div><h2 id="question-text">Savolni tanlang</h2><p class="question-purpose" id="question-purpose"></p><button id="ask-btn" class="primary-btn" hidden>Savolni berish</button>
+<div id="answer-box" class="answer-box" hidden><span class="question-label">O‘QUVCHINING JAVOBI</span><p id="answer-text"></p></div></div></section></div></section>
+</main><script src="js/data/students.js?v=stage1"></script><script src="js/data/stage1.js?v=stage1"></script><script src="js/app.js?v=stage1"></script></body></html>
