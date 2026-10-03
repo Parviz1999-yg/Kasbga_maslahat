@@ -463,3 +463,13 @@ body:before{
 .question-choice:hover .choice-arrow{transform:translateX(4px)}
 .selected-question-text{margin-top:20px}
 @media(max-width:700px){.question-choice{grid-template-columns:34px 1fr 18px;padding:14px}.choice-text{font-size:15px}}
+
+/* Jonli qarash va javob paytidagi fokus */
+.css-person .pupil{transition:transform .08s linear}
+.css-person{--gaze-x:0px;--gaze-y:0px}
+.css-person .pupil{transform:translate(var(--gaze-x),var(--gaze-y))}
+.css-person .eye{overflow:hidden}
+.question-card.answer-focus .question-list,
+.question-card.answer-focus .question-label:first-child{display:none}
+.question-card.answer-focus{min-height:220px}
+.question-card.answer-focus .selected-question-text{display:block!important}
