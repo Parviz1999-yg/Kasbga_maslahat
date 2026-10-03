@@ -44,7 +44,7 @@ function startConversation(){
   $("teen-avatar").className=`avatar teen-avatar css-person ${s.avatarClass}`;
   $("stage-title").textContent=STAGE_1.title;
   $("stage-description").textContent=STAGE_1.description;
-  $("progress-text").textContent=`1 / ${STAGE_1.questions.length}`;
+  $("progress-text").textContent="1 / 1";
   $("progress-bar").style.width="0%";
   renderQuestionChoices();
   showScreen("screen-game");
@@ -71,7 +71,7 @@ function chooseQuestion(id){
   $("ask-btn").textContent="Ushbu savolni berish";
   $("ask-btn").onclick=askQuestion;
   $("question-list").hidden=true;
-  $("question-label")?.classList.add("hidden");
+  $("question-label").hidden=true;
 }
 function askQuestion(){
   if(state.asked||!state.currentQuestion)return;
@@ -87,7 +87,7 @@ function askQuestion(){
   $("question-list").hidden=true;
   $("answer-box").hidden=false;
   $("ask-btn").hidden=true;
-  $("question-label")?.classList.add("hidden");
+  $("question-label").hidden=true;
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
   $("question-card").classList.add("answered-card");
