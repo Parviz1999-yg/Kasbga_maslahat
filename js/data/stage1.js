@@ -1,59 +1,62 @@
 const STAGE_1 = {
-  id: "stage1-person-object",
-  title: "1-bosqich: Mehnat predmetiga ko‘ra kasbiy moyillik",
-  criterion: "Mehnat predmeti",
-  description: "Suhbat davomida o‘quvchi ko‘proq nima bilan ishlashga qiziqishini aniqlash: inson, texnika, belgilar tizimi, badiiy obraz yoki tabiat.",
-  objectTypes: {
-    people: "Inson–inson",
-    technology: "Inson–texnika",
-    signs: "Inson–belgilar tizimi",
-    artistic: "Inson–badiiy obraz",
-    nature: "Inson–tabiat"
-  },
-  questions: [
+  id:"stage1-person-object",
+  title:"1-bosqich: Mehnat predmetiga ko‘ra kasbiy moyillik",
+  criterion:"Mehnat predmeti",
+  description:"O‘quvchi nimaga qiziqishi va qanday faoliyatga moyilligini suhbat orqali aniqlang.",
+  questions:[
     {
-      id: "s1q1",
-      text: "Nima bilan ishlashni yoqtirasiz?",
-      relevance: "tegishli",
-      relevanceLabel: "Tegishli",
-      diagnosticPurpose: "O‘quvchining mehnat predmetiga bo‘lgan dastlabki moyilligini aniqlash.",
-      answers: {
-        azizbek: {
-          text: "Menga kompyuterlar, turli qurilmalar va ularning qanday ishlashini o‘rganish yoqadi. Biror texnikani ko‘rsam, ichidagi qismlari qanday ishlashini tushunishga qiziqaman. Ba’zan dastur bilan ishlash yoki qurilmani sozlab ko‘rish ham menga qiziq.",
-          evidence: ["technology", "signs"],
-          objectTypes: ["technology", "signs"],
-          note: "Texnik qurilmalar bilan ishlash va ularning ishlash tamoyilini tushunishga qiziqish bildirildi."
-        },
-        madina: {
-          text: "Men rasmlar, ranglar, bezaklar va dizayn bilan ishlashni yaxshi ko‘raman. Biror narsani chiroyliroq ko‘rinishga keltirish yoki o‘zimcha yangi ko‘rinish yaratish menga zavq beradi. Kompyuterda ham dizayn qilishni sinab ko‘rishni yoqtiraman.",
-          evidence: ["artistic", "creativity"],
-          objectTypes: ["artistic"],
-          note: "Rang, shakl, dizayn va yangi obraz yaratishga qiziqish ko‘rindi."
-        },
-        javohir: {
-          text: "Menga raqamlar, jadvallar va ma’lumotlar bilan ishlash yoqadi. Hisob-kitob qilish, ma’lumotlarni solishtirish yoki biror natijaning qanday chiqqanini aniqlash qiziq tuyuladi. Ayniqsa, tartibli ma’lumotdan xulosa chiqarish menga yoqadi.",
-          evidence: ["signs", "logic"],
-          objectTypes: ["signs"],
-          note: "Raqam, jadval va ma’lumotlarni tahlil qilishga moyillik aniq ko‘rindi."
-        },
-        sevinch: {
-          text: "Men tabiat, o‘simliklar va hayvonlar bilan ishlashni yoqtiraman. Ularning qanday yashashi, o‘sishi yoki nimaga muhtojligini kuzatish qiziq. Odamlarga yordam berish ham menga yoqadi, shuning uchun tirik organizmlar bilan bog‘liq ishlar menga yaqin tuyuladi.",
-          evidence: ["nature", "people"],
-          objectTypes: ["nature", "people"],
-          note: "Tirik tabiatni kuzatish va odamga foyda berish istagi birgalikda namoyon bo‘ldi."
-        },
-        diyor: {
-          text: "Menga mashina, mexanizm va turli asboblar bilan ishlash yoqadi. Biror narsa buzilsa, uning sababini topib, tuzatib ko‘rishga qiziqaman. Qo‘l bilan biror narsani yig‘ish, sozlash yoki ishlatib ko‘rish menga nazariyadan ko‘ra qiziqroq.",
-          evidence: ["technology", "practical"],
-          objectTypes: ["technology"],
-          note: "Mexanizm, asbob va amaliy texnik faoliyatga kuchli qiziqish bildirildi."
-        },
-        zuhra: {
-          text: "Menga odamlar bilan ishlash, gaplashish va ularga biror narsani tushuntirish yoqadi. Kimdir biror masalada qiynalsa, gaplashib, unga yo‘l ko‘rsatishga harakat qilaman. Shuningdek, matn va hujjatlar bilan ishlash ham menga qiziq.",
-          evidence: ["people", "communication", "signs"],
-          objectTypes: ["people", "signs"],
-          note: "Muloqot, tushuntirish va axborot-hujjatlar bilan ishlashga moyillik ko‘rindi."
-        }
+      id:"s1q1", text:"Nima bilan ishlashni yoqtirasiz?", relevance:"tegishli", relevanceLabel:"Tegishli",
+      answers:{
+        azizbek:{text:"Kompyuter va turli texnik qurilmalar bilan ishlashni yoqtiraman.",signals:["technology","signs"]},
+        madina:{text:"Rasmlar, ranglar va dizayn bilan ishlashni yoqtiraman.",signals:["artistic"]},
+        javohir:{text:"Raqamlar, jadvallar va ma’lumotlar bilan ishlashni yoqtiraman.",signals:["signs"]},
+        sevinch:{text:"O‘simliklar, hayvonlar va tabiat bilan ishlashni yoqtiraman.",signals:["nature"]},
+        diyor:{text:"Mashina, mexanizm va asboblar bilan ishlashni yoqtiraman.",signals:["technology"]},
+        zuhra:{text:"Odamlar va matnlar bilan ishlashni yoqtiraman.",signals:["people","signs"]}
+      }
+    },
+    {
+      id:"s1q2", text:"Qanday mashg‘ulotlarni yoqtirasiz?", relevance:"biroz", relevanceLabel:"Biroz tegishli",
+      answers:{
+        azizbek:{text:"Muammo yechish va yangi dasturlarni sinab ko‘rishni yoqtiraman.",signals:["technology","signs"]},
+        madina:{text:"Rasm chizish, bezash va yangi g‘oyalar o‘ylab topishni yoqtiraman.",signals:["artistic"]},
+        javohir:{text:"Hisoblash, taqqoslash va natijalarni tahlil qilishni yoqtiraman.",signals:["signs"]},
+        sevinch:{text:"O‘simliklarni parvarishlash va hayvonlarni kuzatishni yoqtiraman.",signals:["nature"]},
+        diyor:{text:"Biror narsani yig‘ish, tuzatish va sinab ko‘rishni yoqtiraman.",signals:["technology"]},
+        zuhra:{text:"Suhbatlashish, tushuntirish va matn yozishni yoqtiraman.",signals:["people","signs"]}
+      }
+    },
+    {
+      id:"s1q3", text:"Bo‘sh vaqtingizda nima qilasiz?", relevance:"kam", relevanceLabel:"Kam tegishli",
+      answers:{
+        azizbek:{text:"Ko‘pincha kompyuterda turli narsalarni ko‘rib, sinab ko‘raman.",signals:["technology","signs"]},
+        madina:{text:"Rasm chizaman yoki telefonda dizaynlar ko‘raman.",signals:["artistic"]},
+        javohir:{text:"Shaxmat o‘ynayman, ba’zan qiziq ma’lumotlarni izlayman.",signals:["signs"]},
+        sevinch:{text:"Bog‘da yuraman, gullar bilan shug‘ullanaman.",signals:["nature"]},
+        diyor:{text:"Velosipedimni sozlayman yoki mayda buyumlar yasayman.",signals:["technology"]},
+        zuhra:{text:"Kitob o‘qiyman, do‘stlarim bilan suhbatlashaman.",signals:["people","signs"]}
+      }
+    },
+    {
+      id:"s1q4", text:"Qaysi fan sizga yoqadi?", relevance:"uzoq", relevanceLabel:"Uzoq",
+      answers:{
+        azizbek:{text:"Informatika.",signals:["technology","signs"]},
+        madina:{text:"Tasviriy san’at.",signals:["artistic"]},
+        javohir:{text:"Matematika.",signals:["signs"]},
+        sevinch:{text:"Biologiya.",signals:["nature"]},
+        diyor:{text:"Fizika.",signals:["technology"]},
+        zuhra:{text:"Ona tili va adabiyot.",signals:["people","signs"]}
+      }
+    },
+    {
+      id:"s1q5", text:"Kelajakda qancha maosh olishni xohlaysiz?", relevance:"chalg‘ituvchi", relevanceLabel:"Chalg‘ituvchi",
+      answers:{
+        azizbek:{text:"Yaxshi daromad bo‘lishini xohlayman, lekin ish ham qiziqarli bo‘lsin.",signals:["motivation"]},
+        madina:{text:"Daromadi yaxshi bo‘lsa, albatta xursand bo‘laman.",signals:["motivation"]},
+        javohir:{text:"Barqaror va yaxshi daromadli ish bo‘lishini xohlayman.",signals:["motivation"]},
+        sevinch:{text:"Daromadi yetarli bo‘lsa, odamlar uchun foydali ish qilishni xohlayman.",signals:["motivation","people"]},
+        diyor:{text:"Mehnatimga yarasha yaxshi daromad olishni xohlayman.",signals:["motivation"]},
+        zuhra:{text:"Yaxshi daromad bilan birga odamlar bilan ishlash imkoniyati bo‘lishini xohlayman.",signals:["motivation","people"]}
       }
     }
   ]
