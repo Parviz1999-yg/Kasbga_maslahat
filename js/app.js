@@ -48,6 +48,7 @@ function startConversation(){
   $("progress-bar").style.width="0%";
   renderQuestionChoices();
   showScreen("screen-game");
+  $("screen-game").classList.remove("answer-only");
   startGazeSystem();
   startBlinkSystem();
 }
@@ -92,6 +93,7 @@ function askQuestion(){
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
   $("question-card").classList.add("answered-card","answer-mode");
+  $("screen-game").classList.add("answer-only");
   document.querySelectorAll(".question-choice").forEach(btn=>{
     btn.disabled=true;
     btn.classList.toggle("chosen",btn.dataset.questionId===q.id);
