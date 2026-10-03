@@ -84,7 +84,7 @@ function askQuestion(){
   if(!answer)return;
   state.asked=true;
   state.signals.push(...(answer.signals||[]));
-  state.lastEvidenceRelevance=q.evidenceRelevance||null;
+  state.lastEvidenceRelevance=answer.evidenceRelevance||null;
   $("question-text").textContent=q.text;
   $("question-text").hidden=false;
   $("answer-text").textContent=answer.text;
