@@ -1,4 +1,4 @@
-const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[]};
+const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],gazeStarted:false};
 const $=id=>document.getElementById(id);
 
 function showScreen(id){
@@ -65,7 +65,12 @@ function chooseQuestion(id){
   const q=state.questionOrder.find(item=>item.id===id);
   if(!q)return;
   state.currentQuestion=q;
-  askQuestion();
+  $("question-text").textContent=q.text;
+  $("question-text").hidden=false;
+  $("ask-btn").hidden=false;
+  $("ask-btn").textContent="Ushbu savolni berish";
+  $("question-list").hidden=true;
+  $("question-label")?.classList.add("hidden");
 }
 function askQuestion(){
   if(state.asked||!state.currentQuestion)return;
@@ -75,7 +80,10 @@ function askQuestion(){
   state.asked=true;
   state.signals.push(...(answer.signals||[]));
   $("question-text").textContent=q.text;
+  $("question-text").hidden=false;
   $("answer-text").textContent=answer.text;
+  $("ask-btn").hidden=true;
+  $("question-list").hidden=true;
   $("answer-box").hidden=false;
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
@@ -107,8 +115,11 @@ function setGaze(clientX,clientY){
 }
 function startGazeSystem(){
   const move=e=>setGaze(e.clientX,e.clientY);
-  document.addEventListener("pointermove",move,{passive:true});
-  document.addEventListener("touchmove",e=>{const t=e.touches[0];if(t)setGaze(t.clientX,t.clientY);},{passive:true});
+  if(!state.gazeStarted){
+    document.addEventListener("pointermove",move,{passive:true});
+    document.addEventListener("touchmove",e=>{const t=e.touches[0];if(t)setGaze(t.clientX,t.clientY);},{passive:true});
+    state.gazeStarted=true;
+  }
   scheduleBlink();
 }
 function scheduleBlink(){
