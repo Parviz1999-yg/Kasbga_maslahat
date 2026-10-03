@@ -1,13 +1,19 @@
-const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null};
+const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[]};
 const $=id=>document.getElementById(id);
 
 function showScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   $(id)?.classList.add("active");
 }
-
 function getStudent(){return STUDENTS.find(s=>s.id===state.selectedStudentId);}
-
+function shuffle(list){
+  const a=[...list];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
 function renderStudentList(){
   const list=$("student-list"); if(!list)return;
   list.innerHTML=STUDENTS.map(s=>`<button class="student-option student-card" data-student-id="${s.id}">
@@ -17,7 +23,6 @@ function renderStudentList(){
   </button>`).join("");
   list.querySelectorAll(".student-option").forEach(b=>b.addEventListener("click",()=>selectStudent(b.dataset.studentId)));
 }
-
 function selectStudent(id){
   state.selectedStudentId=id;
   document.querySelectorAll(".student-option").forEach(b=>b.classList.toggle("selected",b.dataset.studentId===id));
@@ -27,36 +32,41 @@ function selectStudent(id){
   $("start-btn").onclick=startConversation;
   if(s)$("start-intro").textContent=s.intro;
 }
-
 function startConversation(){
   if(!state.selectedStudentId)return;
   state.asked=false;
   state.signals=[];
-  state.currentQuestion=STAGE_1.questions[0];
+  state.questionOrder=shuffle(STAGE_1.questions);
+  state.currentQuestion=null;
   const s=getStudent();
   $("teen-name").textContent=s.name;
   $("teen-meta").textContent=`${s.className} · ${s.age} yosh`;
   $("teen-avatar").className=`avatar teen-avatar css-person ${s.avatarClass}`;
   $("stage-title").textContent=STAGE_1.title;
   $("stage-description").textContent=STAGE_1.description;
-  $("progress-text").textContent="1 / 1";
+  $("progress-text").textContent=`1 / ${STAGE_1.questions.length}`;
   $("progress-bar").style.width="0%";
-  renderQuestion();
+  renderQuestionChoices();
   showScreen("screen-game");
   startGazeSystem();
 }
-
-function renderQuestion(){
-  const q=state.currentQuestion;
-  if(!q)return;
-  $("question-text").textContent=q.text;
-  $("ask-btn").hidden=state.asked;
-  $("answer-box").hidden=!state.asked;
-  $("answer-text").textContent="";
-  $("mood").textContent=state.asked?"Javob berdi":"Savolni kutmoqda";
-  $("progress-bar").style.width=state.asked?"100%":"0%";
+function renderQuestionChoices(){
+  const list=$("question-list");
+  if(!list)return;
+  list.innerHTML=state.questionOrder.map((q,index)=>`<button class="question-choice" data-question-id="${q.id}" ${state.asked?"disabled":""}>
+    <span class="choice-number">${index+1}</span>
+    <span class="choice-text">${q.text}</span>
+    <span class="choice-arrow">→</span>
+  </button>`).join("");
+  list.querySelectorAll(".question-choice").forEach(btn=>btn.addEventListener("click",()=>chooseQuestion(btn.dataset.questionId)));
 }
-
+function chooseQuestion(id){
+  if(state.asked)return;
+  const q=state.questionOrder.find(item=>item.id===id);
+  if(!q)return;
+  state.currentQuestion=q;
+  askQuestion();
+}
 function askQuestion(){
   if(state.asked||!state.currentQuestion)return;
   const q=state.currentQuestion;
@@ -64,15 +74,18 @@ function askQuestion(){
   if(!answer)return;
   state.asked=true;
   state.signals.push(...(answer.signals||[]));
+  $("question-text").textContent=q.text;
   $("answer-text").textContent=answer.text;
   $("answer-box").hidden=false;
-  $("ask-btn").hidden=true;
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
   $("question-card").classList.add("answered-card");
+  document.querySelectorAll(".question-choice").forEach(btn=>{
+    btn.disabled=true;
+    btn.classList.toggle("chosen",btn.dataset.questionId===q.id);
+  });
   animateResponse();
 }
-
 function animateResponse(){
   const avatar=$("teen-avatar");
   avatar.classList.remove("thinking","speaking","smile");
@@ -81,7 +94,6 @@ function animateResponse(){
   setTimeout(()=>avatar.classList.remove("speaking"),1100);
   setTimeout(()=>avatar.classList.remove("smile"),1700);
 }
-
 function setGaze(clientX,clientY){
   document.querySelectorAll(".css-person").forEach(person=>{
     const rect=person.getBoundingClientRect();
@@ -93,16 +105,12 @@ function setGaze(clientX,clientY){
     person.style.setProperty("--gaze-y",gy+"px");
   });
 }
-
 function startGazeSystem(){
   const move=e=>setGaze(e.clientX,e.clientY);
   document.addEventListener("pointermove",move,{passive:true});
-  document.addEventListener("touchmove",e=>{
-    const t=e.touches[0]; if(t)setGaze(t.clientX,t.clientY);
-  },{passive:true});
+  document.addEventListener("touchmove",e=>{const t=e.touches[0];if(t)setGaze(t.clientX,t.clientY);},{passive:true});
   scheduleBlink();
 }
-
 function scheduleBlink(){
   const avatars=[...document.querySelectorAll(".css-person")];
   if(!avatars.length)return;
@@ -112,6 +120,4 @@ function scheduleBlink(){
     scheduleBlink();
   },3200+Math.random()*3600);
 }
-
-$("ask-btn")?.addEventListener("click",askQuestion);
 document.addEventListener("DOMContentLoaded",renderStudentList);
