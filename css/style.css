@@ -450,3 +450,16 @@ body:before{
   .primary-btn{width:100%}
   .question-card h2{font-size:26px}
 }
+
+/* Savol tanlash paneli */
+.question-list{display:grid;gap:12px;margin-top:16px}
+.question-choice{width:100%;display:grid;grid-template-columns:38px 1fr 24px;align-items:center;gap:14px;text-align:left;padding:16px 18px;border:1px solid rgba(105,199,255,.18);border-radius:16px;background:linear-gradient(145deg,rgba(13,31,52,.92),rgba(7,18,32,.96));color:#eef8ff;cursor:pointer;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
+.question-choice:hover:not(:disabled){transform:translateX(5px);border-color:rgba(105,199,255,.52);box-shadow:0 8px 28px rgba(0,0,0,.22),0 0 24px rgba(105,199,255,.08)}
+.question-choice:disabled{cursor:default;opacity:.52}
+.question-choice.chosen{opacity:1;border-color:rgba(105,199,255,.7);background:linear-gradient(145deg,rgba(19,54,78,.98),rgba(7,25,40,.98));box-shadow:0 0 28px rgba(105,199,255,.13)}
+.choice-number{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(105,199,255,.28);color:#8fdcff;font-weight:700}
+.choice-text{font-size:16px;line-height:1.45}
+.choice-arrow{font-size:22px;color:#78cfff;transition:transform .2s ease}
+.question-choice:hover .choice-arrow{transform:translateX(4px)}
+.selected-question-text{margin-top:20px}
+@media(max-width:700px){.question-choice{grid-template-columns:34px 1fr 18px;padding:14px}.choice-text{font-size:15px}}
