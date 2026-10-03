@@ -503,14 +503,19 @@ body:before{
   align-items:center;
   justify-content:center;
 }
-.screen.answer-only .game-header,
-.screen.answer-only .teen-panel{display:none!important}
+.screen.answer-only .game-header{display:none!important}
+.screen.answer-only .teen-panel{display:block!important;position:absolute;left:24px;bottom:24px;width:150px;padding:16px}
 .screen.answer-only .game-layout{
-  width:min(900px,100%);
-  display:block;
+  width:min(1120px,100%);
+  display:grid;
+  grid-template-columns:190px minmax(0,900px);
+  gap:28px;
+  align-items:center;
+  justify-content:center;
   margin:0;
 }
 .screen.answer-only .conversation{width:100%;min-width:0}
+.screen.answer-only .teen-avatar{width:150px;height:150px}
 .screen.answer-only .question-card{
   width:100%;
   min-height:420px;
@@ -549,6 +554,10 @@ body:before{
 @keyframes eyeBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.08)}}
 @media(max-width:700px){
   .screen.answer-only{padding:16px}
+  .screen.answer-only .game-layout{grid-template-columns:1fr;gap:12px}
+  .screen.answer-only .teen-panel{position:static;width:100%;display:flex!important;align-items:center;justify-content:center;padding:8px;background:transparent;border:0;box-shadow:none}
+  .screen.answer-only .teen-avatar{width:90px;height:90px}
+  .screen.answer-only .teen-panel h2,.screen.answer-only .teen-panel .mood{display:none}
   .screen.answer-only .question-card{min-height:360px;padding:36px 20px}
   .screen.answer-only .selected-question-text{font-size:25px}
   .screen.answer-only .answer-window{min-height:170px;padding:22px}
