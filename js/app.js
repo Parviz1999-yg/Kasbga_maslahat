@@ -1,210 +1,312 @@
-const state={selectedStudentId:null,asked:false,signals:[],currentQuestion:null,questionOrder:[],currentStage:1,gazeStarted:false,gazeTimer:null,blinkStarted:false};
-const $=id=>document.getElementById(id);
+const state = {
+  selectedStudentId: null,
+  asked: false,
+  signals: [],
+  history: [],
+  currentQuestion: null,
+  questionOrder: [],
+  currentStage: 1,
+  gazeStarted: false,
+  gazeTimer: null,
+  blinkStarted: false
+};
+const $ = id => document.getElementById(id);
+const STAGES = [null, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5];
 
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   $(id)?.classList.add("active");
 }
-function getStudent(){return STUDENTS.find(s=>s.id===state.selectedStudentId);}
-function shuffle(list){
-  const a=[...list];
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
+function getStudent() {
+  return STUDENTS.find(s => s.id === state.selectedStudentId);
+}
+function shuffle(list) {
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
-function renderStudentList(){
-  const list=$("student-list"); if(!list)return;
-  list.innerHTML=STUDENTS.map(s=>`<button class="student-option student-card" data-student-id="${s.id}">
+function renderStudentList() {
+  const list = $("student-list");
+  if (!list) return;
+  list.innerHTML = STUDENTS.map(s => `<button class="student-option student-card" data-student-id="${s.id}">
     <div class="avatar student-avatar css-person ${s.avatarClass}"><i></i><span class="eye left"><b class="pupil"></b></span><span class="eye right"><b class="pupil"></b></span></div>
     <span class="student-info"><strong>${s.name}</strong><span>${s.className} · ${s.age} yosh</span></span>
     <span class="student-check">✓</span>
   </button>`).join("");
-  list.querySelectorAll(".student-option").forEach(b=>b.addEventListener("click",()=>selectStudent(b.dataset.studentId)));
+  list.querySelectorAll(".student-option").forEach(b =>
+    b.addEventListener("click", () => selectStudent(b.dataset.studentId))
+  );
 }
-function selectStudent(id){
-  state.selectedStudentId=id;
-  document.querySelectorAll(".student-option").forEach(b=>b.classList.toggle("selected",b.dataset.studentId===id));
-  const s=getStudent();
-  $("start-btn").disabled=false;
-  $("start-btn").textContent="Suhbatni boshlash →";
-  $("start-btn").onclick=startConversation;
-  if(s)$("start-intro").textContent=s.intro;
+function selectStudent(id) {
+  state.selectedStudentId = id;
+  document.querySelectorAll(".student-option").forEach(b =>
+    b.classList.toggle("selected", b.dataset.studentId === id)
+  );
+  const s = getStudent();
+  $("start-btn").disabled = false;
+  $("start-btn").textContent = "Suhbatni boshlash →";
+  $("start-btn").onclick = startConversation;
+  if (s) $("start-intro").textContent = s.intro;
 }
-function startConversation(){
-  if(!state.selectedStudentId)return;
-  state.asked=false;
-  state.signals=[];
-  state.currentStage=1;
-  state.questionOrder=shuffle(STAGE_1.questions);
-  state.currentQuestion=null;
-  const s=getStudent();
-  $("teen-name").textContent=s.name;
-  $("teen-meta").textContent=`${s.className} · ${s.age} yosh`;
-  $("teen-avatar").className=`avatar teen-avatar css-person ${s.avatarClass}`;
-  $("stage-title").textContent=STAGE_1.title;
-  $("stage-description").textContent=STAGE_1.description;
-  $("progress-text").textContent="1 / 4";
-  $("progress-bar").style.width="0%";
-  $("next-stage-btn").hidden=true;
-  renderQuestionChoices();
+function startConversation() {
+  if (!state.selectedStudentId) return;
+  state.asked = false;
+  state.signals = [];
+  state.history = [];
+  state.currentStage = 1;
+  state.currentQuestion = null;
+  const s = getStudent();
+  $("teen-name").textContent = s.name;
+  $("teen-meta").textContent = `${s.className} · ${s.age} yosh`;
+  $("teen-avatar").className = `avatar teen-avatar css-person ${s.avatarClass}`;
+  loadStage(1, STAGE_1, "1 / 5", "0%");
   showScreen("screen-game");
-  $("screen-game").classList.remove("answer-only");
   startGazeSystem();
   startBlinkSystem();
 }
-function renderQuestionChoices(){
-  const list=$("question-list");
-  if(!list)return;
-  list.innerHTML=state.questionOrder.map((q,index)=>`<button class="question-choice" data-question-id="${q.id}" ${state.asked?"disabled":""}>
-    <span class="choice-number">${index+1}</span>
-    <span class="choice-text">${q.text}</span>
-    <span class="choice-arrow">→</span>
-  </button>`).join("");
-  list.querySelectorAll(".question-choice").forEach(btn=>btn.addEventListener("click",()=>chooseQuestion(btn.dataset.questionId)));
+function renderQuestionChoices() {
+  const list = $("question-list");
+  if (!list) return;
+  list.innerHTML = state.questionOrder.map((q, index) =>
+    `<button class="question-choice" data-question-id="${q.id}" ${state.asked ? "disabled" : ""}>
+      <span class="choice-number">${index + 1}</span>
+      <span class="choice-text">${q.text}</span>
+      <span class="choice-arrow">→</span>
+    </button>`
+  ).join("");
+  list.querySelectorAll(".question-choice").forEach(btn =>
+    btn.addEventListener("click", () => chooseQuestion(btn.dataset.questionId))
+  );
 }
-function chooseQuestion(id){
-  if(state.asked)return;
-  const q=state.questionOrder.find(item=>item.id===id);
-  if(!q)return;
-  state.currentQuestion=q;
-  $("question-text").textContent=q.text;
-  $("question-text").hidden=false;
-  $("ask-btn").hidden=false;
-  $("ask-btn").textContent="Ushbu savolni berish";
-  $("ask-btn").onclick=askQuestion;
-  $("question-list").hidden=true;
-  $("question-label").hidden=true;
+function chooseQuestion(id) {
+  if (state.asked) return;
+  const q = state.questionOrder.find(item => item.id === id);
+  if (!q) return;
+  state.currentQuestion = q;
+  $("question-text").textContent = q.text;
+  $("question-text").hidden = false;
+  $("ask-btn").hidden = false;
+  $("ask-btn").textContent = "Ushbu savolni berish";
+  $("ask-btn").onclick = askQuestion;
+  $("question-list").hidden = true;
+  $("question-label").hidden = true;
 }
-function askQuestion(){
-  if(state.asked||!state.currentQuestion)return;
-  const q=state.currentQuestion;
-  const answer=q.answers[getStudent().id];
-  if(!answer)return;
-  state.asked=true;
-  state.signals.push(...(answer.signals||[]));
-  state.lastEvidenceRelevance=answer.evidenceRelevance||null;
-  $("question-text").textContent=q.text;
-  $("question-text").hidden=false;
-  $("answer-text").textContent=answer.text;
-  $("ask-btn").hidden=true;
-  $("question-list").hidden=true;
-  $("answer-box").hidden=false;
-  $("next-stage-btn").hidden=false;
-  if(state.currentStage>=4){
-    $("next-stage-btn").textContent="Suhbatni yakunlash →";
-    $("next-stage-btn").onclick=finishConversation;
+function askQuestion() {
+  if (state.asked || !state.currentQuestion) return;
+  const q = state.currentQuestion;
+  const answer = q.answers[getStudent().id];
+  if (!answer) return;
+  state.asked = true;
+  const sigs = answer.signals || [];
+  state.signals.push(...sigs);
+  state.history.push({
+    stage: state.currentStage,
+    questionId: q.id,
+    text: q.text,
+    type: q.evidenceType || "direct",
+    signals: sigs,
+    relevance: answer.evidenceRelevance || 0
+  });
+  $("question-text").textContent = q.text;
+  $("question-text").hidden = false;
+  $("answer-text").textContent = answer.text;
+  $("ask-btn").hidden = true;
+  $("question-list").hidden = true;
+  $("answer-box").hidden = false;
+  $("next-stage-btn").hidden = false;
+  if (state.currentStage >= 5) {
+    $("next-stage-btn").textContent = "Natijani ko‘rish →";
+    $("next-stage-btn").onclick = showResults;
   } else {
-    $("next-stage-btn").textContent=(state.currentStage+1)+"-bosqichga o‘tish →";
-    $("next-stage-btn").onclick=goToNextStage;
+    $("next-stage-btn").textContent = (state.currentStage + 1) + "-bosqichga o‘tish →";
+    $("next-stage-btn").onclick = goToNextStage;
   }
-  $("question-label").hidden=true;
-  $("mood").textContent="Javob berdi";
-  $("progress-bar").style.width="100%";
-  $("question-card").classList.add("answered-card","answer-mode");
+  $("question-label").hidden = true;
+  $("mood").textContent = "Javob berdi";
+  $("progress-bar").style.width = "100%";
+  $("question-card").classList.add("answered-card", "answer-mode");
   $("screen-game").classList.add("answer-only");
-  document.querySelectorAll(".question-choice").forEach(btn=>{
-    btn.disabled=true;
-    btn.classList.toggle("chosen",btn.dataset.questionId===q.id);
+  document.querySelectorAll(".question-choice").forEach(btn => {
+    btn.disabled = true;
+    btn.classList.toggle("chosen", btn.dataset.questionId === q.id);
   });
   animateResponse();
 }
-function loadStage(stageNum, stageObj, progressText, progressWidth){
-  state.currentStage=stageNum;
-  state.asked=false;
-  state.currentQuestion=null;
-  state.questionOrder=shuffle(stageObj.questions);
-  $("stage-title").textContent=stageObj.title;
-  $("stage-description").textContent=stageObj.description;
-  $("progress-text").textContent=progressText;
-  $("progress-bar").style.width=progressWidth;
-  $("question-card").classList.remove("answered-card","answer-mode");
+function loadStage(stageNum, stageObj, progressText, progressWidth) {
+  state.currentStage = stageNum;
+  state.asked = false;
+  state.currentQuestion = null;
+  state.questionOrder = shuffle(stageObj.questions);
+  $("stage-title").textContent = stageObj.title;
+  $("stage-description").textContent = stageObj.description;
+  $("progress-text").textContent = progressText;
+  $("progress-bar").style.width = progressWidth;
+  $("question-card").classList.remove("answered-card", "answer-mode");
   $("screen-game").classList.remove("answer-only");
-  $("question-text").hidden=true;
-  $("answer-box").hidden=true;
-  $("next-stage-btn").hidden=true;
-  $("ask-btn").hidden=true;
-  $("question-label").hidden=false;
-  $("question-label").textContent="SAVOLNI TANLANG";
-  $("question-list").hidden=false;
-  $("mood").textContent="Savolni kutmoqda";
+  $("question-text").hidden = true;
+  $("answer-box").hidden = true;
+  $("next-stage-btn").hidden = true;
+  $("ask-btn").hidden = true;
+  $("question-label").hidden = false;
+  $("question-label").textContent = "SAVOLNI TANLANG";
+  $("question-list").hidden = false;
+  $("mood").textContent = "Savolni kutmoqda";
   renderQuestionChoices();
 }
-function goToNextStage(){
-  if(!state.asked)return;
-  if(state.currentStage===1) loadStage(2, STAGE_2, "2 / 4", "25%");
-  else if(state.currentStage===2) loadStage(3, STAGE_3, "3 / 4", "50%");
-  else if(state.currentStage===3) loadStage(4, STAGE_4, "4 / 4", "75%");
+function goToNextStage() {
+  if (!state.asked) return;
+  if (state.currentStage === 1) loadStage(2, STAGE_2, "2 / 5", "20%");
+  else if (state.currentStage === 2) loadStage(3, STAGE_3, "3 / 5", "40%");
+  else if (state.currentStage === 3) loadStage(4, STAGE_4, "4 / 5", "60%");
+  else if (state.currentStage === 4) loadStage(5, STAGE_5, "5 / 5", "80%");
 }
-function finishConversation(){
-  $("mood").textContent="Suhbat yakunlandi";
-  $("next-stage-btn").hidden=true;
-  $("answer-text").textContent=($("answer-text").textContent||"")+"\n\nSuhbat yakunlandi. Yig‘ilgan signallar: "+(state.signals.join(", ")||"yo‘q");
+function evaluateCounselor() {
+  const total = state.history.length || 1;
+  const direct = state.history.filter(h => h.type === "direct").length;
+  const distractor = state.history.filter(h => h.type === "distractor").length;
+  const score = Math.round((direct / total) * 100);
+  let level, feedback;
+  if (score >= 80) {
+    level = "A’lo";
+    feedback = "Savollaringiz maqsadga yo‘naltirilgan. To‘g‘ri savol berish ko‘nikmasi yuqori.";
+  } else if (score >= 60) {
+    level = "Yaxshi";
+    feedback = "Ko‘p hollarda to‘g‘ri savol tanladingiz. Chalg‘ituvchi savollardan ehtiyot bo‘ling.";
+  } else if (score >= 40) {
+    level = "O‘rta";
+    feedback = "Ba’zi savollar maqsadga yetkazmadi. Taalluqli savolni aniqroq tanlang.";
+  } else {
+    level = "Past";
+    feedback = "Ko‘p chalg‘ituvchi savol tanlandi. Savol mezonni ochishi kerak — shakliga emas, maqsadiga qarang.";
+  }
+  return { total, direct, distractor, score, level, feedback };
+}
+function showResults() {
+  const s = getStudent();
+  const ev = evaluateCounselor();
+  const careers = typeof rankCareers === "function" ? rankCareers(state.signals) : [];
+  const top = careers.slice(0, 3);
+
+  $("result-student").textContent = s ? s.name : "O‘quvchi";
+  $("result-score").textContent = ev.score + "%";
+  $("result-level").textContent = ev.level;
+  $("result-feedback").textContent = ev.feedback;
+  $("result-direct").textContent = String(ev.direct);
+  $("result-distractor").textContent = String(ev.distractor);
+
+  const hist = $("result-history");
+  if (hist) {
+    hist.innerHTML = state.history.map((h, i) =>
+      `<div class="result-row ${h.type === "direct" ? "ok" : "bad"}">
+        <span>${i + 1}. ${h.text}</span>
+        <b>${h.type === "direct" ? "Taalluqli" : "Chalg‘ituvchi"}</b>
+      </div>`
+    ).join("");
+  }
+
+  const careerBox = $("result-careers");
+  if (careerBox) {
+    if (!top.length) {
+      careerBox.innerHTML = "<p>Yetarli dalil yig‘ilmadi. Ko‘proq taalluqli savol bering.</p>";
+    } else {
+      careerBox.innerHTML = top.map(c =>
+        `<div class="career-card">
+          <strong>${c.title}</strong>
+          <span>${c.examples.slice(0, 3).join(", ")}</span>
+        </div>`
+      ).join("");
+    }
+  }
+
+  showScreen("screen-result");
+}
+function restartAll() {
+  state.selectedStudentId = null;
+  state.asked = false;
+  state.signals = [];
+  state.history = [];
+  state.currentQuestion = null;
+  state.currentStage = 1;
+  document.querySelectorAll(".student-option").forEach(b => b.classList.remove("selected"));
+  $("start-btn").disabled = true;
+  $("start-btn").textContent = "Avval o‘quvchini tanlang →";
+  $("start-intro").textContent = "Avval o‘quvchini tanlang. Keyin suhbatni o‘zingiz olib boring.";
+  showScreen("screen-start");
 }
 
-function animateResponse(){
-  const avatar=$("teen-avatar");
-  avatar.classList.remove("thinking","speaking","smile");
+function animateResponse() {
+  const avatar = $("teen-avatar");
+  avatar.classList.remove("thinking", "speaking", "smile");
   void avatar.offsetWidth;
-  avatar.classList.add("speaking","smile");
-  setTimeout(()=>avatar.classList.remove("speaking"),1100);
-  setTimeout(()=>avatar.classList.remove("smile"),1700);
+  avatar.classList.add("speaking", "smile");
+  setTimeout(() => avatar.classList.remove("speaking"), 1100);
+  setTimeout(() => avatar.classList.remove("smile"), 1700);
 }
-function setGaze(clientX,clientY){
-  document.querySelectorAll(".css-person").forEach(person=>{
-    const rect=person.getBoundingClientRect();
-    const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    const dx=clientX-cx, dy=clientY-cy;
-    const distance=Math.hypot(dx,dy);
-    if(distance<70){
-      person.style.setProperty("--gaze-x","0px");
-      person.style.setProperty("--gaze-y","0px");
+function setGaze(clientX, clientY) {
+  document.querySelectorAll(".css-person").forEach(person => {
+    const rect = person.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+    const dx = clientX - cx, dy = clientY - cy;
+    const distance = Math.hypot(dx, dy);
+    if (distance < 70) {
+      person.style.setProperty("--gaze-x", "0px");
+      person.style.setProperty("--gaze-y", "0px");
       return;
     }
-    const maxX=3.2, maxY=2.1;
-    const gx=Math.max(-maxX,Math.min(maxX,dx/70));
-    const gy=Math.max(-maxY,Math.min(maxY,dy/70));
-    person.style.setProperty("--gaze-x",gx+"px");
-    person.style.setProperty("--gaze-y",gy+"px");
+    const maxX = 3.2, maxY = 2.1;
+    const gx = Math.max(-maxX, Math.min(maxX, dx / 70));
+    const gy = Math.max(-maxY, Math.min(maxY, dy / 70));
+    person.style.setProperty("--gaze-x", gx + "px");
+    person.style.setProperty("--gaze-y", gy + "px");
   });
   clearTimeout(state.gazeTimer);
-  state.gazeTimer=setTimeout(()=>{
-    document.querySelectorAll(".css-person").forEach(person=>{
-      person.style.setProperty("--gaze-x","0px");
-      person.style.setProperty("--gaze-y","0px");
+  state.gazeTimer = setTimeout(() => {
+    document.querySelectorAll(".css-person").forEach(person => {
+      person.style.setProperty("--gaze-x", "0px");
+      person.style.setProperty("--gaze-y", "0px");
     });
-  },900);
+  }, 900);
 }
-function startBlinkSystem(){
-  if(state.blinkStarted)return;
-  state.blinkStarted=true;
+function startBlinkSystem() {
+  if (state.blinkStarted) return;
+  state.blinkStarted = true;
   document.querySelectorAll(".css-person").forEach(scheduleAvatarBlink);
 }
-function scheduleAvatarBlink(avatar){
-  if(!avatar || avatar.dataset.blinkBound==="1")return;
-  avatar.dataset.blinkBound="1";
-  const next=1800+Math.random()*4200;
-  setTimeout(()=>{
+function scheduleAvatarBlink(avatar) {
+  if (!avatar || avatar.dataset.blinkBound === "1") return;
+  avatar.dataset.blinkBound = "1";
+  const next = 1800 + Math.random() * 4200;
+  setTimeout(() => {
     avatar.classList.add("blink-now");
-    setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
+    setTimeout(() => avatar.classList.remove("blink-now"), 150 + Math.random() * 90);
     scheduleNextAvatarBlink(avatar);
-  },next);
+  }, next);
 }
-function scheduleNextAvatarBlink(avatar){
-  const next=3000+Math.random()*6500;
-  setTimeout(()=>{
+function scheduleNextAvatarBlink(avatar) {
+  const next = 3000 + Math.random() * 6500;
+  setTimeout(() => {
     avatar.classList.add("blink-now");
-    setTimeout(()=>avatar.classList.remove("blink-now"),150+Math.random()*90);
+    setTimeout(() => avatar.classList.remove("blink-now"), 150 + Math.random() * 90);
     scheduleNextAvatarBlink(avatar);
-  },next);
+  }, next);
 }
-function startGazeSystem(){
-  const move=e=>setGaze(e.clientX,e.clientY);
-  if(!state.gazeStarted){
-    document.addEventListener("pointermove",move,{passive:true});
-    document.addEventListener("touchmove",e=>{const t=e.touches[0];if(t)setGaze(t.clientX,t.clientY);},{passive:true});
-    state.gazeStarted=true;
+function startGazeSystem() {
+  const move = e => setGaze(e.clientX, e.clientY);
+  if (!state.gazeStarted) {
+    document.addEventListener("pointermove", move, { passive: true });
+    document.addEventListener("touchmove", e => {
+      const t = e.touches[0];
+      if (t) setGaze(t.clientX, t.clientY);
+    }, { passive: true });
+    state.gazeStarted = true;
   }
 }
-document.addEventListener("DOMContentLoaded",()=>{renderStudentList();startBlinkSystem();});
+document.addEventListener("DOMContentLoaded", () => {
+  renderStudentList();
+  startBlinkSystem();
+  const again = $("restart-btn");
+  if (again) again.onclick = restartAll;
+});

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kasbga maslahat — Pedagogik simulyator</title>
-<link rel="stylesheet" href="css/style.css?v=stage4-v1">
+<link rel="stylesheet" href="css/style.css?v=stage5-v1">
 </head>
 <body>
 <main class="app-shell">
@@ -22,9 +22,9 @@
       <div id="student-list" class="student-list"></div>
     </div>
     <div class="rules">
-      <div><b>1-bosqich</b><span>Mehnat predmetini aniqlash</span></div>
+      <div><b>5 bosqich</b><span>Predmet → Maqsad → Vosita → Sharoit → Umumlashtirish</span></div>
       <div><b>1 ta savol</b><span>Har bir bosqichda bitta savol</span></div>
-      <div><b>Yashirin tahlil</b><span>Baholash mezonlari oldindan ko‘rsatilmaydi</span></div>
+      <div><b>Yashirin tahlil</b><span>Taalluqli va chalg‘ituvchi savollar</span></div>
     </div>
     <button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button>
   </div>
@@ -56,13 +56,49 @@
     </section>
   </div>
 </section>
+
+<section id="screen-result" class="screen">
+  <div class="hero-card result-card">
+    <div class="badge">SUHBAT NATIJASI</div>
+    <h1>Maslahatchi bahosi</h1>
+    <p class="subtitle"><span id="result-student">O‘quvchi</span> bilan suhbat yakunlandi.</p>
+
+    <div class="result-score-block">
+      <div class="result-score-main">
+        <span id="result-score">0%</span>
+        <b id="result-level">—</b>
+      </div>
+      <p id="result-feedback" class="result-feedback"></p>
+      <div class="result-stats">
+        <div><b id="result-direct">0</b><span>Taalluqli savol</span></div>
+        <div><b id="result-distractor">0</b><span>Chalg‘ituvchi savol</span></div>
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <span class="eyebrow">SAVOLLAR TAHLILI</span>
+      <h2>Qaysi savollar tanlandi</h2>
+    </div>
+    <div id="result-history" class="result-history"></div>
+
+    <div class="section-heading">
+      <span class="eyebrow">KASBIY YO‘NALISH</span>
+      <h2>Yig‘ilgan dalillar asosida</h2>
+    </div>
+    <div id="result-careers" class="result-careers"></div>
+
+    <button id="restart-btn" class="primary-btn">Yana bir marta o‘ynash →</button>
+  </div>
+</section>
 </main>
-<script src="js/data/students.js?v=stage1-v4"></script>
-<script src="js/data/question-bank.js?v=bank-v1"></script>
-<script src="js/data/stage1.js?v=stage1-v4"></script>
-<script src="js/data/stage2.js?v=stage2-v1"></script>
-<script src="js/data/stage3.js?v=stage3-v1"></script>
-<script src="js/data/stage4.js?v=stage4-v1"></script>
-<script src="js/app.js?v=stage4-v1"></script>
+<script src="js/data/students.js?v=stage5-v1"></script>
+<script src="js/data/career-profiles.js?v=stage5-v1"></script>
+<script src="js/data/question-bank.js?v=stage5-v1"></script>
+<script src="js/data/stage1.js?v=stage5-v1"></script>
+<script src="js/data/stage2.js?v=stage5-v1"></script>
+<script src="js/data/stage3.js?v=stage5-v1"></script>
+<script src="js/data/stage4.js?v=stage5-v1"></script>
+<script src="js/data/stage5.js?v=stage5-v1"></script>
+<script src="js/app.js?v=stage5-v1"></script>
 </body>
 </html>
