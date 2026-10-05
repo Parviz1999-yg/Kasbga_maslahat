@@ -4,30 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Kasbga maslahat — Pedagogik simulyator</title>
-<link rel="stylesheet" href="css/style.css?v=resp-v1">
-<link rel="stylesheet" href="css/responsive-extra.css?v=resp-v1">
+<link rel="stylesheet" href="css/style.css?v=conclude-v1">
+<link rel="stylesheet" href="css/responsive-extra.css?v=conclude-v1">
 <style>
 .result-score-block{margin:24px 0;padding:22px;background:rgba(7,15,30,.78);border:1px solid rgba(99,216,232,.14);border-radius:18px}
-.result-score-main{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+.result-score-main{display:flex;align-items:baseline;gap:14px;margin-bottom:10px;flex-wrap:wrap}
 .result-score-main span{font-size:clamp(36px,6vw,56px);font-weight:900;color:#69c7ff}
 .result-score-main b{font-size:22px;color:#eaf6f8}
 .result-feedback{color:#b7cdd2;line-height:1.55;margin:0 0 16px}
 .result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .result-stats div{padding:14px;background:rgba(5,12,26,.72);border-radius:14px;border:1px solid rgba(99,180,255,.12)}
-.result-stats b{display:block;font-size:26px;color:#63d8e8}
+.result-stats b{display:block;font-size:22px;color:#63d8e8}
 .result-stats span{color:#91abb2;font-size:13px}
 .result-history{display:grid;gap:8px;margin:12px 0 24px}
 .result-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(7,15,30,.78);border:1px solid rgba(99,180,255,.12);font-size:14px}
 .result-row.ok{border-color:rgba(95,224,160,.35)}
 .result-row.bad{border-color:rgba(255,143,143,.3)}
-.result-row b{white-space:nowrap;font-size:12px;letter-spacing:.04em}
+.result-row b{white-space:nowrap;font-size:12px}
 .result-row.ok b{color:#5fe0a0}
 .result-row.bad b{color:#ff8f8f}
 .result-careers{display:grid;gap:10px;margin:12px 0 28px}
 .career-card{padding:16px 18px;border-radius:14px;background:rgba(7,15,30,.78);border:1px solid rgba(99,216,232,.14)}
+.career-card.user-pick{border-color:rgba(105,199,255,.55);box-shadow:0 0 20px rgba(105,199,255,.12)}
 .career-card strong{display:block;margin-bottom:4px}
 .career-card span{color:#91abb2;font-size:14px}
 #answer-text{font-size:clamp(15px,2.2vw,20px);line-height:1.55;color:#eaf6f8}
+.ok-text{color:#5fe0a0!important}.bad-text{color:#ff8f8f!important}
+.conclude-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:12px 0 22px}
+.conclude-btn{text-align:left;padding:14px 16px;border-radius:14px;border:1px solid rgba(99,180,255,.18);background:rgba(7,15,30,.78);color:#eaf6f8;cursor:pointer;transition:.18s}
+.conclude-btn strong{display:block;font-size:15px;margin-bottom:4px}
+.conclude-btn span{font-size:12px;color:#91abb2;line-height:1.35}
+.conclude-btn:hover,.conclude-btn.selected{border-color:#69c7ff;background:rgba(18,42,76,.92);transform:translateY(-2px)}
+.conclude-btn.selected{box-shadow:0 0 0 1px rgba(105,199,255,.4)}
+.conclude-hint{color:#91abb2;font-size:14px;margin:0 0 8px}
+@media(max-width:700px){
+  .result-stats{grid-template-columns:1fr}
+  .result-row{flex-direction:column;align-items:flex-start}
+  .conclude-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -46,9 +60,9 @@
       <div id="student-list" class="student-list"></div>
     </div>
     <div class="rules">
-      <div><b>5 bosqich</b><span>Predmet → Maqsad → Vosita → Sharoit → Umumlashtirish</span></div>
-      <div><b>1 ta savol</b><span>Har bir bosqichda bitta savol</span></div>
-      <div><b>Yashirin tahlil</b><span>Taalluqli va chalg‘ituvchi savollar</span></div>
+      <div><b>5 + xulosa</b><span>Suhbat → Xulosa → Tavsiya</span></div>
+      <div><b>1 ta savol</b><span>Har bosqichda bitta savol</span></div>
+      <div><b>Tavsiya</b><span>O‘zingiz kasb yo‘nalishini tanlang</span></div>
     </div>
     <button id="start-btn" class="primary-btn" disabled>Avval o‘quvchini tanlang →</button>
   </div>
@@ -81,11 +95,42 @@
   </div>
 </section>
 
+<section id="screen-conclude" class="screen">
+  <div class="hero-card result-card">
+    <div class="badge">XULOSA VA TAVSIYA</div>
+    <h1>Sizning xulosangiz</h1>
+    <p class="subtitle"><span id="conclude-student-name">O‘quvchi</span> haqida suhbat asosida xulosa chiqaring va kasb tavsiya qiling.</p>
+
+    <div class="section-heading">
+      <span class="eyebrow">1. MEHNAT PREDMETI</span>
+      <h2>O‘quvchi nima bilan ishlashga moyil?</h2>
+    </div>
+    <p class="conclude-hint">Javoblardagi asosiy yo‘nalishni tanlang.</p>
+    <div id="conclude-predmet" class="conclude-grid"></div>
+
+    <div class="section-heading">
+      <span class="eyebrow">2. MEHNAT MAQSADI</span>
+      <h2>Qanday natijaga intiladi?</h2>
+    </div>
+    <p class="conclude-hint">Bilish, o‘zgartirish yoki izlash.</p>
+    <div id="conclude-maqsad" class="conclude-grid"></div>
+
+    <div class="section-heading">
+      <span class="eyebrow">3. KASB TAVSIYASI</span>
+      <h2>Qaysi yo‘nalishni tavsiya qilasiz?</h2>
+    </div>
+    <p class="conclude-hint">Bitta asosiy yo‘nalishni tanlang.</p>
+    <div id="conclude-careers" class="conclude-grid"></div>
+
+    <button id="conclude-submit" class="primary-btn" disabled>Avval barcha xulosalarni tanlang</button>
+  </div>
+</section>
+
 <section id="screen-result" class="screen">
   <div class="hero-card result-card">
     <div class="badge">SUHBAT NATIJASI</div>
     <h1>Maslahatchi bahosi</h1>
-    <p class="subtitle"><span id="result-student">O‘quvchi</span> bilan suhbat yakunlandi.</p>
+    <p class="subtitle"><span id="result-student">O‘quvchi</span> bilan suhbat va tavsiya yakunlandi.</p>
 
     <div class="result-score-block">
       <div class="result-score-main">
@@ -100,14 +145,20 @@
     </div>
 
     <div class="section-heading">
+      <span class="eyebrow">TAVSIYA BAHOSI</span>
+      <h2>Xulosangiz qanchalik to‘g‘ri</h2>
+    </div>
+    <div id="result-recommendation"></div>
+
+    <div class="section-heading">
       <span class="eyebrow">SAVOLLAR TAHLILI</span>
       <h2>Qaysi savollar tanlandi</h2>
     </div>
     <div id="result-history" class="result-history"></div>
 
     <div class="section-heading">
-      <span class="eyebrow">KASBIY YO‘NALISH</span>
-      <h2>Yig‘ilgan dalillar asosida</h2>
+      <span class="eyebrow">TIZIM BO‘YICHA YO‘NALISH</span>
+      <h2>Dalillar asosidagi kasblar</h2>
     </div>
     <div id="result-careers" class="result-careers"></div>
 
@@ -115,14 +166,14 @@
   </div>
 </section>
 </main>
-<script src="js/data/students.js?v=resp-v1"></script>
-<script src="js/data/career-profiles.js?v=resp-v1"></script>
-<script src="js/data/question-bank.js?v=resp-v1"></script>
-<script src="js/data/stage1.js?v=resp-v1"></script>
-<script src="js/data/stage2.js?v=resp-v1"></script>
-<script src="js/data/stage3.js?v=resp-v1"></script>
-<script src="js/data/stage4.js?v=resp-v1"></script>
-<script src="js/data/stage5.js?v=resp-v1"></script>
-<script src="js/app.js?v=resp-v1"></script>
+<script src="js/data/students.js?v=conclude-v1"></script>
+<script src="js/data/career-profiles.js?v=conclude-v1"></script>
+<script src="js/data/question-bank.js?v=conclude-v1"></script>
+<script src="js/data/stage1.js?v=conclude-v1"></script>
+<script src="js/data/stage2.js?v=conclude-v1"></script>
+<script src="js/data/stage3.js?v=conclude-v1"></script>
+<script src="js/data/stage4.js?v=conclude-v1"></script>
+<script src="js/data/stage5.js?v=conclude-v1"></script>
+<script src="js/app.js?v=conclude-v1"></script>
 </body>
 </html>

@@ -8,10 +8,28 @@ const state = {
   currentStage: 1,
   gazeStarted: false,
   gazeTimer: null,
-  blinkStarted: false
+  blinkStarted: false,
+  userConclusion: {
+    predmet: null,
+    maqsad: null,
+    careerId: null
+  }
 };
 const $ = id => document.getElementById(id);
-const STAGES = [null, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5];
+
+const PREDMET_OPTIONS = [
+  { id: "technology", label: "Inson — texnika", hint: "Qurilma, kompyuter, mexanizm" },
+  { id: "people", label: "Inson — inson", hint: "Suhbat, yordam, o‘qitish" },
+  { id: "signs", label: "Inson — belgilar", hint: "Raqam, matn, ma’lumot" },
+  { id: "artistic", label: "Inson — badiiy obraz", hint: "Rasm, dizayn, ijod" },
+  { id: "nature", label: "Inson — tabiat", hint: "O‘simlik, hayvon, ekologiya" }
+];
+
+const MAQSAD_OPTIONS = [
+  { id: "gnostic", label: "Gnostik (bilish)", hint: "Tushunish, tahlil qilish" },
+  { id: "transform", label: "Transformatsion", hint: "O‘zgartirish, yaratish" },
+  { id: "search", label: "Izlovchi", hint: "Yechim izlash, yangilik" }
+];
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -58,6 +76,7 @@ function startConversation() {
   state.history = [];
   state.currentStage = 1;
   state.currentQuestion = null;
+  state.userConclusion = { predmet: null, maqsad: null, careerId: null };
   const s = getStudent();
   $("teen-name").textContent = s.name;
   $("teen-meta").textContent = `${s.className} · ${s.age} yosh`;
@@ -118,8 +137,8 @@ function askQuestion() {
   $("answer-box").hidden = false;
   $("next-stage-btn").hidden = false;
   if (state.currentStage >= 5) {
-    $("next-stage-btn").textContent = "Natijani ko‘rish →";
-    $("next-stage-btn").onclick = showResults;
+    $("next-stage-btn").textContent = "Xulosa chiqarish →";
+    $("next-stage-btn").onclick = showConclusion;
   } else {
     $("next-stage-btn").textContent = (state.currentStage + 1) + "-bosqichga o‘tish →";
     $("next-stage-btn").onclick = goToNextStage;
@@ -163,6 +182,128 @@ function goToNextStage() {
   else if (state.currentStage === 3) loadStage(4, STAGE_4, "4 / 5", "60%");
   else if (state.currentStage === 4) loadStage(5, STAGE_5, "5 / 5", "80%");
 }
+
+function renderOptionGroup(containerId, options, selectedKey, onSelect) {
+  const box = $(containerId);
+  if (!box) return;
+  box.innerHTML = options.map(o =>
+    `<button type="button" class="conclude-btn ${state.userConclusion[selectedKey] === o.id ? "selected" : ""}" data-id="${o.id}">
+      <strong>${o.label}</strong>
+      <span>${o.hint || ""}</span>
+    </button>`
+  ).join("");
+  box.querySelectorAll(".conclude-btn").forEach(btn => {
+    btn.onclick = () => {
+      state.userConclusion[selectedKey] = btn.dataset.id;
+      renderOptionGroup(containerId, options, selectedKey, onSelect);
+      updateConcludeSubmit();
+      if (onSelect) onSelect();
+    };
+  });
+}
+
+function renderCareerOptions() {
+  const box = $("conclude-careers");
+  if (!box || typeof CAREER_PROFILES === "undefined") return;
+  box.innerHTML = CAREER_PROFILES.map(c =>
+    `<button type="button" class="conclude-btn career ${state.userConclusion.careerId === c.id ? "selected" : ""}" data-id="${c.id}">
+      <strong>${c.title}</strong>
+      <span>${c.examples.slice(0, 3).join(", ")}</span>
+    </button>`
+  ).join("");
+  box.querySelectorAll(".conclude-btn").forEach(btn => {
+    btn.onclick = () => {
+      state.userConclusion.careerId = btn.dataset.id;
+      renderCareerOptions();
+      updateConcludeSubmit();
+    };
+  });
+}
+
+function updateConcludeSubmit() {
+  const btn = $("conclude-submit");
+  if (!btn) return;
+  const ok = state.userConclusion.predmet && state.userConclusion.maqsad && state.userConclusion.careerId;
+  btn.disabled = !ok;
+  btn.textContent = ok ? "Tavsiyani tasdiqlash →" : "Avval barcha xulosalarni tanlang";
+}
+
+function showConclusion() {
+  const s = getStudent();
+  $("conclude-student-name").textContent = s ? s.name : "O‘quvchi";
+  state.userConclusion = { predmet: null, maqsad: null, careerId: null };
+  renderOptionGroup("conclude-predmet", PREDMET_OPTIONS, "predmet");
+  renderOptionGroup("conclude-maqsad", MAQSAD_OPTIONS, "maqsad");
+  renderCareerOptions();
+  updateConcludeSubmit();
+  const submit = $("conclude-submit");
+  if (submit) submit.onclick = submitConclusion;
+  showScreen("screen-conclude");
+}
+
+function topSignal(keys) {
+  const counts = {};
+  (state.signals || []).forEach(s => {
+    if (keys.includes(s)) counts[s] = (counts[s] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  return sorted.length ? sorted[0][0] : null;
+}
+
+function evaluateRecommendation() {
+  const uc = state.userConclusion;
+  const systemPredmet = topSignal(["technology", "people", "signs", "artistic", "nature"]);
+  const systemMaqsad = topSignal(["gnostic", "transform", "search"]);
+  const ranked = typeof rankCareers === "function" ? rankCareers(state.signals) : [];
+  const systemCareer = ranked[0] ? ranked[0].id : null;
+
+  const predmetOk = uc.predmet && systemPredmet && uc.predmet === systemPredmet;
+  const maqsadOk = uc.maqsad && systemMaqsad && uc.maqsad === systemMaqsad;
+  const careerOk = uc.careerId && systemCareer && uc.careerId === systemCareer;
+  const careerNear = uc.careerId && ranked.slice(0, 3).some(c => c.id === uc.careerId);
+
+  let recScore = 0;
+  if (predmetOk) recScore += 35;
+  if (maqsadOk) recScore += 25;
+  if (careerOk) recScore += 40;
+  else if (careerNear) recScore += 20;
+
+  let recFeedback;
+  if (recScore >= 80) {
+    recFeedback = "Tavsiyangiz suhbat dalillariga yaxshi mos keldi. Xulosa chiqarish ko‘nikmasi yuqori.";
+  } else if (recScore >= 50) {
+    recFeedback = "Qisman to‘g‘ri. Ba’zi mezonlarni yana bir bor javoblar bilan solishtiring.";
+  } else {
+    recFeedback = "Tavsiya dalillarga kam mos keldi. Avval predmet va maqsadni aniq ajrating, keyin kasb tanlang.";
+  }
+
+  const predmetLabel = PREDMET_OPTIONS.find(p => p.id === uc.predmet)?.label || uc.predmet;
+  const maqsadLabel = MAQSAD_OPTIONS.find(p => p.id === uc.maqsad)?.label || uc.maqsad;
+  const careerLabel = CAREER_PROFILES.find(c => c.id === uc.careerId)?.title || uc.careerId;
+  const systemCareerLabel = ranked[0] ? ranked[0].title : "Aniqlanmadi";
+
+  return {
+    recScore,
+    recFeedback,
+    predmetOk,
+    maqsadOk,
+    careerOk,
+    careerNear,
+    predmetLabel,
+    maqsadLabel,
+    careerLabel,
+    systemPredmet,
+    systemMaqsad,
+    systemCareerLabel,
+    ranked
+  };
+}
+
+function submitConclusion() {
+  if (!state.userConclusion.predmet || !state.userConclusion.maqsad || !state.userConclusion.careerId) return;
+  showResults();
+}
+
 function evaluateCounselor() {
   const total = state.history.length || 1;
   const direct = state.history.filter(h => h.type === "direct").length;
@@ -184,11 +325,12 @@ function evaluateCounselor() {
   }
   return { total, direct, distractor, score, level, feedback };
 }
+
 function showResults() {
   const s = getStudent();
   const ev = evaluateCounselor();
-  const careers = typeof rankCareers === "function" ? rankCareers(state.signals) : [];
-  const top = careers.slice(0, 3);
+  const rec = evaluateRecommendation();
+  const top = rec.ranked.slice(0, 3);
 
   $("result-student").textContent = s ? s.name : "O‘quvchi";
   $("result-score").textContent = ev.score + "%";
@@ -196,6 +338,24 @@ function showResults() {
   $("result-feedback").textContent = ev.feedback;
   $("result-direct").textContent = String(ev.direct);
   $("result-distractor").textContent = String(ev.distractor);
+
+  const recBox = $("result-recommendation");
+  if (recBox) {
+    recBox.innerHTML = `
+      <div class="result-score-block">
+        <div class="result-score-main">
+          <span>${rec.recScore}%</span>
+          <b>Tavsiya mosligi</b>
+        </div>
+        <p class="result-feedback">${rec.recFeedback}</p>
+        <div class="result-stats">
+          <div><b class="${rec.predmetOk ? "ok-text" : "bad-text"}">${rec.predmetOk ? "✓" : "✗"}</b><span>Predmet: ${rec.predmetLabel}</span></div>
+          <div><b class="${rec.maqsadOk ? "ok-text" : "bad-text"}">${rec.maqsadOk ? "✓" : "✗"}</b><span>Maqsad: ${rec.maqsadLabel}</span></div>
+          <div><b class="${rec.careerOk || rec.careerNear ? "ok-text" : "bad-text"}">${rec.careerOk ? "✓" : rec.careerNear ? "≈" : "✗"}</b><span>Kasb: ${rec.careerLabel}</span></div>
+          <div><b>~</b><span>Tizim: ${rec.systemCareerLabel}</span></div>
+        </div>
+      </div>`;
+  }
 
   const hist = $("result-history");
   if (hist) {
@@ -213,8 +373,8 @@ function showResults() {
       careerBox.innerHTML = "<p>Yetarli dalil yig‘ilmadi. Ko‘proq taalluqli savol bering.</p>";
     } else {
       careerBox.innerHTML = top.map(c =>
-        `<div class="career-card">
-          <strong>${c.title}</strong>
+        `<div class="career-card ${c.id === state.userConclusion.careerId ? "user-pick" : ""}">
+          <strong>${c.title}${c.id === state.userConclusion.careerId ? " (sizning tavsiyangiz)" : ""}</strong>
           <span>${c.examples.slice(0, 3).join(", ")}</span>
         </div>`
       ).join("");
@@ -223,6 +383,7 @@ function showResults() {
 
   showScreen("screen-result");
 }
+
 function restartAll() {
   state.selectedStudentId = null;
   state.asked = false;
@@ -230,6 +391,7 @@ function restartAll() {
   state.history = [];
   state.currentQuestion = null;
   state.currentStage = 1;
+  state.userConclusion = { predmet: null, maqsad: null, careerId: null };
   document.querySelectorAll(".student-option").forEach(b => b.classList.remove("selected"));
   $("start-btn").disabled = true;
   $("start-btn").textContent = "Avval o‘quvchini tanlang →";
