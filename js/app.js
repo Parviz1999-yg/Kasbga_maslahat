@@ -45,7 +45,7 @@ function startConversation(){
   $("teen-avatar").className=`avatar teen-avatar css-person ${s.avatarClass}`;
   $("stage-title").textContent=STAGE_1.title;
   $("stage-description").textContent=STAGE_1.description;
-  $("progress-text").textContent="1 / 5";
+  $("progress-text").textContent="1 / 4";
   $("progress-bar").style.width="0%";
   $("next-stage-btn").hidden=true;
   renderQuestionChoices();
@@ -92,9 +92,13 @@ function askQuestion(){
   $("question-list").hidden=true;
   $("answer-box").hidden=false;
   $("next-stage-btn").hidden=false;
-  $("next-stage-btn").textContent=state.currentStage===1?"2-bosqichga o‘tish →":"Keyingi bosqichga o‘tish →";
-  $("next-stage-btn").onclick=goToNextStage;
-  $("ask-btn").hidden=true;
+  if(state.currentStage>=4){
+    $("next-stage-btn").textContent="Suhbatni yakunlash →";
+    $("next-stage-btn").onclick=finishConversation;
+  } else {
+    $("next-stage-btn").textContent=(state.currentStage+1)+"-bosqichga o‘tish →";
+    $("next-stage-btn").onclick=goToNextStage;
+  }
   $("question-label").hidden=true;
   $("mood").textContent="Javob berdi";
   $("progress-bar").style.width="100%";
@@ -106,67 +110,37 @@ function askQuestion(){
   });
   animateResponse();
 }
+function loadStage(stageNum, stageObj, progressText, progressWidth){
+  state.currentStage=stageNum;
+  state.asked=false;
+  state.currentQuestion=null;
+  state.questionOrder=shuffle(stageObj.questions);
+  $("stage-title").textContent=stageObj.title;
+  $("stage-description").textContent=stageObj.description;
+  $("progress-text").textContent=progressText;
+  $("progress-bar").style.width=progressWidth;
+  $("question-card").classList.remove("answered-card","answer-mode");
+  $("screen-game").classList.remove("answer-only");
+  $("question-text").hidden=true;
+  $("answer-box").hidden=true;
+  $("next-stage-btn").hidden=true;
+  $("ask-btn").hidden=true;
+  $("question-label").hidden=false;
+  $("question-label").textContent="SAVOLNI TANLANG";
+  $("question-list").hidden=false;
+  $("mood").textContent="Savolni kutmoqda";
+  renderQuestionChoices();
+}
 function goToNextStage(){
   if(!state.asked)return;
-  if(state.currentStage===1){
-    state.currentStage=2;
-    state.asked=false;
-    state.currentQuestion=null;
-    state.questionOrder=shuffle(STAGE_2.questions);
-    $("stage-title").textContent=STAGE_2.title;
-    $("stage-description").textContent=STAGE_2.description;
-    $("progress-text").textContent="2 / 5";
-    $("progress-bar").style.width="20%";
-    $("question-card").classList.remove("answered-card","answer-mode");
-    $("screen-game").classList.remove("answer-only");
-    $("question-text").hidden=true;
-    $("answer-box").hidden=true;
-    $("next-stage-btn").hidden=true;
-    $("ask-btn").hidden=true;
-    $("question-label").hidden=false;
-    $("question-label").textContent="SAVOLNI TANLANG";
-    $("mood").textContent="Savolni kutmoqda";
-    renderQuestionChoices();
-  }
-  else if(state.currentStage===2){
-    state.currentStage=3;
-    state.asked=false;
-    state.currentQuestion=null;
-    state.questionOrder=shuffle(STAGE_3.questions);
-    $("stage-title").textContent=STAGE_3.title;
-    $("stage-description").textContent=STAGE_3.description;
-    $("progress-text").textContent="3 / 5";
-    $("progress-bar").style.width="40%";
-    $("question-card").classList.remove("answered-card","answer-mode");
-    $("screen-game").classList.remove("answer-only");
-    $("question-text").hidden=true;
-    $("answer-box").hidden=true;
-    $("next-stage-btn").hidden=true;
-    $("ask-btn").hidden=true;
-    $("question-label").hidden=false;
-    $("question-label").textContent="SAVOLNI TANLANG";
-    $("mood").textContent="Savolni kutmoqda";
-    renderQuestionChoices();
-  else if(state.currentStage===3){
-    state.currentStage=4;
-    state.asked=false;
-    state.currentQuestion=null;
-    state.questionOrder=shuffle(STAGE_4.questions);
-    $("stage-title").textContent=STAGE_4.title;
-    $("stage-description").textContent=STAGE_4.description;
-    $("progress-text").textContent="4 / 5";
-    $("progress-bar").style.width="60%";
-    $("question-card").classList.remove("answered-card","answer-mode");
-    $("screen-game").classList.remove("answer-only");
-    $("question-text").hidden=true;
-    $("answer-box").hidden=true;
-    $("next-stage-btn").hidden=true;
-    $("ask-btn").hidden=true;
-    $("question-label").hidden=false;
-    $("question-label").textContent="SAVOLNI TANLANG";
-    $("mood").textContent="Savolni kutmoqda";
-    renderQuestionChoices();
-  }
+  if(state.currentStage===1) loadStage(2, STAGE_2, "2 / 4", "25%");
+  else if(state.currentStage===2) loadStage(3, STAGE_3, "3 / 4", "50%");
+  else if(state.currentStage===3) loadStage(4, STAGE_4, "4 / 4", "75%");
+}
+function finishConversation(){
+  $("mood").textContent="Suhbat yakunlandi";
+  $("next-stage-btn").hidden=true;
+  $("answer-text").textContent=($("answer-text").textContent||"")+"\n\nSuhbat yakunlandi. Yig‘ilgan signallar: "+(state.signals.join(", ")||"yo‘q");
 }
 
 function animateResponse(){
