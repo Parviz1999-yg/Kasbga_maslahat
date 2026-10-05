@@ -25,7 +25,7 @@ const STAGE1_ANSWERS = {
       text: "Mashinalar, mexanizmlar va turli qurilmalarning qanday ishlashi qiziq.",
       signals: ["texnika"]
     },
-    zuh​​ra: {
+    zuhra: {
       text: "Odamlar bilan gaplashish, ularga nimanidir tushuntirish va yordam berish qiziq.",
       signals: ["inson"]
     }
@@ -52,7 +52,7 @@ const STAGE1_ANSWERS = {
       text: "Biror qurilmani yig‘ish, tuzatish yoki qanday ishlashini tekshirish bilan shug‘ullanishni yoqtiraman.",
       signals: ["texnika"]
     },
-    zuh​​ra: {
+    zuhra: {
       text: "Odamlar bilan suhbatlashish, tushuntirish va birgalikda ish qilishni yoqtiraman.",
       signals: ["inson"]
     }
@@ -79,7 +79,7 @@ const STAGE1_ANSWERS = {
       text: "Mexanizmlar ichida nima sodir bo‘lishi va ularni qanday yaxshilash mumkinligi qiziqtiradi.",
       signals: ["texnika"]
     },
-    zuh​​ra: {
+    zuhra: {
       text: "Odamlar qanday fikrlashi, bir-birini tushunishi va bilimni qanday yetkazish mumkinligi qiziqtiradi.",
       signals: ["inson"]
     }
@@ -106,7 +106,7 @@ const STAGE1_ANSWERS = {
       text: "Qurilmaning qismlari qanday joylashgani va qayerida muammo borligiga e’tibor beraman.",
       signals: ["texnika"]
     },
-    zuh​​ra: {
+    zuhra: {
       text: "Odamning gapini qanday tushunayotganimga va unga nimani tushuntirish kerakligiga e’tibor beraman.",
       signals: ["inson"]
     }
@@ -133,7 +133,7 @@ const STAGE1_ANSWERS = {
       text: "Biror narsani yig‘ib ko‘raman, eski qurilmalarni ko‘rib chiqaman yoki mayda ta’mirlash ishlarini qilaman.",
       signals: ["texnika"]
     },
-    zuh​​ra: {
+    zuhra: {
       text: "Do‘stlarim bilan suhbatlashaman, ularga dars yoki biror masalada yordam beraman.",
       signals: ["inson"]
     }
