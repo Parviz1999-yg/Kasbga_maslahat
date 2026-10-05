@@ -10,12 +10,12 @@ const STAGE_4 = {
       text: "Qanday joyda ishlashni yoqtirasiz?",
       evidenceType: "direct",
       answers: {
-        azizbek: { evidenceRelevance: 5, text: "Tinch, yopiq joyda.", signals: ["normal"] },
-        madina: { evidenceRelevance: 5, text: "Yorug‘ va erkin joyda.", signals: ["normal"] },
-        javohir: { evidenceRelevance: 5, text: "Tartibli, tinch joyda.", signals: ["normal"] },
-        sevinch: { evidenceRelevance: 5, text: "Toza joyda, ba’zan ochiq havoda.", signals: ["outdoor"] },
-        diyor: { evidenceRelevance: 5, text: "Ustaxona yoki harakatli joyda.", signals: ["nonstandard"] },
-        zuhra: { evidenceRelevance: 5, text: "Odamlar bor, jonli joyda.", signals: ["demanding"] }
+        azizbek: { evidenceRelevance: 5, text: "Tinch xona, stolda kompyuter. Shovqin bo‘lmasa, diqqatim yig‘iladi.", signals: ["normal"] },
+        madina: { evidenceRelevance: 5, text: "Yorug‘ xona, deraza yonida. Ranglar ko‘rinsa, ishlash osonroq.", signals: ["normal"] },
+        javohir: { evidenceRelevance: 5, text: "Tartibli, jim joy. Kutubxona yoki tinch kabinet yoqadi.", signals: ["normal"] },
+        sevinch: { evidenceRelevance: 5, text: "Ba’zan hovlida, bog‘da. Toza havo bo‘lsa, ishlash yoqimli.", signals: ["outdoor"] },
+        diyor: { evidenceRelevance: 5, text: "Ustaxona, garaj yoki ochiq maydon — harakat bo‘lsa, yaxshi.", signals: ["nonstandard"] },
+        zuhra: { evidenceRelevance: 5, text: "Odamlar bor joy — sinf, zal, ofis. Yolg‘iz qolsam, zerikaman.", signals: ["demanding"] }
       }
     },
     {
@@ -23,12 +23,12 @@ const STAGE_4 = {
       text: "Yopiq yoki ochiq joy yoqadimi?",
       evidenceType: "direct",
       answers: {
-        azizbek: { evidenceRelevance: 5, text: "Yopiq joy qulayroq.", signals: ["normal"] },
-        madina: { evidenceRelevance: 4, text: "Yorug‘ yopiq joy yoqadi.", signals: ["normal"] },
-        javohir: { evidenceRelevance: 5, text: "Yopiq, tinch joy.", signals: ["normal"] },
-        sevinch: { evidenceRelevance: 5, text: "Ochiq havo ham yoqadi.", signals: ["outdoor"] },
-        diyor: { evidenceRelevance: 4, text: "Ikkisi ham, asosiysi ish bo‘lsin.", signals: ["nonstandard"] },
-        zuhra: { evidenceRelevance: 4, text: "Odamlar bilan bo‘lsa farqi yo‘q.", signals: ["demanding"] }
+        azizbek: { evidenceRelevance: 5, text: "Yopiq joy qulayroq. Issiq-sovuq, chang — ochiqda diqqat chalg‘iydi.", signals: ["normal"] },
+        madina: { evidenceRelevance: 4, text: "Yorug‘ yopiq joy yoqadi. Ochiqda ham rasmga olish mumkin, lekin ish uchun xona yaxshi.", signals: ["normal"] },
+        javohir: { evidenceRelevance: 5, text: "Yopiq, tinch. Hisob-kitob ochiq maydonda qiyin.", signals: ["normal"] },
+        sevinch: { evidenceRelevance: 5, text: "Ochiq havo menga yoqadi. Yopiqda uzoq o‘tirsam, charchayman.", signals: ["outdoor"] },
+        diyor: { evidenceRelevance: 4, text: "Ikkisi ham. Asosiysi ish bo‘lsin — yomg‘irda yopiq, quruq kunda ochiq.", signals: ["nonstandard"] },
+        zuhra: { evidenceRelevance: 4, text: "Odamlar bilan bo‘lsa, yopiq yoki ochiq farqi yo‘q.", signals: ["demanding"] }
       }
     },
     {
@@ -36,12 +36,12 @@ const STAGE_4 = {
       text: "Tinchni yoqtirasizmi yoki harakatni?",
       evidenceType: "direct",
       answers: {
-        azizbek: { evidenceRelevance: 5, text: "Tinchlikni yoqtiraman.", signals: ["normal"] },
-        madina: { evidenceRelevance: 4, text: "Biroz harakat bo‘lsa yaxshi.", signals: ["normal"] },
-        javohir: { evidenceRelevance: 5, text: "Tinchlik kerak.", signals: ["normal"] },
-        sevinch: { evidenceRelevance: 4, text: "Harakat ham yoqadi.", signals: ["outdoor"] },
-        diyor: { evidenceRelevance: 5, text: "Harakatni yoqtiraman.", signals: ["nonstandard"] },
-        zuhra: { evidenceRelevance: 5, text: "Jonli muhitni yoqtiraman.", signals: ["demanding"] }
+        azizbek: { evidenceRelevance: 5, text: "Tinchlikni yoqtiraman. Shovqin bo‘lsa, kod yoki o‘yin ham o‘ynamaydi.", signals: ["normal"] },
+        madina: { evidenceRelevance: 4, text: "Biroz harakat, musiqa bo‘lsa yaxshi. Juda jim bo‘lsa, uxlab qolaman.", signals: ["normal"] },
+        javohir: { evidenceRelevance: 5, text: "Tinchlik kerak. Diqqatni jamlab ishlayman.", signals: ["normal"] },
+        sevinch: { evidenceRelevance: 4, text: "Harakat ham yoqadi — sayr, bog‘ ishi. Uzoq o‘tirish og‘ir.", signals: ["outdoor"] },
+        diyor: { evidenceRelevance: 5, text: "Harakatni yoqtiraman. Bir joyda o‘tirib qolish zerikarli.", signals: ["nonstandard"] },
+        zuhra: { evidenceRelevance: 5, text: "Jonli muhit — suhbat, kulgu. Juda jim joyda o‘zimni yolg‘iz his qilaman.", signals: ["demanding"] }
       }
     },
     {
@@ -49,12 +49,12 @@ const STAGE_4 = {
       text: "Qanday joyda ishlashni eshitgansiz?",
       evidenceType: "distractor",
       answers: {
-        azizbek: { evidenceRelevance: 1, text: "Ofis haqida eshitganman.", signals: [] },
-        madina: { evidenceRelevance: 1, text: "Studiya haqida eshitganman.", signals: [] },
-        javohir: { evidenceRelevance: 1, text: "Kabinet haqida eshitganman.", signals: [] },
-        sevinch: { evidenceRelevance: 1, text: "Dalada ishlash haqida.", signals: [] },
-        diyor: { evidenceRelevance: 1, text: "Ustaxona haqida eshitganman.", signals: [] },
-        zuhra: { evidenceRelevance: 1, text: "Maktab haqida eshitganman.", signals: [] }
+        azizbek: { evidenceRelevance: 1, text: "IT ofislar, uydan remote ishlash haqida eshitaman.", signals: [] },
+        madina: { evidenceRelevance: 1, text: "Studiya, agentlik haqida gapiriladi.", signals: [] },
+        javohir: { evidenceRelevance: 1, text: "Bank, ofis kabineti haqida bilaman.", signals: [] },
+        sevinch: { evidenceRelevance: 1, text: "Dalada, issiqxonada ishlash haqida eshitganman.", signals: [] },
+        diyor: { evidenceRelevance: 1, text: "Zavod, ustaxona, qurilish maydoni.", signals: [] },
+        zuhra: { evidenceRelevance: 1, text: "Maktab, bolalar bog‘chasi, ofis.", signals: [] }
       }
     },
     {
@@ -62,12 +62,12 @@ const STAGE_4 = {
       text: "Yopiq joy haqida nima deb o‘ylaysiz?",
       evidenceType: "distractor",
       answers: {
-        azizbek: { evidenceRelevance: 1, text: "Qulay deb o‘ylayman.", signals: [] },
-        madina: { evidenceRelevance: 1, text: "Yorug‘ bo‘lsa yaxshi.", signals: [] },
-        javohir: { evidenceRelevance: 1, text: "Tinch bo‘lsa yaxshi.", signals: [] },
-        sevinch: { evidenceRelevance: 1, text: "Toza bo‘lsa yaxshi.", signals: [] },
-        diyor: { evidenceRelevance: 1, text: "Ba’zan zerikarli.", signals: [] },
-        zuhra: { evidenceRelevance: 1, text: "Odamlar bo‘lsa yaxshi.", signals: [] }
+        azizbek: { evidenceRelevance: 1, text: "Qulay, konditsioner bo‘lsa umuman yaxshi.", signals: [] },
+        madina: { evidenceRelevance: 1, text: "Yorug‘ va toza bo‘lsa, ishlash mumkin.", signals: [] },
+        javohir: { evidenceRelevance: 1, text: "Tinch bo‘lsa, eng yaxshi variant.", signals: [] },
+        sevinch: { evidenceRelevance: 1, text: "Uzoq qolsangiz, havo yetishmaydi.", signals: [] },
+        diyor: { evidenceRelevance: 1, text: "Ba’zan zerikarli, chiqib turish kerak.", signals: [] },
+        zuhra: { evidenceRelevance: 1, text: "Odamlar bo‘lsa, yopiq joy ham jonli bo‘ladi.", signals: [] }
       }
     },
     {
@@ -75,12 +75,12 @@ const STAGE_4 = {
       text: "Ochiq joy sizga qanday tuyuladi?",
       evidenceType: "distractor",
       answers: {
-        azizbek: { evidenceRelevance: 1, text: "Ba’zan yoqadi.", signals: [] },
-        madina: { evidenceRelevance: 1, text: "Qiziq.", signals: [] },
-        javohir: { evidenceRelevance: 1, text: "Shovqinli bo‘lishi mumkin.", signals: [] },
-        sevinch: { evidenceRelevance: 1, text: "Yoqimli.", signals: [] },
-        diyor: { evidenceRelevance: 1, text: "Erkin.", signals: [] },
-        zuhra: { evidenceRelevance: 1, text: "Foydali.", signals: [] }
+        azizbek: { evidenceRelevance: 1, text: "Yozda issiq, qishda sovuq. Kamdan-kam yoqadi.", signals: [] },
+        madina: { evidenceRelevance: 1, text: "Fotosurat uchun yaxshi, lekin uzoq ishlash qiyin.", signals: [] },
+        javohir: { evidenceRelevance: 1, text: "Shovqinli, diqqat chalg‘iydi.", signals: [] },
+        sevinch: { evidenceRelevance: 1, text: "Yoqimli, nafas kengayadi.", signals: [] },
+        diyor: { evidenceRelevance: 1, text: "Erkin, yoqadi.", signals: [] },
+        zuhra: { evidenceRelevance: 1, text: "Tadbir uchun yaxshi, odamlar yig‘iladi.", signals: [] }
       }
     },
     {
@@ -88,12 +88,12 @@ const STAGE_4 = {
       text: "Tinch ish haqida nima bilasiz?",
       evidenceType: "distractor",
       answers: {
-        azizbek: { evidenceRelevance: 1, text: "Diqqatni jamlaydi.", signals: [] },
-        madina: { evidenceRelevance: 1, text: "Ijodga yordam beradi.", signals: [] },
-        javohir: { evidenceRelevance: 1, text: "Hisob-kitobga qulay.", signals: [] },
-        sevinch: { evidenceRelevance: 1, text: "Dam olishga o‘xshaydi.", signals: [] },
-        diyor: { evidenceRelevance: 1, text: "Ba’zan zerikarli.", signals: [] },
-        zuhra: { evidenceRelevance: 1, text: "Yolg‘izlik bo‘lishi mumkin.", signals: [] }
+        azizbek: { evidenceRelevance: 1, text: "Dasturlashda tinchlik kerak, shuni bilaman.", signals: [] },
+        madina: { evidenceRelevance: 1, text: "Ijod qilishda tinch muhit yordam beradi.", signals: [] },
+        javohir: { evidenceRelevance: 1, text: "Hisob-kitobda shovqin xato keltiradi.", signals: [] },
+        sevinch: { evidenceRelevance: 1, text: "Ba’zan tinchlik dam olishga o‘xshaydi.", signals: [] },
+        diyor: { evidenceRelevance: 1, text: "Juda tinch bo‘lsa, uxlab qolish mumkin.", signals: [] },
+        zuhra: { evidenceRelevance: 1, text: "Yolg‘izlik bo‘lishi mumkin, menga to‘g‘ri kelmasligi mumkin.", signals: [] }
       }
     },
     {
@@ -101,12 +101,12 @@ const STAGE_4 = {
       text: "Harakatli ish sizga qiziqmi?",
       evidenceType: "distractor",
       answers: {
-        azizbek: { evidenceRelevance: 1, text: "Unchalik emas.", signals: [] },
-        madina: { evidenceRelevance: 1, text: "Biroz.", signals: [] },
-        javohir: { evidenceRelevance: 1, text: "Kamroq.", signals: [] },
-        sevinch: { evidenceRelevance: 1, text: "Ha, biroz.", signals: [] },
-        diyor: { evidenceRelevance: 1, text: "Ha.", signals: [] },
-        zuhra: { evidenceRelevance: 1, text: "Ha, yoqadi.", signals: [] }
+        azizbek: { evidenceRelevance: 1, text: "Unchalik emas. Bir joyda o‘tirib ishlash qulayroq.", signals: [] },
+        madina: { evidenceRelevance: 1, text: "Biroz — suratga olish, joy tanlash uchun.", signals: [] },
+        javohir: { evidenceRelevance: 1, text: "Kamroq. Asosan stol oldida ishlayman.", signals: [] },
+        sevinch: { evidenceRelevance: 1, text: "Ha, biroz harakat bo‘lsa, charchamayman.", signals: [] },
+        diyor: { evidenceRelevance: 1, text: "Ha, qiziq. Bir joyda o‘tirish yoqmaydi.", signals: [] },
+        zuhra: { evidenceRelevance: 1, text: "Ha, odamlar orasida yurish yoqadi.", signals: [] }
       }
     }
   ]
