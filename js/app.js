@@ -38,14 +38,26 @@ function showScreen(id) {
 function getStudent() {
   return STUDENTS.find(s => s.id === state.selectedStudentId);
 }
+
+/** Har safar tasodifiy tartib — Fisher–Yates + qo'shimcha aralashtirish */
 function shuffle(list) {
-  const a = [...list];
+  const a = Array.isArray(list) ? list.slice() : [];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    const t = a[i];
+    a[i] = a[j];
+    a[j] = t;
+  }
+  // Ikkinchi o'tish — tartib yanada aralashsin
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i];
+    a[i] = a[j];
+    a[j] = t;
   }
   return a;
 }
+
 function renderStudentList() {
   const list = $("student-list");
   if (!list) return;
@@ -76,6 +88,7 @@ function startConversation() {
   state.history = [];
   state.currentStage = 1;
   state.currentQuestion = null;
+  state.questionOrder = [];
   state.userConclusion = { predmet: null, maqsad: null, careerId: null };
   const s = getStudent();
   $("teen-name").textContent = s.name;
@@ -89,6 +102,7 @@ function startConversation() {
 function renderQuestionChoices() {
   const list = $("question-list");
   if (!list) return;
+  // Har chizishda ham tartibni qayta aralashtirmaymiz — loadStage allaqachon aralashtirgan
   list.innerHTML = state.questionOrder.map((q, index) =>
     `<button class="question-choice" data-question-id="${q.id}" ${state.asked ? "disabled" : ""}>
       <span class="choice-number">${index + 1}</span>
@@ -158,7 +172,8 @@ function loadStage(stageNum, stageObj, progressText, progressWidth) {
   state.currentStage = stageNum;
   state.asked = false;
   state.currentQuestion = null;
-  state.questionOrder = shuffle(stageObj.questions);
+  // Har bosqich ochilganda savollar yangidan aralashadi
+  state.questionOrder = shuffle(stageObj.questions || []);
   $("stage-title").textContent = stageObj.title;
   $("stage-description").textContent = stageObj.description;
   $("progress-text").textContent = progressText;
@@ -186,7 +201,8 @@ function goToNextStage() {
 function renderOptionGroup(containerId, options, selectedKey, onSelect) {
   const box = $(containerId);
   if (!box) return;
-  box.innerHTML = options.map(o =>
+  const ordered = shuffle(options);
+  box.innerHTML = ordered.map(o =>
     `<button type="button" class="conclude-btn ${state.userConclusion[selectedKey] === o.id ? "selected" : ""}" data-id="${o.id}">
       <strong>${o.label}</strong>
       <span>${o.hint || ""}</span>
@@ -195,7 +211,10 @@ function renderOptionGroup(containerId, options, selectedKey, onSelect) {
   box.querySelectorAll(".conclude-btn").forEach(btn => {
     btn.onclick = () => {
       state.userConclusion[selectedKey] = btn.dataset.id;
-      renderOptionGroup(containerId, options, selectedKey, onSelect);
+      // Qayta chizishda tanlangan holat saqlansin, lekin tartib o‘zgarmasin — faqat class yangilansin
+      box.querySelectorAll(".conclude-btn").forEach(b => {
+        b.classList.toggle("selected", b.dataset.id === state.userConclusion[selectedKey]);
+      });
       updateConcludeSubmit();
       if (onSelect) onSelect();
     };
@@ -205,7 +224,8 @@ function renderOptionGroup(containerId, options, selectedKey, onSelect) {
 function renderCareerOptions() {
   const box = $("conclude-careers");
   if (!box || typeof CAREER_PROFILES === "undefined") return;
-  box.innerHTML = CAREER_PROFILES.map(c =>
+  const ordered = shuffle(CAREER_PROFILES);
+  box.innerHTML = ordered.map(c =>
     `<button type="button" class="conclude-btn career ${state.userConclusion.careerId === c.id ? "selected" : ""}" data-id="${c.id}">
       <strong>${c.title}</strong>
       <span>${c.examples.slice(0, 3).join(", ")}</span>
@@ -214,7 +234,9 @@ function renderCareerOptions() {
   box.querySelectorAll(".conclude-btn").forEach(btn => {
     btn.onclick = () => {
       state.userConclusion.careerId = btn.dataset.id;
-      renderCareerOptions();
+      box.querySelectorAll(".conclude-btn").forEach(b => {
+        b.classList.toggle("selected", b.dataset.id === state.userConclusion.careerId);
+      });
       updateConcludeSubmit();
     };
   });
@@ -390,6 +412,7 @@ function restartAll() {
   state.signals = [];
   state.history = [];
   state.currentQuestion = null;
+  state.questionOrder = [];
   state.currentStage = 1;
   state.userConclusion = { predmet: null, maqsad: null, careerId: null };
   document.querySelectorAll(".student-option").forEach(b => b.classList.remove("selected"));
