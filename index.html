@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kasbga maslahat — Pedagogik simulyator</title>
 <link rel="stylesheet" href="css/style.css?v=stage5-v1">
+<style>
+.result-score-block{margin:24px 0;padding:22px;background:rgba(7,15,30,.78);border:1px solid rgba(99,216,232,.14);border-radius:18px}
+.result-score-main{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+.result-score-main span{font-size:clamp(36px,6vw,56px);font-weight:900;color:#69c7ff}
+.result-score-main b{font-size:22px;color:#eaf6f8}
+.result-feedback{color:#b7cdd2;line-height:1.55;margin:0 0 16px}
+.result-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.result-stats div{padding:14px;background:rgba(5,12,26,.72);border-radius:14px;border:1px solid rgba(99,180,255,.12)}
+.result-stats b{display:block;font-size:26px;color:#63d8e8}
+.result-stats span{color:#91abb2;font-size:13px}
+.result-history{display:grid;gap:8px;margin:12px 0 24px}
+.result-row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:rgba(7,15,30,.78);border:1px solid rgba(99,180,255,.12);font-size:14px}
+.result-row.ok{border-color:rgba(95,224,160,.35)}
+.result-row.bad{border-color:rgba(255,143,143,.3)}
+.result-row b{white-space:nowrap;font-size:12px;letter-spacing:.04em}
+.result-row.ok b{color:#5fe0a0}
+.result-row.bad b{color:#ff8f8f}
+.result-careers{display:grid;gap:10px;margin:12px 0 28px}
+.career-card{padding:16px 18px;border-radius:14px;background:rgba(7,15,30,.78);border:1px solid rgba(99,216,232,.14)}
+.career-card strong{display:block;margin-bottom:4px}
+.career-card span{color:#91abb2;font-size:14px}
+@media(max-width:700px){.result-stats{grid-template-columns:1fr}.result-row{flex-direction:column;align-items:flex-start}}
+</style>
 </head>
 <body>
 <main class="app-shell">
